@@ -45,3 +45,5 @@ function create ()
 
     emitter.startFollow(logo);
 }
+
+// This is a sample change.
