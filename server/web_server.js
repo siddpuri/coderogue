@@ -7,8 +7,8 @@ export default class WebServer {
     this.app = express();
   }
 
-  start(gameServer) {
-    this.gameServer = gameServer;
+  start(game) {
+    this.game = game;
 
     this.app.use(express.static('client'), {redirect: false});
 

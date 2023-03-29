@@ -1,4 +1,4 @@
-export default class GameServer {
+export default class Game {
   constructor() {
   }
 
