@@ -1,6 +1,6 @@
 import IntroLevel from '../levels/intro.js';
 
-export default class Game {
+export class Game {
   constructor() {
     this.levels = [
       new IntroLevel(),

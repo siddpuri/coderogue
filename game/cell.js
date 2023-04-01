@@ -1,4 +1,4 @@
-export default class Cell {
+export class Cell {
     constructor() {
         this.type = 'empty';
         this.objects = [];

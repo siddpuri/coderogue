@@ -2,7 +2,7 @@ import express from 'express';
 
 const port = 8080;
 
-export default class WebServer {
+export class WebServer {
   constructor(game) {
     this.game = game;
     this.app = express();
