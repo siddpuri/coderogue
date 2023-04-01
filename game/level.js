@@ -1,4 +1,4 @@
-import Cell from './cell.mjs';
+import Cell from './cell.js';
 
 export default class Level {
     constructor(width, height) {

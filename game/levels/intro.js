@@ -1,4 +1,4 @@
-import Level from '../level.mjs';
+import Level from '../level.js';
 
 export default class IntroLevel extends Level {
     constructor() {

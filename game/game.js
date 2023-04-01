@@ -1,5 +1,5 @@
-import Players from './players.mjs';
-import IntroLevel from './levels/intro.mjs';
+import Players from './players.js';
+import IntroLevel from './levels/intro.js';
 
 export default class Game {
   constructor() {

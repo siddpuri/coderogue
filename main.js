@@ -1,5 +1,5 @@
-import Game from './game/game.mjs';
-import WebServer from './server/web_server.mjs';
+import Game from './game/game.js';
+import WebServer from './server/web_server.js';
 
 const game = new Game();
 const webServer = new WebServer(game);
