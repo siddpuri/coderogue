@@ -9,7 +9,7 @@ export default class DB {
             user: 'game',
             password: 'game',
         });
-        this.query = util.promisify(this.db.query).bind(connection);
+        this.query = util.promisify(connection.query).bind(connection);
     }
 
     async start() {
