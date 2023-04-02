@@ -4,7 +4,7 @@ function throw_error(err, result) {
     if (err) throw err;
 }
 
-export class DB {
+export default class DB {
     constructor() {
         this.db = mysql.createConnection({
             host: 'localhost',

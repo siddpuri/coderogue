@@ -1,6 +1,6 @@
 import Cell from './cell.js';
 
-export class Level {
+export default class Level {
     constructor(width, height) {
         this.width = width;
         this.height = height;
