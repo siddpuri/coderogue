@@ -2,28 +2,43 @@ import mysql from 'mysql';
 import util from 'util';
 
 export default class DB {
-    constructor() {
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            port: '/var/run/mysqld/mysqld.sock',
-            user: 'game',
-            password: 'game',
-        });
+    constructor(server) {
+        this.server = server;
+        const connection = mysql.createConnection(server.settings.dbParameters);
         this.query = util.promisify(connection.query).bind(connection);
     }
 
     async start() {
         await this.query("USE game");
+        await this.refreshPlayers();
     }
 
     async addPlayer(name, period, handle, password) {
-        await this.db.query(
+        await this.query(
             "INSERT INTO players (name, period, handle, password) VALUES (?, ?, ?, ?)",
             [name, period, handle, password]
         );
+        await this.refreshPlayers();
     }
 
-    async getPlayers() {
-        return await this.db.query("SELECT * FROM players");
+    async removePlayer(id) {
+        await this.query("DELETE FROM players WHERE id = ?", [id]);
+        await this.refreshPlayers();
+    }
+
+    async refreshPlayers() {
+        this.players = await this.query("SELECT * FROM players");
+    }
+
+    async readScores() {
+        return await this.query("SELECT * FROM scores");
+    }
+
+    async writeScores(scores) {
+        await this.query("DELETE FROM scores");
+        for (let i = 0; i < scores.length; i++) {
+            if (!scores) continue;
+            await this.query("INSERT INTO scores (player, score) VALUES (?, ?)", [i, scores[i]]);
+        }
     }
 }

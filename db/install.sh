@@ -16,3 +16,5 @@ sudo mysql <<EOF
     FLUSH PRIVILEGES;
 
 EOF
+
+./reset.sh
