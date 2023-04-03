@@ -14,7 +14,7 @@ export default class Game {
 
   async readScores() {
     this.scores = [];
-    for (let p of this.server.players) {
+    for (let p of this.server.db.players) {
       this.scores[p.id] = 0;
     }
     for (let s of await this.server.db.readScores()) {

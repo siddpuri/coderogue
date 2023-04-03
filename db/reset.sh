@@ -14,7 +14,7 @@ CREATE TABLE players (
     UNIQUE (handle)
 );
 
-CREATE TABLE score (
+CREATE TABLE scores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     player INT NOT NULL,
     score INT NOT NULL,

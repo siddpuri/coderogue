@@ -6,7 +6,9 @@ export default class Settings {
             user: 'game',
             password: 'game',
         };
-        
+
         this.webServerPort = 8080;
+
+        this.playerRoot = '~/players';
     }
 }
