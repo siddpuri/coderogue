@@ -11,6 +11,7 @@ CREATE TABLE players (
     period INT NOT NULL,
     handle INT NOT NULL,
     password VARCHAR(255) NOT NULL,
+    github_name VARCHAR(255) NOT NULL,
     UNIQUE (handle)
 );
 

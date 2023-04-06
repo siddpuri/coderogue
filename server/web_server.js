@@ -6,7 +6,7 @@ export default class WebServer {
     this.app = express();
   }
 
-  start() {
+  async start() {
     this.app.use(express.static('client'));
 
     this.app.post('/api/update/:user', (req, res) => {

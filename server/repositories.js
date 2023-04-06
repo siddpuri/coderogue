@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs/promises';
 
 export default class Repositories {
     constructor(server) {
@@ -11,9 +11,8 @@ export default class Repositories {
         console.log(this.root);
     }
 
-    start() {
-        if (!fs.existsSync(this.root)) {
-            fs.mkdirSync(this.root);
-        }
+    async start() {
+        await fs.mkdir(this.root, {recursive: true});
+        
     }
 }
