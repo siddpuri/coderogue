@@ -10,6 +10,34 @@ export default class Game {
 
   async start() {
     await this.readScores();
+    this.busy = false;
+    this.timer = setInterval(() => this.tick(), 1000);
+  }
+
+  async tick() {
+    if (this.busy) {
+      console.log('Missed a tick.');
+      return;
+    }
+    this.busy = true;
+    await this.doTickActions();
+    this.busy = false;
+  }
+
+  async doTickActions() {
+    for (let level of this.levels) {
+      await level.doPreTickActions();
+    }
+    for (let player of this.server.db.players) {
+      await this.movePlayer(player);
+    }
+    for (let level of this.levels) {
+      await level.doPostTickActions();
+    }
+  }
+
+  async movePlayer(player) {
+    // ...
   }
 
   async readScores() {
