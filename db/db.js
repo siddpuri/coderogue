@@ -13,10 +13,10 @@ export default class DB {
         await this.refreshPlayers();
     }
 
-    async addPlayer(name, period, handle, password) {
+    async addPlayer(name, period, handle, password, github_name) {
         await this.query(
-            "INSERT INTO players (name, period, handle, password) VALUES (?, ?, ?, ?)",
-            [name, period, handle, password]
+            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?)",
+            [name, period, handle, password, github_name]
         );
         await this.refreshPlayers();
     }
