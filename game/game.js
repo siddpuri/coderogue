@@ -1,3 +1,5 @@
+import { VM } from 'vm2';
+
 import IntroLevel from '../levels/intro.js';
 
 export default class Game {
@@ -37,7 +39,15 @@ export default class Game {
   }
 
   async movePlayer(player) {
-    // ...
+    const vm = new VM({
+      timeout: 1000,
+      sandbox: { x: 10 },
+      eval: false,
+      wasm: false,
+      allowAsync: false,
+    })
+    const code = await this.server.repositories.readPlayerCode(player);
+    VM.run(code);
   }
 
   async readScores() {

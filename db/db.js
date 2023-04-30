@@ -1,6 +1,8 @@
 import mysql from 'mysql';
 import util from 'util';
 
+import Player from '../server/player.js';
+
 export default class DB {
     constructor(server) {
         this.server = server;
@@ -15,7 +17,7 @@ export default class DB {
 
     async addPlayer(name, period, handle, password, github_name) {
         await this.query(
-            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?)",
+            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?, ?)",
             [name, period, handle, password, github_name]
         );
         await this.refreshPlayers();
@@ -27,7 +29,8 @@ export default class DB {
     }
 
     async refreshPlayers() {
-        this.players = await this.query("SELECT * FROM players");
+        const response = await this.query("SELECT * FROM players");
+        this.players = response.map(p => new Player(p.id, p.name, p.period, p.handle));
     }
 
     async readScores() {

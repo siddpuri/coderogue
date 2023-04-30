@@ -13,6 +13,14 @@ export default class Repositories {
 
     async start() {
         await fs.mkdir(this.root, {recursive: true});
-        
+    }
+
+    async readPlayerCode(player) {
+        const file = path.join(this.root, player.handle, 'player.js');
+        try {
+            return await fs.readFile(file, 'utf-8');
+        } catch (e) {
+            return '';
+        }
     }
 }
