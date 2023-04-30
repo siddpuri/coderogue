@@ -17,7 +17,8 @@ export default class DB {
 
     async addPlayer(name, period, handle, password, github_name) {
         await this.query(
-            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?, ?)" +
+            "    ON DUPLICATE KEY UPDATE id=id",
             [name, period, handle, password, github_name]
         );
         await this.refreshPlayers();

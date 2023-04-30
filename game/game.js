@@ -1,5 +1,7 @@
 import { VM } from 'vm2';
 
+import VmEnvironment from './vm_environment.js';
+
 import IntroLevel from '../levels/intro.js';
 
 export default class Game {
@@ -8,6 +10,7 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
+    this.sandbox = new VmEnvironment(this);
   }
 
   async start() {
@@ -41,13 +44,19 @@ export default class Game {
   async movePlayer(player) {
     const vm = new VM({
       timeout: 1000,
-      sandbox: { x: 10 },
+      sandbox: this.sandbox,
       eval: false,
       wasm: false,
       allowAsync: false,
     })
-    const code = await this.server.repositories.readPlayerCode(player);
-    VM.run(code);
+    // const code = await this.server.repositories.readPlayerCode(player);
+    // const code = 'this.x = randomNumber(1, 10); console.log(this.x);';
+    const code = 'console.log(x); x = this.randomNumber(1, 10); console.log(x);';
+    console.log('x = ' + this.sandbox.x);
+    console.log('Running ' + code);
+    vm.run(code);
+    console.log('x = ' + this.sandbox.x);
+    console.log('Done');
   }
 
   async readScores() {

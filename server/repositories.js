@@ -16,7 +16,7 @@ export default class Repositories {
     }
 
     async readPlayerCode(player) {
-        const file = path.join(this.root, player.handle, 'player.js');
+        const file = path.join(this.root, player.textHandle, 'player.js');
         try {
             return await fs.readFile(file, 'utf-8');
         } catch (e) {
