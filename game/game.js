@@ -10,7 +10,7 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
-    this.sandbox = new VmEnvironment(this);
+    this.env = new VmEnvironment(this);
   }
 
   async start() {
@@ -42,21 +42,16 @@ export default class Game {
   }
 
   async movePlayer(player) {
+    const sandbox = this.env.getSandbox(player);
     const vm = new VM({
       timeout: 1000,
-      sandbox: this.sandbox,
+      sandbox: sandbox,
       eval: false,
       wasm: false,
       allowAsync: false,
-    })
-    // const code = await this.server.repositories.readPlayerCode(player);
-    // const code = 'this.x = randomNumber(1, 10); console.log(this.x);';
-    const code = 'console.log(x); x = this.randomNumber(1, 10); console.log(x);';
-    console.log('x = ' + this.sandbox.x);
-    console.log('Running ' + code);
+    });
+    const code = await this.server.repositories.readPlayerCode(player);
     vm.run(code);
-    console.log('x = ' + this.sandbox.x);
-    console.log('Done');
   }
 
   async readScores() {
