@@ -1,0 +1,4 @@
+#!/bin/bash
+cd $(dirname "$0")/..
+FILES=$(for i in $(cat .dirs); do find $i -name \*.js; done)
+grep $1 $FILES

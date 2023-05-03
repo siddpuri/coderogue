@@ -1,11 +1,12 @@
 import constants from '../client/constants.js';
 
 export default class Player {
-    constructor(id, name, period, handle) {
-        this.id = id;
-        this.name = name;
-        this.period = period;
-        this.handle = handle;
+    constructor(dbEntry) {
+        this.id = dbEntry.id;
+        this.name = dbEntry.name;
+        this.period = dbEntry.period;
+        this.handle = dbEntry.handle;
+        this.score = dbEntry.score;
     }
 
     get textHandle() {

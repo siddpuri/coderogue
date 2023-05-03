@@ -1,7 +1,9 @@
-import { VM } from 'vm2';
+import { VM, VMScript } from 'vm2';
 
 import VmEnvironment from './vm_environment.js';
 
+import constants from '../client/constants.js';
+import Player from '../server/player.js';
 import IntroLevel from '../levels/intro.js';
 
 export default class Game {
@@ -10,11 +12,13 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
-    this.environments = [];
+    this.playersById = new Array(constants.maxHandle);
+    this.playersByHandle = {};
+    this.playerActions = [];
   }
 
   async start() {
-    await this.readScores();
+    await this.loadState();
     this.busy = false;
     this.timer = setInterval(() => this.tick(), 1000);
   }
@@ -33,50 +37,61 @@ export default class Game {
     for (let level of this.levels) {
       await level.doPreTickActions();
     }
-    for (let player of this.server.db.players) {
-      await this.takePlayerTurn(player);
+    for (let player of this.playersById) {
+      if (player) await this.doPlayerAction(player);
     }
     for (let level of this.levels) {
       await level.doPostTickActions();
     }
   }
 
-  async takePlayerTurn(player) {
-    const vm = new VM({
-      timeout: 1000,
-      sandbox: this.ensureSandbox(player),
-      eval: false,
-      wasm: false,
-      allowAsync: false,
-    });
-    const code = await this.server.repositories.readPlayerCode(player);
+  async doPlayerAction(player) {
     try {
-      vm.run(code);
+      (await this.ensurePlayerAction(player))();
     } catch(e) {
       console.log(e);
     }
   }
 
-  ensureSandbox(player) {
-    let env = this.environments[player.id];
-    if (!env) {
-      env = new VmEnvironment(this, player);
-      this.environments[player.id] = env;
+  async ensurePlayerAction(player) {
+    let action = this.playerActions[player.id];
+    if (!action) {
+      const vm = new VM({
+        timeout: 1000,
+        sandbox: new VmEnvironment(this, player),
+        eval: false,
+        wasm: false,
+        allowAsync: false,
+      });
+      const code = await this.server.repositories.readPlayerCode(player);
+      const script = new VMScript(code);
+      action = () => vm.run(script);
+      this.playerActions[player.id] = action;
     }
-    return env.sandbox;
+    return action;
   }
 
-  async readScores() {
-    this.scores = [];
-    for (let p of this.server.db.players) {
-      this.scores[p.id] = 0;
-    }
-    for (let s of await this.server.db.readScores()) {
-      this.scores[s.player] = s.score;
+  async loadState() {
+    for (let dbEntry of await this.server.db.loadPlayers()) {
+      const p = new Player(dbEntry);
+      this.playersById[p.id] = p;
+      this.playersByHandle[p.handle] = p;
     }
   }
 
   async writeScores() {
-    await this.server.db.writeScores(this.scores);
+    await this.server.db.writeScores(this.playersById);
+  }
+
+  createNewHandle() {
+    if (this.playersById.length >= constants.maxHandle) {
+        console.log('Max handles exceeded!');
+        return false;
+    }
+    let handle;
+    while (!handle || this.playersByHandle[handle]) {
+        handle = Math.floor(Math.random() * constants.maxHandle);
+    }
+    return handle;
   }
 }

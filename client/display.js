@@ -7,9 +7,7 @@ export default class Display {
         this.canvas.height = constants.characterHeight * constants.levelHeight;
         this.ctx = this.canvas.getContext('2d');
         this.clearCanvas();
-
         this.ctx.font = constants.font;
-        this.cursor = 0;
     }
 
     showLoadingScreen() {
@@ -24,10 +22,6 @@ export default class Display {
         this.ctx.fillStyle = constants.backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = constants.foregroundColor;
-    }
-
-    print(text) {
-        this.setText(this.cursor++, 0, text);
     }
 
     setText(row, col, c) {
