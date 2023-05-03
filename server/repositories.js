@@ -8,7 +8,6 @@ export default class Repositories {
         if (this.root.startsWith('~/')) {
             this.root = path.join(process.env.HOME, this.root.slice(2));
         }
-        console.log(this.root);
     }
 
     async start() {
@@ -17,6 +16,7 @@ export default class Repositories {
 
     async readPlayerCode(player) {
         const file = path.join(this.root, player.textHandle, 'player.js');
+        console.log(file);
         try {
             return await fs.readFile(file, 'utf-8');
         } catch (e) {

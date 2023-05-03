@@ -1,8 +1,6 @@
 import mysql from 'mysql';
 import util from 'util';
 
-import Player from '../server/player.js';
-
 export default class DB {
     constructor(server) {
         this.server = server;
@@ -12,37 +10,20 @@ export default class DB {
 
     async start() {
         await this.query("USE game");
-        await this.refreshPlayers();
     }
 
-    async addPlayer(name, period, handle, password, github_name) {
+    async loadPlayers() {
+        return await this.query("SELECT * FROM players");
+    }
+
+    async addPlayer(name, period, github_name, handle) {
         await this.query(
-            "INSERT INTO players (name, period, handle, password, github_name) VALUES (?, ?, ?, ?, ?)" +
-            "    ON DUPLICATE KEY UPDATE id=id",
-            [name, period, handle, password, github_name]
+            "INSERT INTO players (name, period, github_name, handle) VALUES (?, ?, ?, ?)",
+            [name, period, github_name, handle]
         );
-        await this.refreshPlayers();
     }
 
-    async removePlayer(id) {
-        await this.query("DELETE FROM players WHERE id = ?", [id]);
-        await this.refreshPlayers();
-    }
-
-    async refreshPlayers() {
-        const response = await this.query("SELECT * FROM players");
-        this.players = response.map(p => new Player(p.id, p.name, p.period, p.handle));
-    }
-
-    async readScores() {
-        return await this.query("SELECT * FROM scores");
-    }
-
-    async writeScores(scores) {
-        await this.query("DELETE FROM scores");
-        for (let i = 0; i < scores.length; i++) {
-            if (!scores) continue;
-            await this.query("INSERT INTO scores (player, score) VALUES (?, ?)", [i, scores[i]]);
-        }
+    async writeScores(players) {
+        // TODO
     }
 }

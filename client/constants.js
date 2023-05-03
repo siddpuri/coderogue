@@ -13,6 +13,7 @@ const constants = {
         ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'black'],
         ['cat', 'dog', 'bird', 'fish', 'turtle', 'rabbit', 'hamster', 'snake'],
     ],
+    maxHandle: 8 * 8 * 8,
 }
 
 export default constants;

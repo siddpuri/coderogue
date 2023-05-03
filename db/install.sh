@@ -1,7 +1,9 @@
 #!/usr/bin/bash
 
-sudo apt-get update
-sudo apt-get install mysql-server -y
+cd $(dirname "$0")/..
+
+sudo apt-get -qq update
+sudo apt-get -qq install mysql-server -y
 sudo service mysql start
 sudo chmod go+rx /var/run/mysqld
 
@@ -17,4 +19,5 @@ sudo mysql <<EOF
 
 EOF
 
-./reset.sh
+. db/reset.sh
+node db/create_test_user.js

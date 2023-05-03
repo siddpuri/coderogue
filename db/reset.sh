@@ -9,17 +9,10 @@ CREATE TABLE players (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     period INT NOT NULL,
-    handle INT NOT NULL,
-    password VARCHAR(255) NOT NULL,
     github_name VARCHAR(255) NOT NULL,
+    handle INT NOT NULL,
+    score INT NOT NULL DEFAULT 0,
     UNIQUE (handle)
-);
-
-CREATE TABLE scores (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    player INT NOT NULL,
-    score INT NOT NULL,
-    FOREIGN KEY (player) REFERENCES players(id)
 );
 
 EOF
