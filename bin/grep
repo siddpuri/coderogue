@@ -1,4 +1,4 @@
 #!/bin/bash
+DIRS="shared client server db game levels"
 cd $(dirname "$0")/..
-FILES=$(for i in $(cat .dirs); do find $i -name \*.js; done)
-grep $1 $FILES
+grep $1 $(for i in $DIRS; do find $i -name \*.js; done)
