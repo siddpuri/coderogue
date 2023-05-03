@@ -10,7 +10,7 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
-    this.env = new VmEnvironment(this);
+    this.environments = [];
   }
 
   async start() {
@@ -34,24 +34,36 @@ export default class Game {
       await level.doPreTickActions();
     }
     for (let player of this.server.db.players) {
-      await this.movePlayer(player);
+      await this.takePlayerTurn(player);
     }
     for (let level of this.levels) {
       await level.doPostTickActions();
     }
   }
 
-  async movePlayer(player) {
-    const sandbox = this.env.getSandbox(player);
+  async takePlayerTurn(player) {
     const vm = new VM({
       timeout: 1000,
-      sandbox: sandbox,
+      sandbox: this.ensureSandbox(player),
       eval: false,
       wasm: false,
       allowAsync: false,
     });
     const code = await this.server.repositories.readPlayerCode(player);
-    vm.run(code);
+    try {
+      vm.run(code);
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  ensureSandbox(player) {
+    let env = this.environments[player.id];
+    if (!env) {
+      env = new VmEnvironment(this, player);
+      this.environments[player.id] = env;
+    }
+    return env.sandbox;
   }
 
   async readScores() {
