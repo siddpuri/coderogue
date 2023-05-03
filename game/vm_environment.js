@@ -14,10 +14,15 @@ export default class VmEnvironment {
             turnRight: this.turnRight,
             turnLeft: this.turnLeft,
             canMove: this.canMove,
-            left: "left",
-            right: "right",
-            forward: "forward",
-            backward: "backward",
+            left: 'left',
+            right: 'right',
+            forward: 'forward',
+            backward: 'backward',
         };
     }
+
+    moveForward() {}
+    turnRight() {}
+    turnLeft() {}
+    canMove() { return true; }
 }

@@ -1,5 +1,5 @@
-import Display from "./display.js";
-import Updater from "./updater.js";
+import Display from './display.js';
+import Updater from './updater.js';
 
 let display;
 let updater;

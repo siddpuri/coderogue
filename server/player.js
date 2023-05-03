@@ -1,8 +1,4 @@
-const words = [
-    ['happy', 'cute', 'funny', 'silly', 'shy', 'sleepy', 'sneaky', 'zany'],
-    ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'black'],
-    ['cat', 'dog', 'bird', 'fish', 'turtle', 'rabbit', 'hamster', 'snake'],
-];
+import constants from '../client/constants.js';
 
 export default class Player {
     constructor(id, name, period, handle) {
@@ -15,7 +11,7 @@ export default class Player {
     get textHandle() {
         var h = this.handle;
         var result = [];
-        for (let part of words) {
+        for (let part of constants.words) {
             result.push(part[h % part.length]);
             h = Math.floor(h / part.length);
         }
