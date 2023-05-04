@@ -1,4 +1,4 @@
-import constants from '../shared/constants.js';
+import constants from './constants.js';
 
 const backgroundColor = '#f0f0f0';
 const foregroundColor = '#101010';

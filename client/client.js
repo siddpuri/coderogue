@@ -5,7 +5,9 @@ let display;
 let updater;
 
 window.onload = async function() {
+    const baseUrl = window.location.origin;
     display = new Display();
-    updater = new Updater();
+    updater = new Updater(baseUrl, display);
     display.showLoadingScreen();
+    updater.start();
 }

@@ -9,6 +9,7 @@ export default class WebServer {
   }
 
   async start() {
+    this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
 
     this.app.post('/api/update/:user', (req, res) => {
