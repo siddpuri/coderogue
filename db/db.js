@@ -1,10 +1,17 @@
 import mysql from 'mysql';
 import util from 'util';
 
+const dbParameters = {
+    host: 'localhost',
+    port: '/var/run/mysqld/mysqld.sock',
+    user: 'game',
+    password: 'game',
+};
+
 export default class DB {
     constructor(server) {
         this.server = server;
-        const connection = mysql.createConnection(server.settings.dbParameters);
+        const connection = mysql.createConnection(dbParameters);
         this.query = util.promisify(connection.query).bind(connection);
     }
 

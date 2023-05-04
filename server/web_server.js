@@ -1,5 +1,7 @@
 import express from 'express';
 
+const port = 8080;
+
 export default class WebServer {
   constructor(server) {
     this.server = server;
@@ -14,7 +16,6 @@ export default class WebServer {
         // TODO
     });
 
-    const port = this.server.settings.webServerPort;
     this.app.listen(port, () => {
       console.log(`Web server listening on port ${port}`);
     });

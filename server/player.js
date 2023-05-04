@@ -1,4 +1,4 @@
-import constants from '../client/constants.js';
+import Util from '../shared/util.js';
 
 export default class Player {
     constructor(dbEntry) {
@@ -10,12 +10,6 @@ export default class Player {
     }
 
     get textHandle() {
-        var h = this.handle;
-        var result = [];
-        for (let part of constants.words) {
-            result.push(part[h % part.length]);
-            h = Math.floor(h / part.length);
-        }
-        return result.join('-');
+        return Util.getTextHandle(this.handle);
     }
 }

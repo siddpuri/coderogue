@@ -1,13 +1,19 @@
-import constants from './constants.js';
+import constants from '../shared/constants.js';
+
+const backgroundColor = '#f0f0f0';
+const foregroundColor = '#101010';
+const font = '10pt Courier New';
+const characterWidth = 8;
+const characterHeight = 10;
 
 export default class Display {
     constructor() {
         this.canvas = document.getElementById('canvas');
-        this.canvas.width = constants.characterWidth * constants.levelWidth;
-        this.canvas.height = constants.characterHeight * constants.levelHeight;
+        this.canvas.width = characterWidth * constants.levelWidth;
+        this.canvas.height = characterHeight * constants.levelHeight;
         this.ctx = this.canvas.getContext('2d');
         this.clearCanvas();
-        this.ctx.font = constants.font;
+        this.ctx.font = font;
     }
 
     showLoadingScreen() {
@@ -19,14 +25,14 @@ export default class Display {
     }
 
     clearCanvas() {
-        this.ctx.fillStyle = constants.backgroundColor;
+        this.ctx.fillStyle = backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = constants.foregroundColor;
+        this.ctx.fillStyle = foregroundColor;
     }
 
     setText(row, col, c) {
-        row = (row + 1) * constants.characterHeight;
-        col *= constants.characterWidth;
+        row = (row + 1) * characterHeight;
+        col *= characterWidth;
         this.ctx.fillText(c, col, row);
     }
 }

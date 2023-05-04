@@ -2,7 +2,7 @@ import { VM, VMScript } from 'vm2';
 
 import VmEnvironment from './vm_environment.js';
 
-import constants from '../client/constants.js';
+import Util from '../shared/util.js';
 import Player from '../server/player.js';
 import IntroLevel from '../levels/intro.js';
 
@@ -12,7 +12,7 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
-    this.playersById = new Array(constants.maxHandle);
+    this.playersById = new Array(Util.getMaxHandle());
     this.playersByHandle = {};
     this.playerActions = [];
   }
@@ -84,13 +84,14 @@ export default class Game {
   }
 
   createNewHandle() {
-    if (this.playersById.length >= constants.maxHandle) {
+    const maxHandle = Util.getMaxHandle();
+    if (this.playersById.length >= maxHandle) {
         console.log('Max handles exceeded!');
         return false;
     }
     let handle;
     while (!handle || this.playersByHandle[handle]) {
-        handle = Math.floor(Math.random() * constants.maxHandle);
+        handle = Math.floor(Math.random() * maxHandle);
     }
     return handle;
   }

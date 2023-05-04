@@ -1,4 +1,3 @@
-import Settings from './settings.js';
 import Repositories from './repositories.js';
 import WebServer from './web_server.js';
 
@@ -7,7 +6,6 @@ import Game from '../game/game.js';
 
 export default class Server {
     constructor() {
-        this.settings = new Settings();
         this.db = new DB(this);
         this.repositories = new Repositories(this);
         this.game = new Game(this);
