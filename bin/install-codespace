@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 
-cd $(dirname "$0")/..
-
 sudo apt-get -qq update
 sudo apt-get -qq install mysql-server -y
 sudo service mysql start
@@ -19,5 +17,5 @@ sudo mysql <<EOF
 
 EOF
 
-. db/reset.sh
-node db/create_test_user.js
+cd $(dirname "$0")/..
+. db/reset
