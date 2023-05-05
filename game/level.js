@@ -7,8 +7,8 @@ export default class Level {
         this.width = constants.levelWidth;
         this.height = constants.levelHeight;
         this.map =
-            Array(height).fill().map(() =>
-                Array(width).fill().map(() =>
+            Array(this.height).fill().map(() =>
+                Array(this.width).fill().map(() =>
                     new Cell()));
         this.players = {};
     }

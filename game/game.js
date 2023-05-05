@@ -1,5 +1,6 @@
 import { VM, VMScript } from 'vm2';
 
+import PlayerInfo from './player_info.js';
 import VmEnvironment from './vm_environment.js';
 
 import Util from '../shared/util.js';
@@ -12,9 +13,8 @@ export default class Game {
     this.levels = [
       new IntroLevel(),
     ];
-    this.playersById = new Array(Util.getMaxHandle());
-    this.playersByHandle = {};
-    this.playerActions = [];
+    this.playerInfos = [];
+    this.playerHandles = new Set();
   }
 
   async start() {
@@ -37,62 +37,65 @@ export default class Game {
     for (let level of this.levels) {
       await level.doPreTickActions();
     }
-    for (let player of this.playersById) {
-      if (player) await this.doPlayerAction(player);
+    for (let playerInfo of this.playerInfos) {
+      if (playerInfo) await this.doPlayerAction(playerInfo);
     }
     for (let level of this.levels) {
       await level.doPostTickActions();
     }
   }
 
-  async doPlayerAction(player) {
+  async doPlayerAction(playerInfo) {
+    if (!playerInfo.action) {
+      playerInfo.action = await this.createPlayerAction(playerInfo.player);
+    }
     try {
-      (await this.ensurePlayerAction(player))();
+      await playerInfo.action();
     } catch(e) {
       console.log(e);
     }
   }
 
-  async ensurePlayerAction(player) {
-    let action = this.playerActions[player.id];
-    if (!action) {
-      const vm = new VM({
-        timeout: 1000,
-        sandbox: new VmEnvironment(this, player),
-        eval: false,
-        wasm: false,
-        allowAsync: false,
-      });
-      const code = await this.server.repositories.readPlayerCode(player);
-      const script = new VMScript(code);
-      action = () => vm.run(script);
-      this.playerActions[player.id] = action;
-    }
-    return action;
+  async createPlayerAction(player) {
+    const vm = new VM({
+      timeout: 1000,
+      sandbox: new VmEnvironment(this, player),
+      eval: false,
+      wasm: false,
+      allowAsync: false,
+    });
+    const code = await this.server.repositories.readPlayerCode(player);
+    const script = new VMScript(code);
+    return () => vm.run(script);
   }
 
   async loadState() {
     for (let dbEntry of await this.server.db.loadPlayers()) {
       const p = new Player(dbEntry);
-      this.playersById[p.id] = p;
-      this.playersByHandle[p.handle] = p;
+      this.playerInfos[p.id] = new PlayerInfo(p);
+      this.playerHandles.add(p.handle);
     }
   }
 
   async writeScores() {
-    await this.server.db.writeScores(this.playersById);
+    // TODO
   }
 
   createNewHandle() {
     const maxHandle = Util.getMaxHandle();
-    if (this.playersById.length >= maxHandle) {
+    if (this.playerHandles.size >= maxHandle) {
         console.log('Max handles exceeded!');
         return false;
     }
-    let handle;
-    while (!handle || this.playersByHandle[handle]) {
-        handle = Math.floor(Math.random() * maxHandle);
+    while (true) {
+      let handle = Math.floor(Math.random() * maxHandle);
+      if (!this.playerHandles.has(handle)) {
+        return handle;
+      }
     }
-    return handle;
+  }
+
+  log(player, text) {
+    this.playerInfos[player.id].log(text);
   }
 }

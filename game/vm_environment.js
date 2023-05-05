@@ -3,6 +3,9 @@ export default class VmEnvironment {
         this.game = game;
         this.player = player;
         this.sandbox = {
+            // Overridden ES6 functionality
+            console: { log: text => game.log(player, text) },
+
             // General AppLab functions
             randomNumber: (a, b) => Math.floor(Math.random() * (b - a + 1)) + a,
             appendItem: (l, x) => l.push(x),
