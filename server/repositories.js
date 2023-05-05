@@ -22,7 +22,7 @@ export default class Repositories {
         try {
             return await fs.readFile(file, 'utf-8');
         } catch (e) {
-            return '';
+            return 'console.log("No code uploaded yet.");';
         }
     }
 }
