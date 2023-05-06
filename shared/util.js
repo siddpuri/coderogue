@@ -5,6 +5,10 @@ const words = [
 ];
 
 export default class Util {
+    static randomElement(list) {
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
     static getTextHandle(handle) {
         var result = [];
         for (let part of words) {

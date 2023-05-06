@@ -3,7 +3,8 @@ import CircularLog from './circular_log.js';
 export default class PlayerInfo {
     constructor(player) {
         this.player = player;
-        this.action = null;
+        this.action = undefined;
+        this.level = undefined;
         this.log = new CircularLog(1000);
     }
 

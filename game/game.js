@@ -71,9 +71,12 @@ export default class Game {
 
   async loadState() {
     for (let dbEntry of await this.server.db.loadPlayers()) {
-      const p = new Player(dbEntry);
-      this.playerInfos[p.id] = new PlayerInfo(p);
-      this.playerHandles.add(p.handle);
+      const player = new Player(dbEntry);
+      const playerInfo = new PlayerInfo(player);
+      this.playerInfos[player.id] = playerInfo;
+      this.playerHandles.add(player.handle);
+      this.levels[0].addPlayer(player.id);
+      playerInfo.level = 0;
     }
   }
 

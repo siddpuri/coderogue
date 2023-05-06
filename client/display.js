@@ -41,15 +41,8 @@ export default class Display {
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
                 const cell = map[row][col];
-                if (!cell) {
-                    console.log(row, col);
-                    continue;
-                }
-                if (cell.isWall) {
-                    this.setText(row, col, "#");
-                } else if (cell.mob) {
-                    this.setText(row, col, "@");
-                }
+                const char = cell.dir ?? cell.type;
+                if (char) this.setText(row, col, char);
             }
         }
     }
