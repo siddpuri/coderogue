@@ -30,9 +30,27 @@ export default class Display {
         this.ctx.fillStyle = foregroundColor;
     }
 
-    setText(row, col, c) {
+    setText(row, col, text) {
         row = (row + 1) * characterHeight;
         col *= characterWidth;
-        this.ctx.fillText(c, col, row);
+        this.ctx.fillText(text, col, row);
+    }
+
+    showMap(map) {
+        this.clearCanvas();
+        for (let row = 0; row < map.length; row++) {
+            for (let col = 0; col < map[row].length; col++) {
+                const cell = map[row][col];
+                if (!cell) {
+                    console.log(row, col);
+                    continue;
+                }
+                if (cell.isWall) {
+                    this.setText(row, col, "#");
+                } else if (cell.mob) {
+                    this.setText(row, col, "@");
+                }
+            }
+        }
     }
 }

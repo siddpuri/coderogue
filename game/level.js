@@ -22,7 +22,7 @@ export default class Level {
         let [x0, y0] = this.spawnTarget;
         for (let x = x0 - 10; x <= x0 + 10; x0++) {
             for (let y = y0 - 10; y <= y0 + 10; y0++) {
-                if (!this.getCell(x, y).mob) {
+                if (this.map[y][x].isFree) {
                     candidates.push([x, y]);
                 }
             }
@@ -31,10 +31,6 @@ export default class Level {
             return null;
         }
         return candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    getCell(x, y) {
-        return this.map[y][x];
     }
 
     async doPreTickActions() {}
@@ -46,7 +42,7 @@ export default class Level {
             return false;
         }
         this.players[player.id] = pos;
-        this.getCell(x, y).mob = player;
+        this.map[y][x].mob = player.id;
         return true;
     }
 }

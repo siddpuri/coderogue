@@ -12,6 +12,11 @@ export default class WebServer {
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
 
+    this.app.get('/api/map', (req, res) => {
+      let response = this.server.game.levels[0].map;
+      res.send(JSON.stringify(response));
+    });
+
     this.app.post('/api/update/:user', (req, res) => {
         const user = req.params.user;
         // TODO

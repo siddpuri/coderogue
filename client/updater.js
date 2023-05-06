@@ -20,6 +20,8 @@ export default class Updater {
     }
 
     async doTickActions() {
-
+        let response = await fetch(this.baseUrl + "/api/map");
+        let map = await response.json();
+        this.display.showMap(map);
     }
 }
