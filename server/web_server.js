@@ -12,8 +12,8 @@ export default class WebServer {
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
 
-    this.app.get('/api/map', (req, res) => {
-      let response = this.server.game.levels[0].map;
+    this.app.get('/api/state', (req, res) => {
+      let response = this.server.game.getState();
       res.send(JSON.stringify(response));
     });
 

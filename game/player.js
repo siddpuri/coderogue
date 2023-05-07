@@ -36,4 +36,16 @@ export default class Player {
             return false;
         }
     }
+
+    getState() {
+        return {
+            id: this.id,
+            period: this.period,
+            textHandle: this.textHandle,
+            score: this.score,
+            level: this.level,
+            pos: this.pos,
+            dir: this.dir,
+        };
+    }
 }

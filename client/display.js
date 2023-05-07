@@ -30,26 +30,57 @@ export default class Display {
         this.ctx.fillStyle = foregroundColor;
     }
 
+    render(state) {
+        this.players = [];
+        for (let player of state.players) {
+            if (player) this.players[player.id] = player;
+        }
+        this.levels = state.levels;
+        this.renderMap(this.levels[0]);
+        this.renderPlayers();
+    }
+
+    renderMap(map) {
+        this.clearCanvas();
+        for (let row = 0; row < map.length; row++) {
+            for (let col = 0; col < map[row].length; col++) {
+                const char = this.renderCell(map[row][col]);
+                if (char) this.setText(row, col, char);
+            }
+        }
+    }
+
+    renderCell(cell) {
+        if (Object.hasOwn(cell, 'playerId')) {
+            const dir = this.players[cell.playerId].dir;
+            return '^>v<'[dir];
+        }
+        return cell.type;
+    }
+
     setText(row, col, text) {
         row = (row + 1) * characterHeight;
         col *= characterWidth;
         this.ctx.fillText(text, col, row);
     }
 
-    showMap(map) {
-        this.clearCanvas();
-        for (let row = 0; row < map.length; row++) {
-            for (let col = 0; col < map[row].length; col++) {
-                const char = this.render(map[row][col]);
-                if (char) this.setText(row, col, char);
+    renderPlayers() {
+        const info = [];
+        for (let player of this.players) {
+            if (!player) continue;
+            info.push([player.score, player.period, player.textHandle]);
+        }
+        info.sort(entry => entry[0]);
+        const table = document.getElementById('players');
+        while(table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+        for (let entry of info) {
+            const row = table.insertRow();
+            for (let i = 0; i < 3; i++) {
+                const cell = row.insertCell();
+                cell.innerHTML = entry[i];
             }
         }
-    }
-
-    render(cell) {
-        if (Object.hasOwn(cell, 'playerId')) {
-            return '^>v<'[cell.dir];
-        }
-        return cell.type;
     }
 }

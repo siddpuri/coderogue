@@ -98,4 +98,11 @@ export default class Game {
       }
     }
   }
+
+  getState() {
+    return {
+      players: this.players.map(player => player ? player.getState() : null),
+      levels: this.levels.map(level => level.getState()),
+    };
+  }
 }

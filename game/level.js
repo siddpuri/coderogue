@@ -64,10 +64,7 @@ export default class Level {
     }
 
     moveForward(player) {
-        console.debug("Moving " + player.id);
-        console.debug("from: " + player.pos);
         const newPos = this.movePos(player.pos, player.dir);
-        console.debug("to: " + newPos);
         if (!this.cell(newPos).canEnter) {
             this.bump(player);
             return false;
@@ -113,5 +110,9 @@ export default class Level {
     movePos(pos, dir) {
         const offset = offsets[dir];
         return [pos[0] + offset[0], pos[1] + offset[1]];
+    }
+
+    getState() {
+        return this.map;
     }
 }
