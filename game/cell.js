@@ -29,8 +29,8 @@ export default class Cell {
         this.type = 'o';
     }
 
-    setPlayerId(playerId, dir) {
-        this.playerId = playerId;
+    setPlayer(player, dir) {
+        this.playerId = player.id;
         this.dir = dir;
     }
 

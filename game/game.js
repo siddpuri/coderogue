@@ -1,11 +1,10 @@
 import { VM, VMScript } from 'vm2';
 
-import PlayerInfo from './player_info.js';
-import VmEnvironment from './vm_environment.js';
-
 import Util from '../shared/util.js';
-import Player from '../server/player.js';
 import IntroLevel from '../levels/intro.js';
+
+import Player from './player.js';
+import VmEnvironment from './vm_environment.js';
 
 export default class Game {
   constructor(server) {
@@ -13,9 +12,8 @@ export default class Game {
     this.levels = [
       new IntroLevel(this),
     ];
-    this.playerInfos = [];
+    this.players = [];
     this.playerHandles = new Set();
-    this.turns = 0;
   }
 
   async start() {
@@ -38,28 +36,28 @@ export default class Game {
     for (let level of this.levels) {
       await level.doPreTickActions();
     }
-    for (let playerInfo of this.playerInfos) {
-      if (playerInfo) await this.doPlayerAction(playerInfo);
+    for (let player of this.players) {
+      if (player) await this.doPlayerAction(player);
     }
     for (let level of this.levels) {
       await level.doPostTickActions();
     }
   }
 
-  async doPlayerAction(playerInfo) {
-    if (!playerInfo.action) {
-      playerInfo.action = await this.createPlayerAction(playerInfo.player);
+  async doPlayerAction(player) {
+    if (!player.action) {
+      player.action = await this.createPlayerAction(player);
     }
-    this.turns = 1;
+    player.grantTurns(1);
     try {
-      await playerInfo.action();
+      await player.action();
     } catch(e) {
-      console.log(e);
+      player.log.write(e);
     }
   }
 
   async createPlayerAction(player) {
-    const env = new VmEnvironment(this, player.id);
+    const env = new VmEnvironment(this, player);
     const vm = new VM({
       timeout: 1000,
       sandbox: env.sandbox,
@@ -67,7 +65,7 @@ export default class Game {
       wasm: false,
       allowAsync: false,
     });
-    const code = await this.server.repositories.readPlayerCode(player);
+    const code = await this.server.repositories.readPlayerCode(player.textHandle);
     const script = new VMScript(code);
     return () => vm.run(script);
   }
@@ -75,11 +73,10 @@ export default class Game {
   async loadState() {
     for (let dbEntry of await this.server.db.loadPlayers()) {
       const player = new Player(dbEntry);
-      const playerInfo = new PlayerInfo(player);
-      this.playerInfos[player.id] = playerInfo;
+      this.players[player.id] = player;
       this.playerHandles.add(player.handle);
-      this.levels[0].spawn(player.id);
-      playerInfo.level = 0;
+      this.levels[0].spawn(player);
+      player.level = 0;
     }
   }
 
@@ -99,19 +96,5 @@ export default class Game {
         return handle;
       }
     }
-  }
-
-  useTurn(playerId) {
-    if (this.turns) {
-      this.turns--;
-      return true;
-    }
-    this.log(playerId, 'Tried to do more than one movemnt in a turn!');
-    return false;
-  }
-
-  log(playerId, text) {
-    const log = this.playerInfos[playerId].log;
-    log.write(text);
   }
 }

@@ -27,11 +27,11 @@ export default class Level {
     async doPreTickActions() {}
     async doPostTickActions() {}
 
-    bump(playerId) {
-        this.game.log(playerId, 'Bump!');
+    bump(player) {
+        player.log.write('Bump!');
     }
 
-    score(playerId) {}
+    score(player) {}
 
     get spawnTargetPos() { return [10, 10]; }
 
@@ -52,48 +52,50 @@ export default class Level {
         return Util.randomElement(candidates);
     }
 
-    spawn(playerId) {
+    spawn(player) {
         const pos = this.getSpawnPos();
         if (!pos) return false;
         const dir = Util.randomElement([0, 1, 2, 3]);
-        this.cell(pos).setPlayerId(playerId, dir);
-        this.positions[playerId] = pos;
+        this.cell(pos).setPlayer(player, dir);
+        this.positions[player.id] = pos;
         return true;
     }
 
-    moveForward(playerId) {
-        const pos = this.positions[playerId];
+    moveForward(player) {
+        const pos = this.positions[player.id];
         const cell = this.cell(pos);
         const dir = cell.dir;
         const newPos = this.movePos(pos, dir);
         const newCell = this.cell(newPos);
         if (!newCell.canEnter) {
-            this.bump(playerId);
+            this.bump(player);
             return false;
         }
         cell.clearPlayer();
         if (newCell.isExit) {
-            this.score(playerId);
-            this.spawn(playerId);
+            this.score(player);
+            this.spawn(player);
             return true;
         }
-        newCell.setPlayerId(playerId, dir);
-        this.positions[playerId] = newPos;
+        newCell.setPlayer(player, dir);
+        this.positions[player.id] = newPos;
         return true;
     }
 
-    turnRight(playerId) {
-        const cell = this.cell(this.positions[playerId]);
+    turnRight(player) {
+        const pos = this.positions[player.id];
+        const cell = this.cell(pos);
         cell.dir = (cell.dir + 1) % 4;
     }
 
-    turnLeft(playerId) {
-        const cell = this.cell(this.positions[playerId]);
+    turnLeft(player) {
+        const pos = this.positions[player.id];
+        const cell = this.cell(pos);
         cell.dir = (cell.dir + 3) % 4;
     }
 
-    canMove(playerId, dir) {
-        const pos = this.positions[playerId];
+    canMove(player, dir) {
+        const pos = this.positions[player.id];
         const realDir = (this.cell(pos).dir + dir) % 4;
         const newPos = movePos(pos, realDir);
         return this.cell(newPos).canEnter;

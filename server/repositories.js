@@ -16,8 +16,8 @@ export default class Repositories {
         await fs.mkdir(this.root, {recursive: true});
     }
 
-    async readPlayerCode(player) {
-        const file = path.join(this.root, player.textHandle, 'player.js');
+    async readPlayerCode(playerHandle) {
+        const file = path.join(this.root, playerHandle, 'player.js');
         console.log("Loading code from: " + file);
         try {
             return await fs.readFile(file, 'utf-8');
