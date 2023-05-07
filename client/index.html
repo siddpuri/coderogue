@@ -10,7 +10,7 @@
     </head>
     <body>
         <div class="container-fluid">
-            <div class="row">
+            <div class="row mb-5">
                 <div class="col">
                     <canvas id="canvas"></canvas>
                 </div>
@@ -26,6 +26,22 @@
                         </thread>
                         <tbody id="players"></tbody>
                     </table>
+                </div>
+            </div>
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link active" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="home" aria-selected="true">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"  id="log-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Log</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labeledby="account-tab">
+                    Account
+                </div>
+                <div class="tab-pane fade" id="log" role="tabpanel" aria-labeledby="log-tab">
+                    Log
                 </div>
             </div>
         </div>
