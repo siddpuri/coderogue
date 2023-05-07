@@ -11,13 +11,15 @@ export default class Player {
         this.handle = dbEntry.handle;
         this.score = dbEntry.score;
 
-        // Derived values
+        // Game plumbing
         this.textHandle = Util.getTextHandle(this.handle);
+        this.action = undefined;
+        this.log = new CircularLog(1000);
 
         // Game state
-        this.action = undefined;
         this.level = undefined;
-        this.log = new CircularLog(1000);
+        this.pos = undefined;
+        this.dir = 0;
         this.turns = 0;
     }
 

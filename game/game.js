@@ -53,6 +53,7 @@ export default class Game {
       await player.action();
     } catch(e) {
       player.log.write(e);
+      console.log(e);
     }
   }
 

@@ -21,7 +21,6 @@ export default class Level {
                 Array(this.width).fill().map(() => new Cell()));
         this.cell(this.spawnTargetPos).setSpawn();
         this.cell(this.exitPos).setExit();
-        this.positions = {};
     }
     
     async doPreTickActions() {}
@@ -54,50 +53,56 @@ export default class Level {
 
     spawn(player) {
         const pos = this.getSpawnPos();
-        if (!pos) return false;
-        const dir = Util.randomElement([0, 1, 2, 3]);
-        this.cell(pos).setPlayer(player, dir);
-        this.positions[player.id] = pos;
+        if (!pos) {
+            console.log('Couldn\t place player!');
+            this.removePlayer(player);
+            return false;
+        }
+        this.movePlayer(player, pos);
+        player.dir = Util.randomElement([0, 1, 2, 3]);
         return true;
     }
 
     moveForward(player) {
-        const pos = this.positions[player.id];
-        const cell = this.cell(pos);
-        const dir = cell.dir;
-        const newPos = this.movePos(pos, dir);
-        const newCell = this.cell(newPos);
-        if (!newCell.canEnter) {
+        console.debug("Moving " + player.id);
+        console.debug("from: " + player.pos);
+        const newPos = this.movePos(player.pos, player.dir);
+        console.debug("to: " + newPos);
+        if (!this.cell(newPos).canEnter) {
             this.bump(player);
             return false;
         }
-        cell.clearPlayer();
-        if (newCell.isExit) {
+        this.movePlayer(player, newPos);
+        if (this.cell(newPos).isExit) {
             this.score(player);
             this.spawn(player);
-            return true;
         }
-        newCell.setPlayer(player, dir);
-        this.positions[player.id] = newPos;
         return true;
     }
 
+    movePlayer(player, pos) {
+        if (player.pos) {
+            this.cell(player.pos).clearPlayer();
+        }
+        player.pos = pos;
+        this.cell(pos).setPlayer(player);
+    }
+
+    removePlayer(player) {
+        this.movePlayer(player, undefined);
+    }
+
     turnRight(player) {
-        const pos = this.positions[player.id];
-        const cell = this.cell(pos);
-        cell.dir = (cell.dir + 1) % 4;
+        player.dir = (player.dir + 1) % 4;
     }
 
     turnLeft(player) {
-        const pos = this.positions[player.id];
-        const cell = this.cell(pos);
-        cell.dir = (cell.dir + 3) % 4;
+        player.dir = (player.dir + 3) % 4;
     }
 
     canMove(player, dir) {
-        const pos = this.positions[player.id];
-        const realDir = (this.cell(pos).dir + dir) % 4;
-        const newPos = movePos(pos, realDir);
+        const realDir = (player.dir + dir) % 4;
+        const newPos = movePos(player.pos, realDir);
         return this.cell(newPos).canEnter;
     }
 

@@ -29,13 +29,11 @@ export default class Cell {
         this.type = 'o';
     }
 
-    setPlayer(player, dir) {
+    setPlayer(player) {
         this.playerId = player.id;
-        this.dir = dir;
     }
 
     clearPlayer() {
         delete this.playerId;
-        delete this.dir;
     }
 }
