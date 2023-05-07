@@ -11,10 +11,11 @@ export default class Game {
   constructor(server) {
     this.server = server;
     this.levels = [
-      new IntroLevel(),
+      new IntroLevel(this),
     ];
     this.playerInfos = [];
     this.playerHandles = new Set();
+    this.turns = 0;
   }
 
   async start() {
@@ -49,6 +50,7 @@ export default class Game {
     if (!playerInfo.action) {
       playerInfo.action = await this.createPlayerAction(playerInfo.player);
     }
+    this.turns = 1;
     try {
       await playerInfo.action();
     } catch(e) {
@@ -100,16 +102,19 @@ export default class Game {
   }
 
   moveForward(playerId) {
+    if (!useTurn(playerId)) return false;
     const level = this.playerInfos[playerId].level;
     return this.levels[level].moveForward(playerId);
   }
 
   turnRight(playerId) {
+    if (!useTurn(playerId)) return false;
     const level = this.playerInfos[playerId].level;
     return this.levels[level].turnRight(playerId);
   }
 
   turnLeft(playerId) {
+    if (!useTurn(playerId)) return false;
     const level = this.playerInfos[playerId].level;
     return this.levels[level].turnLeft(playerId);
   }
@@ -117,6 +122,15 @@ export default class Game {
   canMove(playerId, dir) {
     const level = this.playerInfos[playerId].level;
     return this.levels[level].canMove(playerId, dir);
+  }
+
+  useTurn(playerId) {
+    if (this.turns) {
+      this.turns--;
+      return true;
+    }
+    this.log(playerId, 'Tried to do more than one movemnt in a turn!');
+    return false;
   }
 
   log(playerId, text) {

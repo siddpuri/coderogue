@@ -12,7 +12,8 @@ const offsets = [
 ];
 
 export default class Level {
-    constructor() {
+    constructor(game) {
+        this.game = game;
         this.width = constants.levelWidth;
         this.height = constants.levelHeight;
         this.map =
@@ -25,7 +26,10 @@ export default class Level {
     
     async doPreTickActions() {}
     async doPostTickActions() {}
-    bump() {}
+
+    bump(playerId) {
+        this.game.log(playerId, 'Bump!');
+    }
 
     get spawnTargetPos() { return [10, 10]; }
 
