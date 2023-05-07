@@ -1,10 +1,10 @@
 export default class VmEnvironment {
-    constructor(game, player) {
+    constructor(game, playerId) {
         this.game = game;
-        this.player = player;
+        this.playerId = playerId;
         this.sandbox = {
             // Overridden ES6 functionality
-            console: { log: text => game.log(player, text) },
+            console: { log: text => game.log(this.playerId, text) },
 
             // General AppLab functions
             randomNumber: (a, b) => Math.floor(Math.random() * (b - a + 1)) + a,
@@ -13,19 +13,15 @@ export default class VmEnvironment {
             removeItem: (l, i) => l.splice(i, 1),
 
             // Robot movement
-            moveForward: this.moveForward,
-            turnRight: this.turnRight,
-            turnLeft: this.turnLeft,
-            canMove: this.canMove,
-            left: 'left',
-            right: 'right',
-            forward: 'forward',
-            backward: 'backward',
+            moveForward: () => this.game.moveForward(this.playerId),
+            turnRight: () => this.game.turnRight(this.playerId),
+            turnLeft: () => this.game.turnLeft(this.playerId),
+            canMove: dir => this.game.canMove(this.playerId, dir),
+
+            forward: '0',
+            right: '1',
+            backward: '2',
+            left: '3',
         };
     }
-
-    moveForward() {}
-    turnRight() {}
-    turnLeft() {}
-    canMove() { return true; }
 }

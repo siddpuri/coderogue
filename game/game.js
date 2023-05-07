@@ -57,7 +57,7 @@ export default class Game {
   }
 
   async createPlayerAction(player) {
-    const env = new VmEnvironment(this, player);
+    const env = new VmEnvironment(this, player.id);
     const vm = new VM({
       timeout: 1000,
       sandbox: env.sandbox,
@@ -99,9 +99,28 @@ export default class Game {
     }
   }
 
-  log(player, text) {
-    const log = this.playerInfos[player.id].log;
+  moveForward(playerId) {
+    const level = this.playerInfos[playerId].level;
+    return this.levels[level].moveForward(playerId);
+  }
+
+  turnRight(playerId) {
+    const level = this.playerInfos[playerId].level;
+    return this.levels[level].turnRight(playerId);
+  }
+
+  turnLeft(playerId) {
+    const level = this.playerInfos[playerId].level;
+    return this.levels[level].turnLeft(playerId);
+  }
+
+  canMove(playerId, dir) {
+    const level = this.playerInfos[playerId].level;
+    return this.levels[level].canMove(playerId, dir);
+  }
+
+  log(playerId, text) {
+    const log = this.playerInfos[playerId].log;
     log.write(text);
-    console.log(log.toString());
   }
 }

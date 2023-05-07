@@ -40,10 +40,16 @@ export default class Display {
         this.clearCanvas();
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
-                const cell = map[row][col];
-                const char = cell.dir ?? cell.type;
+                const char = this.render(map[row][col]);
                 if (char) this.setText(row, col, char);
             }
         }
+    }
+
+    render(cell) {
+        if (Object.hasOwn(cell, 'playerId')) {
+            return '^>v<'[cell.dir];
+        }
+        return cell.type;
     }
 }
