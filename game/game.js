@@ -57,9 +57,10 @@ export default class Game {
   }
 
   async createPlayerAction(player) {
+    const env = new VmEnvironment(this, player);
     const vm = new VM({
       timeout: 1000,
-      sandbox: new VmEnvironment(this, player),
+      sandbox: env.sandbox,
       eval: false,
       wasm: false,
       allowAsync: false,
@@ -99,6 +100,8 @@ export default class Game {
   }
 
   log(player, text) {
-    this.playerInfos[player.id].log(text);
+    const log = this.playerInfos[player.id].log;
+    log.write(text);
+    console.log(log.toString());
   }
 }
