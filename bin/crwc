@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+DIRS="shared client server db game levels"
+cd $(dirname "$0")/..
+wc $(for i in $DIRS; do find $i -name \*.js; done)

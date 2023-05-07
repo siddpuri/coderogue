@@ -101,29 +101,6 @@ export default class Game {
     }
   }
 
-  moveForward(playerId) {
-    if (!useTurn(playerId)) return false;
-    const level = this.playerInfos[playerId].level;
-    return this.levels[level].moveForward(playerId);
-  }
-
-  turnRight(playerId) {
-    if (!useTurn(playerId)) return false;
-    const level = this.playerInfos[playerId].level;
-    return this.levels[level].turnRight(playerId);
-  }
-
-  turnLeft(playerId) {
-    if (!useTurn(playerId)) return false;
-    const level = this.playerInfos[playerId].level;
-    return this.levels[level].turnLeft(playerId);
-  }
-
-  canMove(playerId, dir) {
-    const level = this.playerInfos[playerId].level;
-    return this.levels[level].canMove(playerId, dir);
-  }
-
   useTurn(playerId) {
     if (this.turns) {
       this.turns--;

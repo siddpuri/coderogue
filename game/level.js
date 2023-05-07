@@ -40,7 +40,7 @@ export default class Level {
         let [x0, y0] = this.spawnTargetPos;
         for (let x = x0 - 10; x <= x0 + 10; x++) {
             for (let y = y0 - 10; y <= y0 + 10; y++) {
-                const pos = [y,  x];
+                const pos = [x,  y];
                 if (this.cell(pos).canEnter) {
                     candidates.push(pos);
                 }
