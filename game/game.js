@@ -78,7 +78,7 @@ export default class Game {
       const playerInfo = new PlayerInfo(player);
       this.playerInfos[player.id] = playerInfo;
       this.playerHandles.add(player.handle);
-      this.levels[0].addPlayer(player.id);
+      this.levels[0].spawn(player.id);
       playerInfo.level = 0;
     }
   }

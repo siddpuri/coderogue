@@ -13,6 +13,10 @@ export default class Cell {
         return Object.hasOwn(this, 'playerId');
     }
 
+    get isExit() {
+        return this.type == 'o';
+    }
+
     setWall() {
         this.type = '#';
     }

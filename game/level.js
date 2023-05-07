@@ -31,6 +31,8 @@ export default class Level {
         this.game.log(playerId, 'Bump!');
     }
 
+    score(playerId) {}
+
     get spawnTargetPos() { return [10, 10]; }
 
     get exitPos() { return [this.width - 10, this.height - 10]; }
@@ -50,7 +52,7 @@ export default class Level {
         return Util.randomElement(candidates);
     }
 
-    addPlayer(playerId) {
+    spawn(playerId) {
         const pos = this.getSpawnPos();
         if (!pos) return false;
         const dir = Util.randomElement([0, 1, 2, 3]);
@@ -65,13 +67,19 @@ export default class Level {
         const dir = cell.dir;
         const newPos = this.movePos(pos, dir);
         const newCell = this.cell(newPos);
-        if (newCell.canEnter) {
-            cell.clearPlayer();
-            newCell.setPlayerId(playerId, dir);
-            this.positions[playerId] = newPos;
-        } else {
+        if (!newCell.canEnter) {
             this.bump(playerId);
+            return false;
         }
+        cell.clearPlayer();
+        if (newCell.isExit) {
+            this.score(playerId);
+            this.spawn(playerId);
+            return true;
+        }
+        newCell.setPlayerId(playerId, dir);
+        this.positions[playerId] = newPos;
+        return true;
     }
 
     turnRight(playerId) {
