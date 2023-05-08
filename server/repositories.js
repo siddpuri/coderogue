@@ -3,6 +3,13 @@ import fs from 'fs/promises';
 
 const playerRoot =  '~/players';
 
+const defaultPlayerCode = `
+// Default player code
+if (randomNumber(0, 3)) moveForward();
+else if (randomNumber(0, 1)) turnRight();
+else turnLeft();
+`;
+
 export default class Repositories {
     constructor(server) {
         this.server = server;
@@ -23,7 +30,8 @@ export default class Repositories {
             console.log("Loaded code from: " + file);
             return code;
         } catch (e) {
-            return await this.readPlayerCode('default');
+            console.log("Using default code for player: " + playerHandle);
+            return defaultPlayerCode;
         }
     }
 }

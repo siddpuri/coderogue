@@ -13,6 +13,7 @@ export default class Player {
 
         // Game plumbing
         this.textHandle = Util.getTextHandle(this.handle);
+        this.code = undefined;
         this.action = undefined;
         this.log = new CircularLog(1000);
 

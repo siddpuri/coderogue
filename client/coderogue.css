@@ -1,3 +1,17 @@
 html {
     font-size: 75%;
 }
+
+.table td, .table th {
+    padding: 0.2rem;
+}
+.table tbody tr {
+    height: 1.2rem;
+}
+
+.nav-tabs .nav-link {
+    color: #000000;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-link.active:focus {
+    color: #000000;
+}
