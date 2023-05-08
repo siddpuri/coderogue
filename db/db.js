@@ -23,10 +23,25 @@ export default class DB {
         return await this.query("SELECT * FROM players");
     }
 
-    async addPlayer(name, period, github_name, handle) {
+    async addPlayer(email, password, authToken) {
+        const [result] = await this.query(
+            "INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)",
+            [email, password, authToken]
+        );
+        return result.insertId;
+    }
+
+    async updatePlayer(playerId, period, handle) {
         await this.query(
-            "INSERT INTO players (name, period, github_name, handle) VALUES (?, ?, ?, ?)",
-            [name, period, github_name, handle]
+            "UPDATE players SET period = ?, handle = ? WHERE id = ?",
+            [period, handle, playerId]
+        );
+    }
+
+    async getPlayer(email) {
+        return await this.query(
+            "SELECT * FROM players WHERE email = ?",
+            [email]
         );
     }
 

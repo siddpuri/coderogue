@@ -6,7 +6,6 @@ export default class Player {
     constructor(dbEntry) {
         // Database columns
         this.id = dbEntry.id;
-        this.name = dbEntry.name;
         this.period = dbEntry.period;
         this.handle = dbEntry.handle;
         this.score = dbEntry.score;

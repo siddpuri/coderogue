@@ -7,6 +7,7 @@ import Game from '../game/game.js';
 export default class Server {
     constructor() {
         this.db = new DB(this);
+        this.auth = new Auth(this);
         this.repositories = new Repositories(this);
         this.game = new Game(this);
         this.webServer = new WebServer(this);

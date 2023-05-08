@@ -12,14 +12,14 @@ export default class ButtonHooks {
     }
 
     async login(event) {
-        const userid = this.getText('userid');
+        const email = this.getText('email');
         const password = this.getText('password');
         let response = await fetch(
             this.client.baseUrl + "/api/login",
             {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify({ userid, password }),
+                body: JSON.stringify({ email, password }),
             }
         );
         let result = await response.json();

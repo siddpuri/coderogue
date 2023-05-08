@@ -8,12 +8,13 @@ USE game;
 
 CREATE TABLE players (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    period INT NOT NULL,
-    github_name VARCHAR(255) NOT NULL,
-    handle INT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    auth_token VARCHAR(255) NOT NULL,
+    period INT NOT NULL DEFAULT 0,
+    handle INT NOT NULL DEFAULT 0,
     score INT NOT NULL DEFAULT 0,
-    UNIQUE (handle)
+    UNIQUE (email),
 );
 
 EOF

@@ -20,8 +20,8 @@ export default class WebServer {
       res.send(JSON.stringify(response));
     });
 
-    this.app.post('/api/login', (req, res) => {
-      let response = this.server.auth.login(req.body);
+    this.app.post('/api/login', async (req, res) => {
+      let response = await this.server.auth.login(req.body);
       res.send(JSON.stringify(response));
     });
 
