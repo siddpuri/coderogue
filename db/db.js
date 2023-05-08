@@ -16,31 +16,31 @@ export default class DB {
     }
 
     async start() {
-        await this.query("USE game");
+        await this.query('USE game');
     }
 
     async loadPlayers() {
-        return await this.query("SELECT * FROM players");
+        return await this.query('SELECT * FROM players');
     }
 
     async addPlayer(email, password, authToken) {
-        const [result] = await this.query(
-            "INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)",
+        await this.query(
+            'INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)',
             [email, password, authToken]
         );
-        return result.insertId;
+        return await this.query('SELECT LAST_INSERT_ID()');
     }
 
     async updatePlayer(playerId, period, handle) {
         await this.query(
-            "UPDATE players SET period = ?, handle = ? WHERE id = ?",
+            'UPDATE players SET period = ?, handle = ? WHERE id = ?',
             [period, handle, playerId]
         );
     }
 
     async getPlayer(email) {
         return await this.query(
-            "SELECT * FROM players WHERE email = ?",
+            'SELECT * FROM players WHERE email = ?',
             [email]
         );
     }

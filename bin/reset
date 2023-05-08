@@ -14,7 +14,7 @@ CREATE TABLE players (
     period INT NOT NULL DEFAULT 0,
     handle INT NOT NULL DEFAULT 0,
     score INT NOT NULL DEFAULT 0,
-    UNIQUE (email),
+    UNIQUE (email)
 );
 
 EOF

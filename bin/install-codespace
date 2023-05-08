@@ -18,4 +18,4 @@ sudo mysql <<EOF
 EOF
 
 cd $(dirname "$0")/..
-. db/reset
+bin/reset
