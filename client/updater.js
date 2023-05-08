@@ -1,7 +1,6 @@
 export default class Updater {
-    constructor(baseUrl, display) {
-        this.baseUrl = baseUrl;
-        this.display = display;
+    constructor(client) {
+        this.client = client;
     }
 
     start() {
@@ -20,8 +19,8 @@ export default class Updater {
     }
 
     async doTickActions() {
-        let response = await fetch(this.baseUrl + "/api/state");
+        let response = await fetch(this.client.baseUrl + "/api/state");
         let state = await response.json();
-        this.display.render(state);
+        this.client.display.render(state);
     }
 }

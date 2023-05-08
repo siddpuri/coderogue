@@ -7,7 +7,8 @@ const characterWidth = 8;
 const characterHeight = 10;
 
 export default class Display {
-    constructor() {
+    constructor(client) {
+        this.client = client;
         this.canvas = document.getElementById('canvas');
         this.canvas.width = characterWidth * constants.levelWidth;
         this.canvas.height = characterHeight * constants.levelHeight;
