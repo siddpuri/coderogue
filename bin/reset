@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+#sudo service mysql start
 mysql -u game -pgame <<EOF
 
 DROP DATABASE IF EXISTS game;
@@ -11,6 +12,7 @@ CREATE TABLE players (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     auth_token VARCHAR(255) NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT 0,
     period INT NOT NULL DEFAULT 0,
     handle INT NOT NULL DEFAULT 0,
     score INT NOT NULL DEFAULT 0,

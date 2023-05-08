@@ -28,7 +28,8 @@ export default class DB {
             'INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)',
             [email, password, authToken]
         );
-        return await this.query('SELECT LAST_INSERT_ID()');
+        const [response] = await this.query('SELECT LAST_INSERT_ID()');
+        return response['LAST_INSERT_ID()'];
     }
 
     async updatePlayer(playerId, period, handle) {
