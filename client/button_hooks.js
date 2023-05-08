@@ -15,7 +15,7 @@ export default class ButtonHooks {
         const email = this.getText('email');
         const password = this.getText('password');
         let response = await fetch(
-            this.client.baseUrl + "/api/login",
+            this.client.baseUrl + '/api/login',
             {
                 method: 'POST',
                 headers: headers,
@@ -23,6 +23,9 @@ export default class ButtonHooks {
             }
         );
         let result = await response.json();
+        if (result.error) {
+            this.toast('loginfailure');
+        }
         console.log(result);
     }
 
@@ -32,5 +35,20 @@ export default class ButtonHooks {
 
     getText(id) {
         return document.getElementById(id).value;
+    }
+
+    toast(id) {
+        const e = document.getElementById(id);
+        e.classList.remove('invisible');
+        e.classList.add('show');
+        setTimeout(() => {
+            e.classList.remove('show');
+            e.classList.add('fade');
+            setTimeout(() => {
+                e.classList.remove('show');
+                e.classList.remove('fade');
+                e.classList.add('invisible');
+            }, 3000);
+        }, 500);
     }
 }
