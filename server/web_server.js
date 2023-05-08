@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 
 const port = 8080;
 
@@ -9,6 +10,8 @@ export default class WebServer {
   }
 
   async start() {
+    this.app.use(bodyParser.json());
+
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
 
@@ -17,9 +20,9 @@ export default class WebServer {
       res.send(JSON.stringify(response));
     });
 
-    this.app.post('/api/update/:user', (req, res) => {
-        const user = req.params.user;
-        // TODO
+    this.app.post('/api/login', (req, res) => {
+      let response = this.server.auth.login(req.body);
+      res.send(JSON.stringify(response));
     });
 
     this.app.listen(port, () => {

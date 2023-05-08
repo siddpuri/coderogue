@@ -1,17 +1,29 @@
+const headers = {
+    'Content-Type': 'application/json',
+}
+
 export default class ButtonHooks {
     constructor(client) {
         this.client = client;
     }
 
     start() {
-        this.onClick('login', event => this.login(event));
+        this.onClick('login', async event => await this.login(event));
     }
 
-    login(event) {
-        event.preventDefault();
+    async login(event) {
         const userid = this.getText('userid');
         const password = this.getText('password');
-        console.log(userid, password);
+        let response = await fetch(
+            this.client.baseUrl + "/api/login",
+            {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ userid, password }),
+            }
+        );
+        let result = await response.json();
+        console.log(result);
     }
 
     onClick(id, f) {
