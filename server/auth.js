@@ -7,9 +7,9 @@ export default class Auth {
     }
 
     async login(credentials) {
-        let dbEntry = await this.server.db.getPlayer(credentials.email);
-        if (!dbEntry) return await createAccount(credentials);
-        if (!bcrypt.compare(credentials.password, dbEntry.password)) {
+        let [dbEntry] = await this.server.db.getPlayer(credentials.email);
+        if (!dbEntry) return await this.createAccount(credentials);
+        if (!await bcrypt.compare(credentials.password, dbEntry.password)) {
             return { error: "Incorrect password" };
         }
         return { authToken: dbEntry.auth_token };
