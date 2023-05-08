@@ -16,8 +16,13 @@ export default class Auth {
     }
 
     async createAccount(credentials) {
+        // TODO: This will need to change in order to validate accounts.
+        const email = credentials.email;
+        const password = await bcrypt.hash(credentials.password, 10);
         const authToken = crypto.randomBytes(16).toString('hex');
-        let playerId = await this.server.db.addPlayer(credentials.email, credentials.password, authToken);
-        // TODO: send email
+        let id = await this.server.db.addPlayer(email, password, authToken);
+        let handle = this.server.game.createNewHandle();
+        await this.server.db.updatePlayer(id, 0, handle);
+        return { authToken };
     }
 }

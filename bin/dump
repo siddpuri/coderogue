@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+mysql -u game -pgame <<EOF
+
+    USE game;
+    SELECT * FROM players;
+
+EOF

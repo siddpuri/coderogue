@@ -22,6 +22,4 @@ CREATE TABLE players (
 EOF
 
 cd $(dirname "$0")/..
-for i in 1 2 3 4 5; do
-    node db/create_test_user.js
-done
+node db/create_test_user.js

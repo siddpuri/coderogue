@@ -2,10 +2,10 @@ import Server from '../server/server.js';
 
 const server = new Server();
 await server.db.start();
-const handle = Math.floor(Math.random() * 512);
-const email = 'spuri' + handle;
-const password = 'password';
-const auth_token = Math.floor(Math.random() * 65536);
-const id = await server.db.addPlayer(email, password, auth_token);
-await server.db.updatePlayer(id, 0, handle);
+const email = 'spuri';
+const credentials = { email: 'spuri', password: 'password' };
+for (let i = 0; i < 5; i++) {
+    credentials.email = email + i;
+    await server.auth.createAccount(credentials);
+}
 process.exit();
