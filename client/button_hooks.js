@@ -14,19 +14,9 @@ export default class ButtonHooks {
     async login(event) {
         const email = this.getText('email');
         const password = this.getText('password');
-        let response = await fetch(
-            this.client.baseUrl + '/api/login',
-            {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify({ email, password }),
-            }
-        );
-        let result = await response.json();
-        if (result.error) {
+        if (!await this.client.credentials.login({ email, password })) {
             this.toast('loginfailure');
         }
-        console.log(result);
     }
 
     onClick(id, f) {
