@@ -70,7 +70,7 @@ export default class Display {
             if (!player) continue;
             info.push([player.score, player.period, player.textHandle]);
         }
-        info.sort(entry => entry[0]);
+        info.sort((a, b) => b[0] - a[0]);
         const table = document.getElementById('players');
         while(table.rows.length > 1) {
             table.deleteRow(1);

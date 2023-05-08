@@ -16,4 +16,9 @@ export default class IntroLevel extends Level {
     async doPostTickActions() {
         // console.log("Post tick");
     }
+
+    moveForward(player) {
+        super.moveForward(player);
+        player.score++;
+    }
 }

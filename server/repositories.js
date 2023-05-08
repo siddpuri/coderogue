@@ -18,11 +18,12 @@ export default class Repositories {
 
     async readPlayerCode(playerHandle) {
         const file = path.join(this.root, playerHandle, 'player.js');
-        console.log("Loading code from: " + file);
         try {
-            return await fs.readFile(file, 'utf-8');
+            const code = await fs.readFile(file, 'utf-8');
+            console.log("Loaded code from: " + file);
+            return code;
         } catch (e) {
-            return 'console.log("No code uploaded yet.");';
+            return await this.readPlayerCode('default');
         }
     }
 }
