@@ -25,6 +25,11 @@ export default class VmEnvironment {
             right: '1',
             backward: '2',
             left: '3',
+
+            // Robot sensors
+            getPosition: () => this.player.pos,
+            getDirection: () => this.player.dir,
+            getExitPosition: () => this.game.levels[this.player.level].exitPos,
         };
     }
 
