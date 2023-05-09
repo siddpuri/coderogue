@@ -25,4 +25,10 @@ export default class Auth {
         await this.server.db.updatePlayer(playerId, 0, handle);
         return { playerId, authToken };
     }
+
+    async validateCredentials(playerId, authToken) {
+        let [dbEntry] = await this.server.db.getPlayer(playerId);
+        if (!dbEntry) return false;
+        return dbEntry.auth_token == authToken;
+    }
 }

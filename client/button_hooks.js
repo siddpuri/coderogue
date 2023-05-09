@@ -11,7 +11,7 @@ export default class ButtonHooks {
         const email = this.getText('email');
         const password = this.getText('password');
         if (!await this.client.credentials.login({ email, password })) {
-            this.toast('loginfailure');
+            this.say('Login failed!', 3);
         }
     }
 
@@ -23,18 +23,7 @@ export default class ButtonHooks {
         return document.getElementById(id).value;
     }
 
-    toast(id) {
-        const e = document.getElementById(id);
-        e.classList.remove('invisible');
-        e.classList.add('show');
-        setTimeout(() => {
-            e.classList.remove('show');
-            e.classList.add('fade');
-            setTimeout(() => {
-                e.classList.remove('show');
-                e.classList.remove('fade');
-                e.classList.add('invisible');
-            }, 3000);
-        }, 500);
+    say(message, level) {
+        this.client.display.say(message, level);
     }
 }

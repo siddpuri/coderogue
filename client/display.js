@@ -15,6 +15,7 @@ export default class Display {
         this.ctx = this.canvas.getContext('2d');
         this.clearCanvas();
         this.ctx.font = font;
+        this.messageNumber = 0;
     }
 
     showLoadingScreen() {
@@ -83,5 +84,31 @@ export default class Display {
                 cell.innerHTML = entry[i];
             }
         }
+    }
+
+    say(message, level) {
+        const n = ++this.messageNumber;
+        let alertLevel = 'alert-info';
+        if (level == 3) alertLevel = 'alert-danger';
+        else if (level == 2) alertLevel = 'alert-warning';
+        const element = document.getElementById('message');
+        const classes = element.classList;
+
+        element.innerHTML = message;
+        classes.add(alertLevel);
+        classes.remove('invisible');
+        classes.add('show');
+        setTimeout(() => {
+            if (this.messageNumber != n) return;
+            classes.remove('show');
+            classes.add('fade');
+            setTimeout(() => {
+                if (this.messageNumber != n) return;
+                classes.remove('show');
+                classes.remove('fade');
+                classes.add('invisible');
+                classes.remove(alertLevel);
+            }, 3000);
+        }, 3000);
     }
 }
