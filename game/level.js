@@ -99,7 +99,7 @@ export default class Level {
 
     canMove(player, dir) {
         const realDir = (player.dir + dir) % 4;
-        const newPos = movePos(player.pos, realDir);
+        const newPos = this.movePos(player.pos, realDir);
         return this.cell(newPos).canEnter;
     }
 
