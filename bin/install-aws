@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+sudo dnf update -y
+sudo dnf install git nodejs mariadb105-server -y
+sudo service mariadb start
+sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
+
+sudo mysql <<EOF
+
+    DROP DATABASE IF EXISTS game;
+    CREATE DATABASE game;
+    DROP USER IF EXISTS 'game'@'localhost';
+    CREATE USER 'game'@'localhost' IDENTIFIED BY 'game';
+    GRANT ALL PRIVILEGES ON game.* TO 'game'@'localhost';
+    GRANT CREATE, DROP on *.* to 'game'@'localhost';
+    FLUSH PRIVILEGES;
+
+EOF
+
+cd $(dirname "$0")/..
+bin/reset
