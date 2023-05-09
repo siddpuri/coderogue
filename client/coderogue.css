@@ -15,3 +15,7 @@ html {
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-link.active:focus {
     color: #000000;
 }
+
+.highlighted {
+    background-color: #e0e0e0;
+}

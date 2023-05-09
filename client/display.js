@@ -2,6 +2,7 @@ import constants from './constants.js';
 
 const backgroundColor = '#f0f0f0';
 const foregroundColor = '#101010';
+const highlightColor = '#ffff00';
 const font = '10pt Courier New';
 const characterWidth = 8;
 const characterHeight = 10;
@@ -58,23 +59,27 @@ export default class Display {
         this.clearCanvas();
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
-                const char = this.renderCell(map[row][col]);
-                if (char) this.setText(row, col, char);
+                let cell = map[row][col];
+                let char = cell.type;
+                let highlighted = false;
+                if (Object.hasOwn(cell, 'playerId')) {
+                    const dir = this.players[cell.playerId].dir;
+                    char = '^>v<'[dir];
+                    highlighted = cell.playerId == this.highlightedPlayer;
+                }
+                if (char) this.setText(row, col, char, highlighted);
             }
         }
     }
 
-    renderCell(cell) {
-        if (Object.hasOwn(cell, 'playerId')) {
-            const dir = this.players[cell.playerId].dir;
-            return '^>v<'[dir];
-        }
-        return cell.type;
-    }
-
-    setText(row, col, text) {
+    setText(row, col, text, highlighted) {
         row = (row + 1) * characterHeight;
         col *= characterWidth;
+        if (highlighted) {
+            this.ctx.fillStyle = highlightColor;
+            this.ctx.fillRect(col, row - characterHeight, characterWidth, characterHeight);
+            this.ctx.fillStyle = foregroundColor;
+        }
         this.ctx.fillText(text, col, row);
     }
 
@@ -82,7 +87,7 @@ export default class Display {
         const info = [];
         for (let player of this.players) {
             if (!player) continue;
-            info.push([player.score, player.period, player.handle]);
+            info.push([player.score, player.period, player.handle, player.id]);
         }
         info.sort((a, b) => b[0] - a[0]);
         const table = document.getElementById('players');
@@ -95,7 +100,25 @@ export default class Display {
                 const cell = row.insertCell();
                 cell.innerHTML = entry[i];
             }
+            if (entry[3] == this.highlightedPlayer) {
+                row.classList.add('highlighted');
+                this.highlightedRow = row;
+            }
+            row.onclick = () => this.highlightPlayer(row, entry[3]);
         }
+    }
+
+    highlightPlayer(row, playerId) {
+        if (Object.hasOwn(this, 'highlightedRow')) {
+            this.highlightedRow.classList.remove('highlighted');
+            let oldHighlightedRow = this.highlightedRow;
+            delete this.highlightedRow;
+            delete this.highlightedPlayer;
+            if (row == oldHighlightedRow) return;
+        }
+        this.highlightedRow = row;
+        this.highlightedPlayer = playerId;
+        row.classList.add('highlighted');
     }
 
     setCode(code) {
