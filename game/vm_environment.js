@@ -29,7 +29,7 @@ export default class VmEnvironment {
             // Robot sensors
             getPosition: () => this.player.pos,
             getDirection: () => this.player.dir,
-            getExitPosition: () => this.game.levels[this.player.level].exitPos,
+            getExitPosition: () => this.player.level.exitPos,
         };
     }
 
@@ -39,24 +39,20 @@ export default class VmEnvironment {
 
     moveForward() {
         if (!this.player.useTurn()) return false;
-        const level = this.player.level;
-        return this.game.levels[level].moveForward(this.player);
+        return this.player.level.moveForward(this.player);
     }
 
     turnRight() {
         if (!this.player.useTurn()) return false;
-        const level = this.player.level;
-        return this.game.levels[level].turnRight(this.player);
+        return this.player.level.turnRight(this.player);
     }
 
     turnLeft() {
         if (!this.player.useTurn()) return false;
-        const level = this.player.level;
-        return this.game.levels[level].turnLeft(this.player);
+        return this.player.level.turnLeft(this.player);
     }
 
     canMove(dir) {
-        const level = this.player.level;
-        return this.game.levels[level].canMove(this.player, dir);
+        return this.player.level.canMove(this.player, dir);
     }
 }

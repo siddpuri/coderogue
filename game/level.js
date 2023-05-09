@@ -58,6 +58,7 @@ export default class Level {
             this.removePlayer(player);
             return false;
         }
+        player.level = this;
         this.movePlayer(player, pos);
         player.dir = Util.randomElement([0, 1, 2, 3]);
         return true;
@@ -81,10 +82,14 @@ export default class Level {
             this.cell(player.pos).clearPlayer();
         }
         player.pos = pos;
-        this.cell(pos).setPlayer(player);
+        if (player.pos) {
+            this.cell(pos).setPlayer(player);
+        }
+        player.resetTimeout();
     }
 
     removePlayer(player) {
+        player.level = undefined;
         this.movePlayer(player, undefined);
     }
 

@@ -21,10 +21,14 @@ export default class Player {
         this.pos = undefined;
         this.dir = 0;
         this.turns = 0;
+        this.timeout = 10;
     }
 
     grantTurns(turns) {
         this.turns += turns;
+        if (this.timeout-- <= 0) {
+            this.level.killPlayer(this);
+        }
     }
 
     useTurn() {
@@ -37,13 +41,17 @@ export default class Player {
         }
     }
 
+    resetTimeout() {
+        this.timeout = 10;
+    }
+
     getState() {
         return {
             id: this.id,
             period: this.period,
             handle: this.textHandle,
             score: this.score,
-            level: this.level,
+            level: this.level.levelNumber,
             pos: this.pos,
             dir: this.dir,
         };

@@ -81,7 +81,6 @@ export default class Game {
     this.players[player.id] = player;
     this.playerHandles.add(player.handle);
     this.levels[0].spawn(player);
-    player.level = 0;
   }
 
   async writeScores() {
