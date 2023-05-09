@@ -14,7 +14,8 @@ class Client {
 
     start() {
         this.buttonHooks.start();
-        this.display.showLoadingScreen();
+        this.credentials.start();
+        this.display.start();
         this.updater.start();
     }
 }

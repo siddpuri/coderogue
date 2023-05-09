@@ -3,13 +3,18 @@ export default class Credentials {
         this.client = client;
         this.playerId = undefined;;
         this.authToken = undefined;
+    }
+
+    start() {
         this.readCookie();
-        console.log(this.playerId);
-        console.log(this.authToken);
+    }
+
+    get isLoggedIn() {
+        return Object.hasOwn(this, 'playerId');
     }
 
     readCookie() {
-        let cookies = document.cookie.split(';');
+        let cookies = document.cookie.split('; ');
         for (let cookie of cookies) {
             let [name, value] = cookie.split('=');
             if (name == 'playerId') {

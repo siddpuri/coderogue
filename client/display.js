@@ -18,7 +18,7 @@ export default class Display {
         this.messageNumber = 0;
     }
 
-    showLoadingScreen() {
+    start() {
         const loadingText = 'Loading ...';
         const row = 15;
         const col = (constants.levelWidth - loadingText.length) / 2;
@@ -96,19 +96,10 @@ export default class Display {
 
         element.innerHTML = message;
         classes.add(alertLevel);
-        classes.remove('invisible');
         classes.add('show');
         setTimeout(() => {
             if (this.messageNumber != n) return;
             classes.remove('show');
-            classes.add('fade');
-            setTimeout(() => {
-                if (this.messageNumber != n) return;
-                classes.remove('show');
-                classes.remove('fade');
-                classes.add('invisible');
-                classes.remove(alertLevel);
-            }, 3000);
         }, 3000);
     }
 }

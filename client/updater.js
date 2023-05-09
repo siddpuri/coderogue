@@ -1,6 +1,7 @@
 export default class Updater {
     constructor(client) {
         this.client = client;
+        this.hasCode = false;
     }
 
     start() {
