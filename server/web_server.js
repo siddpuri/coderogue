@@ -47,6 +47,16 @@ export default class WebServer {
       res.send(JSON.stringify({}));
     });
 
+    this.app.get('/api/log', async (req, res) => {
+      let playerId = this.validatePlayerId(req);
+      if (!playerId) {
+        res.send(JSON.stringify({error: 'Not logged in.'}));
+        return;
+      }
+      let log = this.server.game.players[playerId].log.toString();
+      res.send(JSON.stringify({ log }));
+    });
+
     this.app.listen(port, () => {
       console.log(`Web server listening on port ${port}`);
     });

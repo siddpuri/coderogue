@@ -130,6 +130,11 @@ export default class Display {
         return document.getElementById('code-text').value;
     }
 
+    setLog(log) {
+        const logArea = document.getElementById('log-text');
+        logArea.value = log;
+    }
+
     showLoggedIn() {
         document.getElementById('login-form').classList.add('d-none');
         document.getElementById('logout-form').classList.remove('d-none');

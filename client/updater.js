@@ -23,6 +23,9 @@ export default class Updater {
         let response = await fetch(this.client.baseUrl + "/api/state");
         let state = await response.json();
         this.client.display.render(state);
+        if (this.client.display.isShowingLogTab()) {
+            await this.loadLog();
+        }
     }
 
     async loadCode() {
@@ -37,5 +40,19 @@ export default class Updater {
             code = result.code;
         }
         this.client.display.setCode(code);
+    }
+
+    async loadLog() {
+        let log = 'Log in to see your log.';
+        if (this.client.credentials.isLoggedIn) {
+            let response = await fetch(this.client.baseUrl + "/api/log");
+            let result = await response.json();
+            if (result.error) {
+                this.client.display.say(result.error, 3);
+                return;
+            }
+            log = result.log;
+        }
+        this.client.display.setLog(log);
     }
 }
