@@ -3,12 +3,17 @@ import fs from 'fs/promises';
 
 const playerRoot =  '~/players';
 
-const defaultPlayerCode = `
-// Default player code
-if (randomNumber(0, 3)) moveForward();
-else if (randomNumber(0, 1)) turnRight();
-else turnLeft();
-`;
+const defaultPlayerCode =
+`// Random walk
+if (randomNumber(0, 3)) {
+    moveForward();
+}
+else if (randomNumber(0, 1)) {
+    turnRight();
+}
+else {
+    turnLeft();
+}`;
 
 export default class Repositories {
     constructor(server) {

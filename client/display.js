@@ -75,7 +75,7 @@ export default class Display {
         const info = [];
         for (let player of this.players) {
             if (!player) continue;
-            info.push([player.score, player.period, player.textHandle]);
+            info.push([player.score, player.period, player.handle]);
         }
         info.sort((a, b) => b[0] - a[0]);
         const table = document.getElementById('players');
@@ -94,6 +94,17 @@ export default class Display {
     setCode(code) {
         const codeArea = document.getElementById('code-text');
         codeArea.value = code;
+    }
+
+    showLoggedIn() {
+        document.getElementById('login-form').classList.add('d-none');
+        document.getElementById('logout-form').classList.remove('d-none');
+        document.getElementById('handle').innerHTML = this.client.credentials.handle;
+    }
+
+    showLoggedOut() {
+        document.getElementById('login-form').classList.remove('d-none');
+        document.getElementById('logout-form').classList.add('d-none');
     }
 
     say(message, level) {

@@ -47,7 +47,7 @@
                     <textarea class="form-control" rows="10"></textarea>
                 </div>
                 <div class="tab-pane fade" id="account" role="tabpanel" aria-labeledby="account-tab">
-                    <form>
+                    <form id="login-form">
                         <div class="row">
                             <label class="ml-3">
                                 You can use this either to log in or to register a new account.
@@ -67,9 +67,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-3 mb-3">
-                                <input type="text" class="form-control fade" id="token" placeholder="Code">
-                            </div>
                             <div class="col-3">
                                 <button type="button" class="btn btn-primary" id="login">Log in / Register</button>
                             </div>
@@ -78,6 +75,17 @@
                             <div class="col alert fade" id="message"></div>
                         </div>
                     </form>
+                    <form class="d-none" id="logout-form">
+                        <div class="row">
+                            <label class="ml-3">
+                                You are logged in as <span id="handle"></span>.
+                            </label>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <button type="button" class="btn btn-primary" id="logout">Log out</button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

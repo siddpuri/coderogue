@@ -42,7 +42,7 @@ export default class Player {
         return {
             id: this.id,
             period: this.period,
-            textHandle: this.textHandle,
+            handle: this.textHandle,
             score: this.score,
             level: this.level,
             pos: this.pos,

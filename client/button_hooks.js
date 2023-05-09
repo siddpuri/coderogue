@@ -5,6 +5,7 @@ export default class ButtonHooks {
 
     start() {
         this.onClick('login', async event => await this.login(event));
+        this.onClick('logout', async event => await this.logout(event));
     }
 
     async login(event) {
@@ -13,6 +14,10 @@ export default class ButtonHooks {
         if (!await this.client.credentials.login({ email, password })) {
             this.say('Login failed!', 3);
         }
+    }
+
+    async logout(event) {
+        await this.client.credentials.logout();
     }
 
     onClick(id, f) {

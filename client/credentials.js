@@ -1,8 +1,9 @@
+const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
+const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
 export default class Credentials {
     constructor(client) {
         this.client = client;
-        this.playerId = undefined;;
-        this.authToken = undefined;
     }
 
     start() {
@@ -23,11 +24,18 @@ export default class Credentials {
             if (name == 'authToken') {
                 this.authToken = value;
             }
+            if (name == 'handle') {
+                this.handle = value;
+            }
         }
     }
 
     writeCookie(key, value) {
-        document.cookie = `${key}=${value}; expires=${2**31-1};`;
+        document.cookie = `${key}=${value}${expire_never}`;
+    }
+
+    deleteCookie(key) {
+        document.cookie = `${key}=;${expire_now}`
     }
 
     async login(credentials) {
@@ -45,9 +53,21 @@ export default class Credentials {
         }
         this.playerId = result.playerId;
         this.authToken = result.authToken;
+        this.handle = result.handle;
         this.writeCookie('playerId', this.playerId);
         this.writeCookie('authToken', this.authToken);
+        this.writeCookie('handle', this.handle);
         this.client.onLogin();
         return true;
+    }
+
+    async logout() {
+        delete this.authToken;
+        delete this.playerId;
+        delete this.handle;
+        this.deleteCookie('playerId');
+        this.deleteCookie('authToken');
+        this.deleteCookie('handle');
+        this.client.onLogout();
     }
 }

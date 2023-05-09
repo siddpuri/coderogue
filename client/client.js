@@ -17,9 +17,18 @@ class Client {
         this.credentials.start();
         this.display.start();
         this.updater.start();
+        if (this.credentials.isLoggedIn) {
+            this.onLogin();
+        }
     }
 
     onLogin() {
+        this.display.showLoggedIn();
+        this.updater.loadCode();
+    }
+
+    onLogout() {
+        this.display.showLoggedOut();
         this.updater.loadCode();
     }
 }

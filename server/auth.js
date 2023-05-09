@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
+import Util from '../shared/util.js';
+
 export default class Auth {
     constructor(server) {
         this.server = server;
@@ -12,7 +14,10 @@ export default class Auth {
         if (!await bcrypt.compare(credentials.password, dbEntry.password)) {
             return { error: "Incorrect password" };
         }
-        return { playerId: dbEntry.id, authToken: dbEntry.auth_token };
+        let playerId = dbEntry.id;
+        let authToken = dbEntry.auth_token;
+        let handle = Util.getTextHandle(dbEntry.handle);
+        return { playerId, authToken, handle };
     }
 
     async createAccount(credentials) {
@@ -23,7 +28,8 @@ export default class Auth {
         let playerId = await this.server.db.addPlayer(email, password, authToken);
         let handle = this.server.game.createNewHandle();
         await this.server.db.updatePlayer(playerId, 0, handle);
-        return { playerId, authToken };
+        handle = Util.getTextHandle(handle);
+        return { playerId, authToken, handle };
     }
 
     async validateCredentials(playerId, authToken) {
