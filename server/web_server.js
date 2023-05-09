@@ -17,6 +17,11 @@ export default class WebServer {
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
 
+    this.app.post('/api/login', async (req, res) => {
+      let response = await this.server.auth.login(req.body);
+      res.send(JSON.stringify(response));
+    });
+
     this.app.get('/api/state', (req, res) => {
       let response = this.server.game.getState();
       res.send(JSON.stringify(response));
@@ -24,15 +29,22 @@ export default class WebServer {
 
     this.app.get('/api/code', async (req, res) => {
       let playerId = this.validatePlayerId(req);
-      let code = playerId?
-        this.server.game.players[playerId].code:
-        'Please log in to see your code.';
-      res.send(JSON.stringify(code));
+      if (!playerId) {
+        res.send(JSON.stringify({error: 'Not logged in.'}));
+        return;
+      }
+      let code = await this.server.repositories.readCode(playerId);
+      res.send(JSON.stringify({ code }));
     });
 
-    this.app.post('/api/login', async (req, res) => {
-      let response = await this.server.auth.login(req.body);
-      res.send(JSON.stringify(response));
+    this.app.post('/api/code', async (req, res) => {
+      let playerId = this.validatePlayerId(req);
+      if (!playerId) {
+        res.send(JSON.stringify({error: 'Not logged in.'}));
+        return;
+      }
+      await this.server.repositories.writeCode(playerId, req.body.code);
+      res.send(JSON.stringify({}));
     });
 
     this.app.listen(port, () => {

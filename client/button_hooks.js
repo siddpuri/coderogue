@@ -6,6 +6,7 @@ export default class ButtonHooks {
     start() {
         this.onClick('login', async event => await this.login(event));
         this.onClick('logout', async event => await this.logout(event));
+        this.onClick('submit', async event => await this.submit(event));
     }
 
     async login(event) {
@@ -18,6 +19,25 @@ export default class ButtonHooks {
 
     async logout(event) {
         await this.client.credentials.logout();
+    }
+
+    async submit(event) {
+        let code = this.client.display.getCode();
+        let response = await fetch(
+            this.client.baseUrl + '/api/code',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code }),
+            }
+        );
+        let result = await response.json();
+        if (result.error) {
+            this.say(result.error, 3);
+        }
+        else {
+            this.say('Code submitted!', 0);
+        }
     }
 
     onClick(id, f) {

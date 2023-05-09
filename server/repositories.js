@@ -25,18 +25,25 @@ export default class Repositories {
     }
 
     async start() {
-        await fs.mkdir(this.root, {recursive: true});
+        await fs.mkdir(this.root, { recursive: true });
     }
 
     async readCode(playerId) {
-        const file = path.join(this.root, playerId.toString(), 'player.js');
         try {
-            const code = await fs.readFile(file, 'utf-8');
-            console.log("Loaded code from: " + file);
-            return code;
+            return await fs.readFile(this.filePath(playerId), 'utf-8');
         } catch (e) {
-            console.log("Using default code for player: " + playerId);
             return defaultPlayerCode;
         }
+    }
+
+    async writeCode(playerId, code) {
+        let filePath = this.filePath(playerId);
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, code);
+        delete this.server.game.players[playerId].action;
+    }
+
+    filePath(playerId) {
+        return path.join(this.root, playerId.toString(), 'player.js');
     }
 }

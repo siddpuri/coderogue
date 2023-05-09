@@ -6,6 +6,13 @@ const font = '10pt Courier New';
 const characterWidth = 8;
 const characterHeight = 10;
 
+const alertLevels = [
+    'alert-success',
+    'alert-info',
+    'alert-warning',
+    'alert-danger',
+];
+
 export default class Display {
     constructor(client) {
         this.client = client;
@@ -96,6 +103,10 @@ export default class Display {
         codeArea.value = code;
     }
 
+    getCode() {
+        return document.getElementById('code-text').value;
+    }
+
     showLoggedIn() {
         document.getElementById('login-form').classList.add('d-none');
         document.getElementById('logout-form').classList.remove('d-none');
@@ -109,17 +120,13 @@ export default class Display {
 
     say(message, level) {
         const n = ++this.messageNumber;
-        let alertLevel = 'alert-info';
-        if (level == 3) alertLevel = 'alert-danger';
-        else if (level == 2) alertLevel = 'alert-warning';
-        const label = document.getElementById('message');
-
-        label.innerHTML = message;
-        label.classList.add(alertLevel);
-        label.classList.add('show');
+        const div = document.getElementById('message');
+        div.innerHTML = message;
+        div.classList.add(alertLevels[level]);
+        div.classList.add('show');
         setTimeout(() => {
             if (this.messageNumber != n) return;
-            label.classList.remove('show');
+            div.classList.remove('show');
         }, 3000);
     }
 }

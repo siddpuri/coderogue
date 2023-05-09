@@ -26,8 +26,16 @@ export default class Updater {
     }
 
     async loadCode() {
-        let response = await fetch(this.client.baseUrl + "/api/code");
-        let code = await response.json();
+        let code = 'Log in to see your code.';
+        if (this.client.credentials.isLoggedIn) {
+            let response = await fetch(this.client.baseUrl + "/api/code");
+            let result = await response.json();
+            if (result.error) {
+                this.client.display.say(result.error, 3);
+                return;
+            }
+            code = result.code;
+        }
         this.client.display.setCode(code);
     }
 }

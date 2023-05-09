@@ -41,7 +41,14 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labeledby="code-tab">
-                    <textarea class="form-control" id="code-text" rows="10"></textarea>
+                    <div class="row">
+                        <div class="col-10">
+                            <textarea class="form-control" id="code-text" rows="10"></textarea>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-primary" id="submit">Submit</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="log" role="tabpanel" aria-labeledby="log-tab">
                     <textarea class="form-control" rows="10"></textarea>
@@ -71,9 +78,6 @@
                                 <button type="button" class="btn btn-primary" id="login">Log in / Register</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col alert fade" id="message"></div>
-                        </div>
                     </form>
                     <form class="d-none" id="logout-form">
                         <div class="row">
@@ -87,6 +91,9 @@
                             </div>
                         </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col alert fade" id="message"></div>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
