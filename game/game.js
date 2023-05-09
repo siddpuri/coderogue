@@ -10,7 +10,7 @@ export default class Game {
   constructor(server) {
     this.server = server;
     this.levels = [
-      new IntroLevel(this),
+      new IntroLevel(server),
     ];
     this.players = [];
     this.playerHandles = new Set();

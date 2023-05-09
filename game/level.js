@@ -12,8 +12,8 @@ const offsets = [
 ];
 
 export default class Level {
-    constructor(game) {
-        this.game = game;
+    constructor(server) {
+        this.server = server;
         this.width = constants.levelWidth;
         this.height = constants.levelHeight;
         this.map =
@@ -71,8 +71,7 @@ export default class Level {
         }
         this.movePlayer(player, newPos);
         if (this.cell(newPos).isExit) {
-            this.score(player);
-            this.spawn(player);
+            this.exitPlayer(player);
         }
         return true;
     }
@@ -87,6 +86,20 @@ export default class Level {
 
     removePlayer(player) {
         this.movePlayer(player, undefined);
+    }
+
+    exitPlayer(player) {
+        this.score(player);
+        player.log.write('Exited!');
+        player.log.write(`Score: ${player.score}`);
+        this.removePlayer(player);
+        this.spawn(player);
+    }
+
+    killPlayer(player) {
+        player.log.write('You have been killed!');
+        this.removePlayer(player);
+        this.spawn(player);
     }
 
     turnRight(player) {

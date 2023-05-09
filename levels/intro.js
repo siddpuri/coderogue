@@ -1,8 +1,9 @@
+import Util from '../shared/util.js';
 import Level from '../game/level.js';
 
 export default class IntroLevel extends Level {
-    constructor() {
-        super();
+    constructor(server) {
+        super(server);
         for (let c = 0; c < this.width; c++) {
             this.map[0][c].setWall();
             this.map[this.height - 1][c].setWall();
@@ -18,7 +19,6 @@ export default class IntroLevel extends Level {
     }
 
     async doPostTickActions() {
-        // console.log("Post tick");
     }
 
     moveForward(player) {
