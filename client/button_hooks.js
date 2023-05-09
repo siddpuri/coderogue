@@ -8,8 +8,8 @@ export default class ButtonHooks {
     }
 
     async login(event) {
-        const email = this.getText('email');
-        const password = this.getText('password');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         if (!await this.client.credentials.login({ email, password })) {
             this.say('Login failed!', 3);
         }
@@ -17,10 +17,6 @@ export default class ButtonHooks {
 
     onClick(id, f) {
         document.getElementById(id).onclick = f;
-    }
-
-    getText(id) {
-        return document.getElementById(id).value;
     }
 
     say(message, level) {

@@ -23,14 +23,14 @@ export default class Repositories {
         await fs.mkdir(this.root, {recursive: true});
     }
 
-    async readPlayerCode(playerHandle) {
-        const file = path.join(this.root, playerHandle, 'player.js');
+    async readCode(playerId) {
+        const file = path.join(this.root, playerId.toString(), 'player.js');
         try {
             const code = await fs.readFile(file, 'utf-8');
             console.log("Loaded code from: " + file);
             return code;
         } catch (e) {
-            console.log("Using default code for player: " + playerHandle);
+            console.log("Using default code for player: " + playerId);
             return defaultPlayerCode;
         }
     }

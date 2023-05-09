@@ -6,6 +6,7 @@ export default class Player {
     constructor(dbEntry) {
         // Database columns
         this.id = dbEntry.id;
+        this.authToken = dbEntry.auth_token;
         this.period = dbEntry.period;
         this.handle = dbEntry.handle;
         this.score = dbEntry.score;

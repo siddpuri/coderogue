@@ -18,6 +18,10 @@ class Client {
         this.display.start();
         this.updater.start();
     }
+
+    onLogin() {
+        this.updater.loadCode();
+    }
 }
 
 window.onload = async function() {

@@ -1,12 +1,12 @@
 export default class Updater {
     constructor(client) {
         this.client = client;
-        this.hasCode = false;
     }
 
     start() {
         this.busy = false;
         this.timer = setInterval(() => this.tick(), 1000);
+        this.loadCode();
     }
 
     async tick() {
@@ -23,5 +23,11 @@ export default class Updater {
         let response = await fetch(this.client.baseUrl + "/api/state");
         let state = await response.json();
         this.client.display.render(state);
+    }
+
+    async loadCode() {
+        let response = await fetch(this.client.baseUrl + "/api/code");
+        let code = await response.json();
+        this.client.display.setCode(code);
     }
 }

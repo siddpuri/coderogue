@@ -66,7 +66,7 @@ export default class Game {
       wasm: false,
       allowAsync: false,
     });
-    player.code = await this.server.repositories.readPlayerCode(player.textHandle);
+    player.code = await this.server.repositories.readCode(player.id);
     const script = new VMScript(player.code);
     return () => vm.run(script);
   }

@@ -26,6 +26,11 @@ export default class Display {
         this.setText(row, col, loadingText);
     }
 
+    isShowingLogTab() {
+        const logTab = document.getElementById('log-tab');
+        return logTab.classList.contains('active');
+    }
+
     clearCanvas() {
         this.ctx.fillStyle = backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -86,20 +91,24 @@ export default class Display {
         }
     }
 
+    setCode(code) {
+        const codeArea = document.getElementById('code-text');
+        codeArea.value = code;
+    }
+
     say(message, level) {
         const n = ++this.messageNumber;
         let alertLevel = 'alert-info';
         if (level == 3) alertLevel = 'alert-danger';
         else if (level == 2) alertLevel = 'alert-warning';
-        const element = document.getElementById('message');
-        const classes = element.classList;
+        const label = document.getElementById('message');
 
-        element.innerHTML = message;
-        classes.add(alertLevel);
-        classes.add('show');
+        label.innerHTML = message;
+        label.classList.add(alertLevel);
+        label.classList.add('show');
         setTimeout(() => {
             if (this.messageNumber != n) return;
-            classes.remove('show');
+            label.classList.remove('show');
         }, 3000);
     }
 }

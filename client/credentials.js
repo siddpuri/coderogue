@@ -47,6 +47,7 @@ export default class Credentials {
         this.authToken = result.authToken;
         this.writeCookie('playerId', this.playerId);
         this.writeCookie('authToken', this.authToken);
+        this.client.onLogin();
         return true;
     }
 }
