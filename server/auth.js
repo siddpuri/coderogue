@@ -9,8 +9,12 @@ export default class Auth {
     }
 
     async login(credentials) {
-        let [dbEntry] = await this.server.db.getPlayer(credentials.email);
-        if (!dbEntry) return await this.createAccount(credentials);
+        let [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
+        if (!dbEntry) {
+            await this.createAccount(credentials);
+            [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
+            await this.server.game.addPlayer(dbEntry);
+        }
         if (!await bcrypt.compare(credentials.password, dbEntry.password)) {
             return { error: "Incorrect password" };
         }
@@ -28,13 +32,5 @@ export default class Auth {
         let playerId = await this.server.db.addPlayer(email, password, authToken);
         let handle = this.server.game.createNewHandle();
         await this.server.db.updatePlayer(playerId, 0, handle);
-        handle = Util.getTextHandle(handle);
-        return { playerId, authToken, handle };
-    }
-
-    async validateCredentials(playerId, authToken) {
-        let [dbEntry] = await this.server.db.getPlayer(playerId);
-        if (!dbEntry) return false;
-        return dbEntry.auth_token == authToken;
     }
 }

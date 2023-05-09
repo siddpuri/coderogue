@@ -17,7 +17,7 @@ export default class Game {
   }
 
   async start() {
-    await this.loadState();
+    await this.loadPlayers();
     this.busy = false;
     this.timer = setInterval(() => this.tick(), 1000);
   }
@@ -71,14 +71,18 @@ export default class Game {
     return () => vm.run(script);
   }
 
-  async loadState() {
+  async loadPlayers() {
     for (let dbEntry of await this.server.db.loadPlayers()) {
-      const player = new Player(dbEntry);
-      this.players[player.id] = player;
-      this.playerHandles.add(player.handle);
-      this.levels[0].spawn(player);
-      player.level = 0;
+      this.addPlayer(dbEntry);
     }
+  }
+
+  addPlayer(dbEntry) {
+    const player = new Player(dbEntry);
+    this.players[player.id] = player;
+    this.playerHandles.add(player.handle);
+    this.levels[0].spawn(player);
+    player.level = 0;
   }
 
   async writeScores() {

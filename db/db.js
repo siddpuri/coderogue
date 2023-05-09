@@ -38,7 +38,7 @@ export default class DB {
         );
     }
 
-    async getPlayer(email) {
+    async getPlayerByEmail(email) {
         return await this.query(
             'SELECT * FROM players WHERE email = ?',
             [email]

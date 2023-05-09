@@ -55,10 +55,12 @@ export default class WebServer {
   validatePlayerId(req) {
     let playerId = req.cookies.playerId;
     let authToken = req.cookies.authToken;
-    if (!playerId || !authToken) {
-      return undefined;
-    }
-    if (this.server.game.players[playerId].authToken != authToken) {
+    if (
+      !playerId ||
+      !authToken ||
+      !this.server.game.players[playerId] ||
+      this.server.game.players[playerId].authToken != authToken
+    ) {
       return undefined;
     }
     return playerId;
