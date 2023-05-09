@@ -26,6 +26,8 @@ export default class VmEnvironment {
             backward: '2',
             left: '3',
 
+            respawn: () => this.player.level.killPlayer(this.player),
+
             // Robot sensors
             getPosition: () => this.player.pos,
             getDirection: () => this.player.dir,
