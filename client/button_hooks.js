@@ -1,7 +1,3 @@
-const headers = {
-    'Content-Type': 'application/json',
-}
-
 export default class ButtonHooks {
     constructor(client) {
         this.client = client;

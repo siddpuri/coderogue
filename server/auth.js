@@ -12,7 +12,7 @@ export default class Auth {
         if (!await bcrypt.compare(credentials.password, dbEntry.password)) {
             return { error: "Incorrect password" };
         }
-        return { authToken: dbEntry.auth_token };
+        return { playerId: dbEntry.id, authToken: dbEntry.auth_token };
     }
 
     async createAccount(credentials) {
@@ -20,9 +20,9 @@ export default class Auth {
         const email = credentials.email;
         const password = await bcrypt.hash(credentials.password, 10);
         const authToken = crypto.randomBytes(16).toString('hex');
-        let id = await this.server.db.addPlayer(email, password, authToken);
+        let playerId = await this.server.db.addPlayer(email, password, authToken);
         let handle = this.server.game.createNewHandle();
-        await this.server.db.updatePlayer(id, 0, handle);
-        return { authToken };
+        await this.server.db.updatePlayer(playerId, 0, handle);
+        return { playerId, authToken };
     }
 }
