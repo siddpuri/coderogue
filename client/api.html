@@ -1,0 +1,71 @@
+<h5>Coderogue API documentation</h5>
+<table class="table">
+    <thread>
+        <tr>
+            <th>Function</th>
+            <th>Description</th>
+        </tr>
+    </thread>
+    <tbody>
+        <tr>
+            <td><code>console.log(val)</code></td>
+            <td>Prints <code>val</code> to the log, which is accessible in the Log pane of this page</td>
+        </tr>
+        <tr>
+            <td><code>moveForward()</code></td>
+            <td>Moves the player forward one square</td>
+        </tr>
+        <tr>
+            <td><code>turnRight()</code></td>
+            <td>Turns the player right 90 degrees</td>
+        </tr>
+        <tr>
+            <td><code>turnLeft()</code></td>
+            <td>Turns the player left 90 degrees</td>
+        </tr>
+        <tr>
+            <td><code>canMove(dir)</code></td>
+            <td>
+                <p>Returns <code>true</code> if the player can move in direction <code>dir</code>, <code>false</code> otherwise.</p>
+                <p><code>dir</code> is an integer where 0 is forward, 1 is right, 2 is backward, and 3 is left.</p>
+                <p>For your convenience, you can use the pre-defined variables <code>forward</code>, <code>right</code>, <code>backward</code>, and <code>left</code>, which are set to their corresponding integers.</p>
+            </td>
+        </tr>
+        <tr>
+            <td><code>respawn()</code></td>
+            <td>Immediately respawn on level 0</td>
+        </tr>
+        <tr>
+            <td><code>getLevel()</code></td>
+            <td>Returns the current level</td>
+        </tr>
+        <tr>
+            <td><code>getPosition()</code></td>
+            <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the current position of the player</td>
+        </tr>
+        <tr>
+            <td><code>getDirection()</code></td>
+            <td>Returns an integer represting the direciton the player is facing, where 0 is up, 1 is right, 2 is down, and 3 is left</p>
+        </tr>
+        <tr>
+            <td><code>getExitPosition()</code></td>
+            <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the exit that the player is trying to reach</td>
+        </tr>
+        <tr>
+            <td><code>randomNumber(min, max)</code></td>
+            <td>Returns a random integer <em>n</em>, where <code>min</code> &le; <em>n</em> &le; <code>max</code></td>
+        </tr>
+        <tr>
+            <td><code>appendItem(list, value)</code></td>
+            <td>Modifies <code>list</code> by appending <code>value</code> at the end</td>
+        </tr>
+        <tr>
+            <td><code>insertItem(list, i, value)</code></td>
+            <td>Modifies <code>list</code> by inserting <code>value</code> at index <code>i</code></td>
+        </tr>
+        <tr>
+            <td><code>removeItem(list, i)</code></td>
+            <td>Modifies <code>list</code> by removing the element at index <code>i</code></td>
+        </tr>
+    </tbody>
+</table>

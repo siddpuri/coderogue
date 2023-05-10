@@ -155,6 +155,11 @@ export default class Display {
         logArea.value = log;
     }
 
+    setApi(api) {
+        const apiArea = document.getElementById('api-text');
+        apiArea.innerHTML = api;
+    }
+
     showLoggedIn() {
         document.getElementById('login-form').classList.add('d-none');
         document.getElementById('logout-form').classList.remove('d-none');

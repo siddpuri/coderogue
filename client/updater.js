@@ -7,6 +7,7 @@ export default class Updater {
         this.busy = false;
         this.timer = setInterval(() => this.tick(), 1000);
         this.loadCode();
+        this.loadApi();
     }
 
     async tick() {
@@ -54,5 +55,10 @@ export default class Updater {
             log = result.log;
         }
         this.client.display.setLog(log);
+    }
+
+    async loadApi() {
+        let response = await fetch(this.client.baseUrl + "/api.html");
+        this.client.display.setApi(await response.text());
     }
 }
