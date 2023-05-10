@@ -4,9 +4,14 @@ export default class ButtonHooks {
     }
 
     start() {
+        this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('login', async event => await this.login(event));
         this.onClick('logout', async event => await this.logout(event));
         this.onClick('submit', async event => await this.submit(event));
+    }
+
+    handleMapClick(event) {
+        this.client.display.highlightTile(event.offsetX, event.offsetY);
     }
 
     async login(event) {

@@ -59,6 +59,7 @@ export default class Display {
     }
 
     renderMap(map) {
+        this.map = map;
         this.clearCanvas();
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
@@ -139,6 +140,20 @@ export default class Display {
         this.highlightedRow = row;
         this.highlightedPlayer = playerId;
         row.classList.add('highlighted');
+    }
+
+    highlightTile(x, y) {
+        if (!this.map) return;
+        let row = Math.floor(y / characterHeight);
+        let col = Math.floor(x / characterWidth);
+        if (!this.map[row] || !this.map[row][col]) return;
+        let playerId = this.map[row][col].playerId;
+        if (!playerId) return;
+        if (playerId == this.highlightedPlayer) {
+            delete this.highlightedPlayer;
+        } else {
+            this.highlightedPlayer = playerId;
+        }
     }
 
     setCode(code) {
