@@ -2,6 +2,8 @@ import Util from '../shared/util.js';
 
 import CircularLog from './circular_log.js';
 
+const maxIdleTime = 60;
+
 export default class Player {
     constructor(dbEntry) {
         // Database columns
@@ -21,12 +23,13 @@ export default class Player {
         this.pos = undefined;
         this.dir = 0;
         this.turns = 0;
-        this.timeout = 10;
+        this.idle = 0;
     }
 
-    grantTurns(turns) {
-        this.turns += turns;
-        if (this.timeout-- <= 0) {
+    grantTurn() {
+        this.turns = 1;
+        this.idle++;
+        if (this.idle > maxIdleTime) {
             this.level.killPlayer(this);
         }
     }
@@ -42,7 +45,7 @@ export default class Player {
     }
 
     resetTimeout() {
-        this.timeout = 10;
+        this.idle = 0;
     }
 
     getState() {

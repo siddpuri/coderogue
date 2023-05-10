@@ -48,7 +48,7 @@ export default class Game {
     if (!player.action) {
       player.action = await this.createPlayerAction(player);
     }
-    player.grantTurns(1);
+    player.grantTurn();
     try {
       await player.action();
     } catch(e) {
