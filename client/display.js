@@ -3,7 +3,8 @@ import constants from './constants.js';
 const backgroundColor = '#f0f0f0';
 const foregroundColor = '#101010';
 const highlightColor = '#ffff00';
-const font = '10pt Courier New';
+const currentPlayerColor = '#ff0000';
+const font = '10pt sans-serif';
 const characterWidth = 8;
 const characterHeight = 10;
 
@@ -62,17 +63,19 @@ export default class Display {
                 let cell = map[row][col];
                 let char = cell.type;
                 let highlighted = false;
+                let currentPlayer = false;
                 if (Object.hasOwn(cell, 'playerId')) {
                     const dir = this.players[cell.playerId].dir;
                     char = '^>v<'[dir];
                     highlighted = cell.playerId == this.highlightedPlayer;
+                    currentPlayer = cell.playerId == this.client.credentials.playerId;
                 }
-                if (char) this.setText(row, col, char, highlighted);
+                if (char) this.setText(row, col, char, highlighted, currentPlayer);
             }
         }
     }
 
-    setText(row, col, text, highlighted) {
+    setText(row, col, text, highlighted, currentPlayer) {
         row = (row + 1) * characterHeight;
         col *= characterWidth;
         if (highlighted) {
@@ -80,7 +83,11 @@ export default class Display {
             this.ctx.fillRect(col, row - characterHeight, characterWidth, characterHeight);
             this.ctx.fillStyle = foregroundColor;
         }
+        if (currentPlayer) {
+            this.ctx.fillStyle = currentPlayerColor;
+        }
         this.ctx.fillText(text, col, row);
+        this.ctx.fillStyle = foregroundColor;
     }
 
     renderPlayers() {
