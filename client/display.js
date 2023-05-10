@@ -15,6 +15,8 @@ const alertLevels = [
     'alert-danger',
 ];
 
+const numPlayersToRender = 10;
+
 export default class Display {
     constructor(client) {
         this.client = client;
@@ -91,27 +93,38 @@ export default class Display {
     }
 
     renderPlayers() {
-        const info = [];
-        for (let player of this.players) {
-            if (!player) continue;
-            info.push([player.score, player.period, player.handle, player.id]);
+        let playersToRender = [];
+        if (this.client.credentials.playerId) {
+            playersToRender.push(this.players[this.client.credentials.playerId]);
         }
-        info.sort((a, b) => b[0] - a[0]);
+        if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
+            playersToRender.push(this.players[this.highlightedPlayer]);
+        }
+        let topPlayers = this.players.slice();
+        topPlayers.sort((a, b) => b.score - a.score);
+        for (let i = 0; playersToRender.length < numPlayersToRender; i++) {
+            if (!topPlayers[i]) break;
+            if (!playersToRender.some(p => p.id == topPlayers[i].id)) {
+                playersToRender.push(topPlayers[i]);
+            }
+        }
+        playersToRender.sort((a, b) => b.score - a.score);
+
         const table = document.getElementById('players');
         while(table.rows.length > 1) {
             table.deleteRow(1);
         }
-        for (let entry of info) {
+        for (let player of playersToRender) {
             const row = table.insertRow();
-            for (let i = 0; i < 3; i++) {
+            for (let col of ['score', 'period', 'handle']) {
                 const cell = row.insertCell();
-                cell.innerHTML = entry[i];
+                cell.innerHTML = player[col];
             }
-            if (entry[3] == this.highlightedPlayer) {
+            if (player.id == this.highlightedPlayer) {
                 row.classList.add('highlighted');
                 this.highlightedRow = row;
             }
-            row.onclick = () => this.highlightPlayer(row, entry[3]);
+            row.onclick = () => this.highlightPlayer(row, player.id);
         }
     }
 
