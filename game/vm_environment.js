@@ -29,7 +29,7 @@ export default class VmEnvironment {
             respawn: () => this.game.killPlayer(this.player),
 
             // Robot sensors
-            getLevel: () => this.player.level,
+            getLevel: () => this.player.level.levelNumber,
             getPosition: () => this.player.pos,
             getDirection: () => this.player.dir,
             getExitPosition: () => this.player.level.exitPos,
