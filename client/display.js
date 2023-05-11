@@ -29,7 +29,7 @@ export default class Display {
         this.messageNumber = 0;
     }
 
-    start() {
+    async start() {
         const loadingText = 'Loading ...';
         const row = 15;
         const col = (constants.levelWidth - loadingText.length) / 2;
@@ -168,11 +168,6 @@ export default class Display {
     setLog(log) {
         const logArea = document.getElementById('log-text');
         logArea.value = log;
-    }
-
-    setApi(api) {
-        const apiArea = document.getElementById('api-text');
-        apiArea.innerHTML = api;
     }
 
     showLoggedIn() {

@@ -1,0 +1,37 @@
+<form id="login-form">
+    <div class="row">
+        <label class="ml-3">
+            You can use this either to log in or to register a new account.
+        </label>
+    </div>
+    <div class="row">
+        <div class="col-3 mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" id="email" placeholder="s-jsmith">
+                <div class="input-group-append">
+                    <span class="input-group-text">@lwsd.org</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <input type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <button type="button" class="btn btn-primary" id="login">Log in / Register</button>
+        </div>
+    </div>
+</form>
+<form class="d-none" id="logout-form">
+    <div class="row">
+        <label class="ml-3">
+            You are logged in as <span id="handle"></span>.
+        </label>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <button type="button" class="btn btn-primary" id="logout">Log out</button>
+        </div>
+    </div>
+</form>

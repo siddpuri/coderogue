@@ -3,11 +3,12 @@ export default class Updater {
         this.client = client;
     }
 
-    start() {
+    async start() {
         this.busy = false;
         this.timer = setInterval(() => this.tick(), 1000);
-        this.loadCode();
-        this.loadApi();
+        await this.loadCode();
+        await this.loadApi();
+        await this.loadAccount();
     }
 
     async tick() {
@@ -59,6 +60,11 @@ export default class Updater {
 
     async loadApi() {
         let response = await fetch(this.client.baseUrl + "/api.html");
-        this.client.display.setApi(await response.text());
+        document.getElementById('api-text').innerHTML = await response.text();
+    }
+
+    async loadAccount() {
+        let response = await fetch(this.client.baseUrl + "/account.html");
+        document.getElementById('account').innerHTML = await response.text();
     }
 }

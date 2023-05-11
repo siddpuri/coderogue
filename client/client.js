@@ -6,17 +6,17 @@ import Updater from './updater.js';
 class Client {
     constructor() {
         this.baseUrl = window.location.origin;
+        this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
         this.credentials = new Credentials(this);
         this.display = new Display(this);
-        this.updater = new Updater(this);
     }
 
-    start() {
-        this.buttonHooks.start();
-        this.credentials.start();
-        this.display.start();
-        this.updater.start();
+    async start() {
+        await this.updater.start();
+        await this.buttonHooks.start();
+        await this.credentials.start();
+        await this.display.start();
         if (this.credentials.isLoggedIn) {
             this.onLogin();
         }

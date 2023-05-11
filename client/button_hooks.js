@@ -3,7 +3,7 @@ export default class ButtonHooks {
         this.client = client;
     }
 
-    start() {
+    async start() {
         this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('login', async event => await this.login(event));
         this.onClick('logout', async event => await this.logout(event));

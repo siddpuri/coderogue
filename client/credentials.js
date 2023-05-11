@@ -6,7 +6,7 @@ export default class Credentials {
         this.client = client;
     }
 
-    start() {
+    async start() {
         this.readCookie();
     }
 
