@@ -26,6 +26,7 @@ export default class Display {
         this.ctx = this.canvas.getContext('2d');
         this.clearCanvas();
         this.ctx.font = font;
+        this.levelToRender = 0;
         this.messageNumber = 0;
     }
 
@@ -54,17 +55,18 @@ export default class Display {
             if (player) this.players[player.id] = player;
         }
         this.levels = state.levels;
-        let level = 0;
-        if (this.highlightedPlayer) level = this.players[this.highlightedPlayer].level;
-        this.renderMap(level);
+        if (this.highlightedPlayer) {
+            this.levelToRender = this.players[this.highlightedPlayer].level;
+        }
+        this.renderMap();
         this.renderPlayers();
     }
 
-    renderMap(level) {
+    renderMap() {
         let span = document.getElementById('level');
         span.removeChild(span.firstChild);
-        span.appendChild(document.createTextNode(level));
-        this.map = this.levels[level];
+        span.appendChild(document.createTextNode(this.levelToRender));
+        this.map = this.levels[this.levelToRender];
         this.clearCanvas();
         for (let row = 0; row < this.map.length; row++) {
             for (let col = 0; col < this.map[row].length; col++) {
