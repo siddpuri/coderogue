@@ -21,6 +21,10 @@ export default class Cell {
         this.type = '#';
     }
 
+    clearWall() {
+        delete this.type;
+    }
+
     setSpawn() {
         this.type = '.';
     }
