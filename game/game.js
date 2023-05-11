@@ -74,7 +74,7 @@ export default class Game {
     this.levels[n].removePlayer(player);
     player.log.write(`Exited level ${player.level}!`);
     player.log.write(`Score is now: ${player.score}`);
-    n = (n + 1) % (this.levels.length + 1);
+    n = (n + 1) % this.levels.length;
     player.level = this.levels[n];
     this.levels[n].spawn(player);
   }

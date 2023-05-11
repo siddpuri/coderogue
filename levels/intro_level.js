@@ -7,5 +7,6 @@ export default class IntroLevel extends Level {
 
     score(player) { player.score += 100; }
 
+    // TODO: Remove this!
     get spawnTargetPos() { return this.exitPos; }
 }

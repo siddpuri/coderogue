@@ -54,13 +54,17 @@ export default class Display {
             if (player) this.players[player.id] = player;
         }
         this.levels = state.levels;
-        this.renderMap(0);
+        let level = 0;
+        if (this.highlightedPlayer) level = this.players[this.highlightedPlayer].level;
+        this.renderMap(level);
         this.renderPlayers();
     }
 
     renderMap(level) {
-        document.getElementById('level').value = level;
-        this.map = this.levels[0];
+        let span = document.getElementById('level');
+        span.removeChild(span.firstChild);
+        span.appendChild(document.createTextNode(level));
+        this.map = this.levels[level];
         this.clearCanvas();
         for (let row = 0; row < this.map.length; row++) {
             for (let col = 0; col < this.map[row].length; col++) {
