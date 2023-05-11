@@ -1,7 +1,8 @@
 import { VM, VMScript } from 'vm2';
 
 import Util from '../shared/util.js';
-import IntroLevel from '../levels/intro.js';
+import IntroLevel from '../levels/intro_level.js';
+import BlockLevel from '../levels/block_level.js';
 
 import Player from './player.js';
 import VmEnvironment from './vm_environment.js';
@@ -11,7 +12,11 @@ export default class Game {
     this.server = server;
     this.levels = [
       new IntroLevel(server),
+      new BlockLevel(server),
     ];
+    for (let i = 0; i < this.levels.length; i++) {
+      this.levels[i].levelNumber = i;
+    }
     this.players = [];
     this.playerHandles = new Set();
   }
@@ -33,14 +38,11 @@ export default class Game {
   }
 
   async doTickActions() {
-    for (let level of this.levels) {
-      await level.doPreTickActions();
-    }
     for (let player of this.players) {
       if (player) await this.doPlayerAction(player);
     }
     for (let level of this.levels) {
-      await level.doPostTickActions();
+      await level.doLevelAction();
     }
   }
 

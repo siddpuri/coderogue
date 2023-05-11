@@ -54,16 +54,17 @@ export default class Display {
             if (player) this.players[player.id] = player;
         }
         this.levels = state.levels;
-        this.renderMap(this.levels[0]);
+        this.renderMap(0);
         this.renderPlayers();
     }
 
-    renderMap(map) {
-        this.map = map;
+    renderMap(level) {
+        document.getElementById('level').value = level;
+        this.map = this.levels[0];
         this.clearCanvas();
-        for (let row = 0; row < map.length; row++) {
-            for (let col = 0; col < map[row].length; col++) {
-                let cell = map[row][col];
+        for (let row = 0; row < this.map.length; row++) {
+            for (let col = 0; col < this.map[row].length; col++) {
+                let cell = this.map[row][col];
                 let char = cell.type;
                 let highlighted = false;
                 let currentPlayer = false;
@@ -117,7 +118,7 @@ export default class Display {
         }
         for (let player of playersToRender) {
             const row = table.insertRow();
-            for (let col of ['score', 'period', 'handle']) {
+            for (let col of ['score', 'level', 'handle']) {
                 const cell = row.insertCell();
                 cell.innerHTML = player[col];
             }

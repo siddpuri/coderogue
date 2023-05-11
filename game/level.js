@@ -23,18 +23,22 @@ export default class Level {
         this.cell(this.exitPos).setExit();
     }
     
-    async doPreTickActions() {}
-    async doPostTickActions() {}
-
-    bump(player) {
-        player.log.write('Bump!');
-    }
-
     score(player) {}
-
+    bump(player) { player.log.write('Bump!'); }
     get spawnTargetPos() { return [10, 10]; }
-
     get exitPos() { return [this.width - 10, this.height - 10]; }
+    async doLevelAction() {}
+
+    drawBorderWalls() {
+        for (let c = 0; c < this.width; c++) {
+            this.map[0][c].setWall();
+            this.map[this.height - 1][c].setWall();
+        }
+        for (let r = 0; r < this.height; r++) {
+            this.map[r][0].setWall();
+            this.map[r][this.width - 1].setWall();
+        }
+    }
 
     getSpawnPos() {
         const candidates = [];
