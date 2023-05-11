@@ -36,6 +36,14 @@
             <td>Immediately respawn on level 0</td>
         </tr>
         <tr>
+            <td><code>respawnAt(level, pos, dir)</code></td>
+            <td>
+                <p>Immediately respawn on level <code>level</code>, at position <code>pos</code>, facing direction <code>dir</code>.</p>
+                <p>The next time the player exits after calling this function, it will yield no points!</p>
+                <p>For example: <code>respawnAt(1, [10, 9], 2)</code> respaws the player on level 1, just above the exit and facing downward.</p>
+            </td>
+        </tr>
+        <tr>
             <td><code>getLevel()</code></td>
             <td>Returns the current level</td>
         </tr>

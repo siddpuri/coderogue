@@ -41,9 +41,9 @@ export default class Level {
         }
     }
 
-    getSpawnPos() {
+    getSpawnPos(pos) {
         const candidates = [];
-        let [x0, y0] = this.spawnTargetPos;
+        let [x0, y0] = pos;
         for (let x = x0 - 10; x <= x0 + 10; x++) {
             for (let y = y0 - 10; y <= y0 + 10; y++) {
                 if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
@@ -58,15 +58,16 @@ export default class Level {
     }
 
     spawn(player) {
-        const pos = this.getSpawnPos();
-        if (!pos) {
-            console.log('Couldn\t place player!');
-            this.removePlayer(player);
-            return false;
-        }
+        const dir = Util.randomElement([0, 1, 2, 3]);
+        return this.spawnAt(player, this.spawnTargetPos, dir);
+    }
+
+    spawnAt(player, targetPos, dir) {
+        const pos = this.getSpawnPos(targetPos);
+        if (!pos) return false;
         player.level = this;
         this.movePlayer(player, pos);
-        player.dir = Util.randomElement([0, 1, 2, 3]);
+        player.dir = dir;
         return true;
     }
 
