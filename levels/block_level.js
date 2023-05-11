@@ -1,7 +1,6 @@
 import Util from '../shared/util.js';
 import Level from '../game/level.js';
 
-const numBlocks = 5;
 const minBlockSize = 2;
 const maxBlockSize = 10;
 const minBlockCol = 20;
@@ -12,10 +11,10 @@ export default class BlockLevel extends Level {
     constructor(server) {
         super(server);
         this.blocks = [];
-        for (let i = 0; i < numBlocks; i++) {
-            let col = Math.floor(this.width / 2);
-            let row = Math.floor(this.height / numBlocks * i) + 1;
-            this.blocks.push(new Block(this, [col, row]));
+        for (let row of [5, 15, 25, 35]) {
+            for (let col of [25, 40, 55]) {
+                this.blocks.push(new Block(this, [col, row]));
+            }
         }
     }
 
