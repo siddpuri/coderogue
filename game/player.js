@@ -2,8 +2,6 @@ import Util from '../shared/util.js';
 
 import CircularLog from './circular_log.js';
 
-const maxIdleTime = 60;
-
 export default class Player {
     constructor(dbEntry) {
         // Database columns
@@ -26,14 +24,6 @@ export default class Player {
         this.idle = 0;
     }
 
-    grantTurn() {
-        this.turns = 1;
-        this.idle++;
-        if (this.idle > maxIdleTime) {
-            this.level.killPlayer(this);
-        }
-    }
-
     useTurn() {
         if (this.turns > 0) {
             this.turns--;
@@ -42,10 +32,6 @@ export default class Player {
             this.log.write('Tried to do multiple actions in a turn.');
             return false;
         }
-    }
-
-    resetTimeout() {
-        this.idle = 0;
     }
 
     getState() {

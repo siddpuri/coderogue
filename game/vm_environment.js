@@ -21,12 +21,12 @@ export default class VmEnvironment {
             turnLeft: () => this.turnLeft(),
             canMove: dir => this.canMove(dir),
 
-            forward: '0',
-            right: '1',
-            backward: '2',
-            left: '3',
+            forward: 0,
+            right: 1,
+            backward: 2,
+            left: 3,
 
-            respawn: () => this.player.level.killPlayer(this.player),
+            respawn: () => this.game.killPlayer(this.player),
 
             // Robot sensors
             getLevel: () => this.player.level,

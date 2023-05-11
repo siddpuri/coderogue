@@ -3,7 +3,6 @@ import Level from '../game/level.js';
 export default class BlockLevel extends Level {
     constructor(server) {
         super(server);
-        this.drawBorderWalls();
     }
 
     score(player) { player.score += 200; }

@@ -19,6 +19,7 @@ export default class Level {
         this.map =
             Array(this.height).fill().map(() =>
                 Array(this.width).fill().map(() => new Cell()));
+        this.drawBorderWalls();
         this.cell(this.spawnTargetPos).setSpawn();
         this.cell(this.exitPos).setExit();
     }
@@ -45,6 +46,7 @@ export default class Level {
         let [x0, y0] = this.spawnTargetPos;
         for (let x = x0 - 10; x <= x0 + 10; x++) {
             for (let y = y0 - 10; y <= y0 + 10; y++) {
+                if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
                 const pos = [x,  y];
                 if (this.cell(pos).canEnter) {
                     candidates.push(pos);
@@ -76,7 +78,7 @@ export default class Level {
         }
         this.movePlayer(player, newPos);
         if (this.cell(newPos).isExit) {
-            this.exitPlayer(player);
+            this.server.game.exitPlayer(player);
         }
         return true;
     }
@@ -89,26 +91,12 @@ export default class Level {
         if (player.pos) {
             this.cell(pos).setPlayer(player);
         }
-        player.resetTimeout();
+        player.idle = 0;
     }
 
     removePlayer(player) {
         player.level = undefined;
         this.movePlayer(player, undefined);
-    }
-
-    exitPlayer(player) {
-        this.score(player);
-        player.log.write('Exited!');
-        player.log.write(`Score: ${player.score}`);
-        this.removePlayer(player);
-        this.spawn(player);
-    }
-
-    killPlayer(player) {
-        player.log.write('You have been killed!');
-        this.removePlayer(player);
-        this.spawn(player);
     }
 
     turnRight(player) {

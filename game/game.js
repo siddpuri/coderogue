@@ -7,6 +7,8 @@ import BlockLevel from '../levels/block_level.js';
 import Player from './player.js';
 import VmEnvironment from './vm_environment.js';
 
+const maxIdleTime = 60;
+
 export default class Game {
   constructor(server) {
     this.server = server;
@@ -50,12 +52,35 @@ export default class Game {
     if (!player.action) {
       player.action = await this.createPlayerAction(player);
     }
-    player.grantTurn();
+    if (player.idle++ > maxIdleTime) this.killPlayer(player);
+    player.turns = 1;
     try {
       await player.action();
     } catch(e) {
       player.log.write(e);
+      console.log(e);
     }
+  }
+
+  killPlayer(player) {
+    this.levels[player.level.levelNumber].removePlayer(player);
+    player.log.write('You have been killed!');
+    this.levels[0].spawn(player);
+  }
+
+  exitPlayer(player) {
+    let n = player.level.levelNumber;
+    this.levels[n].score(player);
+    this.levels[n].removePlayer(player);
+    player.log.write(`Exited level ${player.level}!`);
+    player.log.write(`Score is now: ${player.score}`);
+    n = (n + 1) % (this.levels.length + 1);
+    player.level = this.levels[n];
+    this.levels[n].spawn(player);
+  }
+
+  getLevel(player) {
+    return this.levels[player.level.levelNumber];
   }
 
   async createPlayerAction(player) {
@@ -83,10 +108,6 @@ export default class Game {
     this.players[player.id] = player;
     this.playerHandles.add(player.handle);
     this.levels[0].spawn(player);
-  }
-
-  async writeScores() {
-    // TODO
   }
 
   createNewHandle() {
