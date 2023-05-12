@@ -7,6 +7,7 @@ export default class ButtonHooks {
         this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('login', async event => await this.login(event));
         this.onClick('logout', async event => await this.logout(event));
+        this.onClick('reformat', async event => await this.reformat(event));
         this.onClick('submit', async event => await this.submit(event));
     }
 
@@ -24,6 +25,18 @@ export default class ButtonHooks {
 
     async logout(event) {
         await this.client.credentials.logout();
+    }
+
+    async reformat(event) {
+        let code = this.client.display.getCode();
+        let cursor = this.client.display.getCodeCursor();
+        let result = prettier.formatWithCursor(code, {
+            cursorOffset: cursor,
+            parser: 'babel',
+            plugins: prettierPlugins,
+        });
+        this.client.display.setCode(result.formatted);
+        this.client.display.setCodeCursor(result.cursorOffset);
     }
 
     async submit(event) {

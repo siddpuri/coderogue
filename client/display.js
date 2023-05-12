@@ -172,6 +172,15 @@ export default class Display {
         return document.getElementById('code-text').value;
     }
 
+    setCodeCursor(cursor) {
+        document.getElementById('code-text').selectionStart = cursor;
+        document.getElementById('code-text').selectionEnd = cursor;
+    }
+
+    getCodeCursor() {
+        return document.getElementById('code-text').selectionStart;
+    }
+
     setLog(log) {
         const logArea = document.getElementById('log-text');
         logArea.value = log;
