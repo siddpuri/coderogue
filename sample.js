@@ -1,3 +1,5 @@
+if (getLevel() == 0) respawnAt(1, [60, 30], 3);
+
 var dx = getExitPosition()[0] - getPosition()[0];
 var dy = getExitPosition()[1] - getPosition()[1];
 var cd = getDirection();
@@ -22,6 +24,7 @@ function circumnavigate() {
     else if (isGood(left))     state = 'initial';
     else if (canMove(left))    turnLeft();
     else if (canMove(forward)) moveForward();
+    else                       turnRight();
 }
 
 function isGood(dir) {
