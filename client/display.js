@@ -101,28 +101,11 @@ export default class Display {
     }
 
     renderPlayers() {
-        let playersToRender = [];
-        if (this.client.credentials.playerId) {
-            playersToRender.push(this.players[this.client.credentials.playerId]);
-        }
-        if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
-            playersToRender.push(this.players[this.highlightedPlayer]);
-        }
-        let topPlayers = this.players.slice();
-        topPlayers.sort((a, b) => b.score - a.score);
-        for (let i = 0; playersToRender.length < numPlayersToRender; i++) {
-            if (!topPlayers[i]) break;
-            if (!playersToRender.some(p => p.id == topPlayers[i].id)) {
-                playersToRender.push(topPlayers[i]);
-            }
-        }
-        playersToRender.sort((a, b) => b.score - a.score);
-
         const table = document.getElementById('players');
         while(table.rows.length > 1) {
             table.deleteRow(1);
         }
-        for (let player of playersToRender) {
+        for (let player of this.findPlayersToRender()) {
             const row = table.insertRow();
             for (let col of ['score', 'level', 'handle']) {
                 const cell = row.insertCell();
@@ -134,6 +117,26 @@ export default class Display {
             }
             row.onclick = () => this.highlightPlayer(row, player.id);
         }
+    }
+
+    findPlayersToRender() {
+        let result = [];
+        if (this.client.credentials.playerId) {
+            result.push(this.players[this.client.credentials.playerId]);
+        }
+        if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
+            result.push(this.players[this.highlightedPlayer]);
+        }
+        let topPlayers = this.players.slice();
+        topPlayers.sort((a, b) => b.score - a.score);
+        for (let i = 0; result.length < numPlayersToRender; i++) {
+            if (!topPlayers[i]) break;
+            if (!result.some(p => p.id == topPlayers[i].id)) {
+                result.push(topPlayers[i]);
+            }
+        }
+        result.sort((a, b) => b.score - a.score);
+        return result;
     }
 
     highlightPlayer(row, playerId) {
