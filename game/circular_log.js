@@ -6,12 +6,20 @@ export default class CircularLog {
     }
 
     write(text) {
+        text = this.applyTimeStamp(text);
         this.buffer[this.cur] = text;
         this.cur++;
         if (this.cur >= this.buffer.length) {
             this.cur = 0;
             this.goneAround = true;
         }
+    }
+
+    applyTimeStamp(text) {
+        const now = new Date();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        return `[${minutes}:${seconds}] ${text}`;
     }
 
     toString() {
