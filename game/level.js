@@ -64,7 +64,11 @@ export default class Level {
 
     spawnAt(player, targetPos, dir) {
         let pos = targetPos;
-        if (!this.map || !this.map[targetPos[1]] || !this.cell(pos).canSpawn) {
+        if (!this.map ||
+            !this.map[targetPos[1]] ||
+            !this.cell(pos) ||
+            !this.cell(pos).canSpawn)
+        {
             pos = this.getSpawnPos(targetPos);
             if (!pos) return false;
         }
