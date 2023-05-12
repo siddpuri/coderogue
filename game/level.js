@@ -118,7 +118,12 @@ export default class Level {
     }
 
     cell(pos) {
-        return this.map[pos[1]][pos[0]];
+        try {
+            return this.map[pos[1]][pos[0]];
+        } catch(e) {
+            console.log('cell', pos, e);
+            return this.map[0][0];
+        }
     }
 
     movePos(pos, dir) {
