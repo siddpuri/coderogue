@@ -8,6 +8,9 @@ html {
 .table tbody tr {
     height: 1.2rem;
 }
+.highlighted {
+    background-color: #e0e0e0;
+}
 
 .nav-tabs .nav-link {
     color: #000000;
@@ -16,6 +19,6 @@ html {
     color: #000000;
 }
 
-.highlighted {
-    background-color: #e0e0e0;
+textarea {
+    font-family: 'monospace';
 }
