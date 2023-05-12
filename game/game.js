@@ -81,20 +81,15 @@ export default class Game {
   }
 
   exitPlayer(player) {
-    if (player.dontScore) {
-      player.level = this.levels[0];
-      this.levels[0].spawn(player);
-      delete player.dontScore;
-      return;
-    }
     let n = player.level.levelNumber;
-    this.levels[n].score(player);
+    if (!player.dontScore) this.levels[n].score(player);
     this.levels[n].removePlayer(player);
     player.log.write(`Completed level ${n}!`);
     player.log.write(`Score is now: ${player.score}`);
-    n = (n + 1) % this.levels.length;
+    n = player.dontScore? 0 : (n + 1) % this.levels.length;
     player.level = this.levels[n];
     this.levels[n].spawn(player);
+    delete player.dontScore;
   }
 
   getLevel(player) {
