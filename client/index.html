@@ -49,7 +49,7 @@
                 <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labeledby="code-tab">
                     <div class="row">
                         <div class="col-10">
-                            <textarea class="form-control" id="code-text" rows="10"></textarea>
+                            <textarea class="form-control" id="code-text" rows="100"></textarea>
                         </div>
                         <div class="col">
                             <div class="row mb-2">
@@ -66,10 +66,15 @@
                 <div class="tab-pane fade" id="log" role="tabpanel" aria-labeledby="log-tab">
                     <div class="row">
                         <div class="col-10">
-                            <textarea class="form-control" id="log-text" rows="10"></textarea>
+                            <textarea class="form-control" id="log-text" rows="20"></textarea>
                         </div>
                         <div class="col">
-                            <button type="button" class="btn btn-primary" id="clear">Clear</button>
+                            <div class="btn-group-vertical" role="group">
+                                <button type="button" class="btn btn-secondary active" id="show-all">Show all</button>
+                                <button type="button" class="btn btn-secondary" id="show-latest">Just latest</button>
+                                <button type="button" class="btn btn-secondary" id="show-filtered">Filter by</button>
+                            </div>
+                            <input type="text" class="form-control" id="filter-text" placeholder="Filter">
                         </div>
                     </div>
                 </div>

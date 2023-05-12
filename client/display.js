@@ -28,6 +28,7 @@ export default class Display {
         this.ctx.font = font;
         this.levelToRender = 0;
         this.messageNumber = 0;
+        this.messagesToShow = 'all';
     }
 
     async start() {
@@ -186,7 +187,42 @@ export default class Display {
 
     setLog(log) {
         const logArea = document.getElementById('log-text');
-        logArea.value = log;
+        logArea.value = this.filterLog(log);
+    }
+
+    showAll() {
+        document.getElementById('show-all').classList.add('active');
+        document.getElementById('show-latest').classList.remove('active');
+        document.getElementById('show-filtered').classList.remove('active');
+        this.messagesToShow = 'all';
+    }
+
+    showLatest() {
+        document.getElementById('show-all').classList.remove('active');
+        document.getElementById('show-latest').classList.add('active');
+        document.getElementById('show-filtered').classList.remove('active');
+        this.messagesToShow = 'latest';
+    }
+
+    showFiltered() {
+        document.getElementById('show-all').classList.remove('active');
+        document.getElementById('show-latest').classList.remove('active');
+        document.getElementById('show-filtered').classList.add('active');
+        this.messagesToShow = 'filtered';
+    }
+
+    filterLog(log) {
+        let lines = log.split('\n');
+        let filter = '';
+        if (this.messagesToShow == 'latest' && lines.length > 0) {
+            filter = lines[lines.length - 1].slice(0, 8);
+        }
+        if (this.messagesToShow == 'filtered') {
+            filter = document.getElementById('filter-text').value;
+        }
+        lines = lines.filter(line => line.includes(filter));
+        lines.reverse();
+        return lines.join('\n');
     }
 
     showLoggedIn() {

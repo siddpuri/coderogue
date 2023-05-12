@@ -5,17 +5,20 @@ export default class ButtonHooks {
 
     async start() {
         this.onClick('canvas', event => this.handleMapClick(event));
-        this.onClick('login', async event => await this.login(event));
-        this.onClick('logout', async event => await this.logout(event));
-        this.onClick('reformat', async event => await this.reformat(event));
-        this.onClick('submit', async event => await this.submit(event));
+        this.onClick('login', async () => await this.login());
+        this.onClick('logout', async () => await this.logout());
+        this.onClick('reformat', async () => await this.reformat());
+        this.onClick('submit', async () => await this.submit());
+        this.onClick('show-all', () => this.client.display.showAll());
+        this.onClick('show-latest', () => this.client.display.showLatest());
+        this.onClick('show-filtered', () => this.client.display.showFiltered());
     }
 
     handleMapClick(event) {
         this.client.display.highlightTile(event.offsetX, event.offsetY);
     }
 
-    async login(event) {
+    async login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         if (!await this.client.credentials.login({ email, password })) {
@@ -23,11 +26,11 @@ export default class ButtonHooks {
         }
     }
 
-    async logout(event) {
+    async logout() {
         await this.client.credentials.logout();
     }
 
-    async reformat(event) {
+    async reformat() {
         let code = this.client.display.getCode();
         let cursor = this.client.display.getCodeCursor();
         let result = prettier.formatWithCursor(code, {
@@ -39,7 +42,7 @@ export default class ButtonHooks {
         this.client.display.setCodeCursor(result.cursorOffset);
     }
 
-    async submit(event) {
+    async submit() {
         let code = this.client.display.getCode();
         let response = await fetch(
             this.client.baseUrl + '/api/code',

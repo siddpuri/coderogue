@@ -3,9 +3,12 @@ import Credentials from './credentials.js';
 import Display from './display.js';
 import Updater from './updater.js';
 
+window.onload = () => new Client().start();
+
 class Client {
     constructor() {
         this.baseUrl = window.location.origin;
+
         this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
         this.credentials = new Credentials(this);
@@ -17,6 +20,7 @@ class Client {
         await this.buttonHooks.start();
         await this.credentials.start();
         await this.display.start();
+
         if (this.credentials.isLoggedIn) {
             this.onLogin();
         }
@@ -31,8 +35,4 @@ class Client {
         this.display.showLoggedOut();
         this.updater.loadCode();
     }
-}
-
-window.onload = async function() {
-    new Client().start();
 }
