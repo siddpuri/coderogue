@@ -16,6 +16,7 @@ export default class DB {
 
     async start() {
         await this.query('USE game');
+        this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
     }
 
     async loadPlayers() {
@@ -43,9 +44,5 @@ export default class DB {
             'SELECT * FROM players WHERE email = ?',
             [email]
         );
-    }
-
-    async writeScores(players) {
-        // TODO
     }
 }
