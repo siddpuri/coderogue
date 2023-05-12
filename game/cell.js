@@ -9,6 +9,10 @@ export default class Cell {
         return this.type != '#' && !this.hasPlayer;
     }
 
+    get canSpawn() {
+        return this.canEnter && !this.isExit;
+    }
+
     get hasPlayer() {
         return Object.hasOwn(this, 'playerId');
     }

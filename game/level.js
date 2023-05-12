@@ -48,7 +48,7 @@ export default class Level {
             for (let y = y0 - 10; y <= y0 + 10; y++) {
                 if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
                 const pos = [x,  y];
-                if (this.cell(pos).canEnter) {
+                if (this.cell(pos).canSpawn) {
                     candidates.push(pos);
                 }
             }
@@ -64,7 +64,7 @@ export default class Level {
 
     spawnAt(player, targetPos, dir) {
         let pos = targetPos;
-        if (!this.map || !this.cell(pos).canEnter) {
+        if (!this.map || !this.map[targetPos[1]] || !this.cell(pos).canSpawn) {
             pos = this.getSpawnPos(targetPos);
             if (!pos) return false;
         }
