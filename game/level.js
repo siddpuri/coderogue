@@ -63,8 +63,11 @@ export default class Level {
     }
 
     spawnAt(player, targetPos, dir) {
-        const pos = this.getSpawnPos(targetPos);
-        if (!pos) return false;
+        let pos = targetPos;
+        if (!this.map || !this.cell(pos).canEnter) {
+            pos = this.getSpawnPos(targetPos);
+            if (!pos) return false;
+        }
         player.level = this;
         this.movePlayer(player, pos);
         player.dir = dir;
