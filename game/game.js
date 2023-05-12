@@ -1,4 +1,5 @@
 import { VM, VMScript } from 'vm2';
+import util from 'util';
 
 import Util from '../shared/util.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -50,16 +51,42 @@ export default class Game {
 
   async doPlayerAction(player) {
     if (!player.action) {
-      player.action = await this.createPlayerAction(player);
+      try {
+        player.action = await this.createPlayerAction(player);
+      } catch(e) {
+        player.log.write('Failed to compile script!');
+        player.log.write(this.trimError(e));
+      }
     }
     if (player.idle++ > maxIdleTime) this.killPlayer(player);
+    if (player.jailtime) {
+      player.log.write(`In jail for ${player.jailtime--} more turns.`);
+      return;
+    }
     player.turns = 1;
     try {
       await player.action();
+      player.timeouts = 0;
     } catch(e) {
-      player.log.write(e);
-      console.log(e);
+      if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
+        player.log.write('Script execution timed out!');
+        if (player.timeouts < 3) player.timeouts++;
+        player.jailtime = 10 ** player.timeouts;
+      } else {
+        player.log.write(this.trimError(e));
+      }
     }
+  }
+
+  trimError(e) {
+    let lines = util.inspect(e).split('\n');
+    let i = lines.findIndex(l =>
+      l.includes('at Script.runInContext') ||
+      l.includes('at VMScript._compile')
+    );
+    if (i > 0) lines = lines.slice(0, i);
+    lines.reverse();
+    return lines.join('\n');
   }
 
   killPlayer(player) {
@@ -94,6 +121,13 @@ export default class Game {
 
   getLevel(player) {
     return this.levels[player.level.levelNumber];
+  }
+
+  onNewCode(playerId) {
+    const player = this.players[playerId];
+    delete player.action;
+    player.jailtime = 0;
+    player.log.write('New code loaded.');
   }
 
   async createPlayerAction(player) {

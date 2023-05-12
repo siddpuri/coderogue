@@ -5,8 +5,8 @@ export default class VmEnvironment {
         this.sandbox = {
             // General functionality
             console: {
-                log: text => this.log(text),
-                debug: text => console.debug(text),
+                log: obj => this.log(obj.toString()),
+                debug: obj => console.debug(obj),
             },
 
             state: 'initial',

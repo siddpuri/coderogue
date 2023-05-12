@@ -22,6 +22,8 @@ export default class Player {
         this.dir = 0;
         this.turns = 0;
         this.idle = 0;
+        this.timeouts = 0;
+        this.jailtime = 0 ;
     }
 
     useTurn() {
