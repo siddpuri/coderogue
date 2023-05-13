@@ -1,5 +1,3 @@
-import { strict as assert } from 'assert';
-
 import constants from '../shared/constants.js';
 import Util from '../shared/util.js';
 
@@ -55,7 +53,7 @@ export default class Level {
                 }
             }
         }
-        if (!candidates.length) return this.getSpawnPos(ths.spawnTargetPos);
+        if (candidates.length == 0) return null;
         return Util.randomElement(candidates);
     }
 
@@ -66,16 +64,18 @@ export default class Level {
 
     spawnAt(player, targetPos, dir) {
         let pos = targetPos;
-        if (!this.map[targetPos[1]] ||
+        if (!this.map ||
+            !this.map[targetPos[1]] ||
             !this.cell(pos) ||
             !this.cell(pos).canSpawn)
         {
             pos = this.getSpawnPos(targetPos);
+            if (!pos) return false;
         }
-        assert(!player.level);
         player.level = this;
         this.movePlayer(player, pos);
         player.dir = dir;
+        return true;
     }
 
     moveForward(player) {
@@ -92,15 +92,19 @@ export default class Level {
     }
 
     movePlayer(player, pos) {
-        assert(player.level == this);
         if (player.pos) {
             this.cell(player.pos).clearPlayer();
         }
         player.pos = pos;
-        if (pos) {
+        if (player.pos) {
             this.cell(pos).setPlayer(player);
         }
         player.idle = 0;
+    }
+
+    removePlayer(player) {
+        player.level = undefined;
+        this.movePlayer(player, undefined);
     }
 
     turnRight(player) {

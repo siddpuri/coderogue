@@ -53,7 +53,7 @@ export default class Game {
     if (!player.action) {
       try {
         player.action = await this.createPlayerAction(player);
-      } catch (e) {
+      } catch(e) {
         player.log.write('Failed to compile script!');
         player.log.write(this.trimError(e));
       }
@@ -67,7 +67,7 @@ export default class Game {
     try {
       await player.action();
       player.timeouts = 0;
-    } catch (e) {
+    } catch(e) {
       if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
         player.log.write('Script execution timed out!');
         if (player.timeouts < 3) player.timeouts++;
@@ -90,32 +90,33 @@ export default class Game {
   }
 
   killPlayer(player) {
-    this.removePlayer(player);
+    this.levels[player.level.levelNumber].removePlayer(player);
     player.log.write('You have been killed!');
     this.levels[0].spawn(player);
   }
 
   respawnAt(player, level, pos, dir) {
-    this.removePlayer(player);
-    this.levels[level].spawnAt(player, pos, dir);
-    player.dontScore = true;
+    if (!this.levels[level]) return false;
+    if (!pos.length || pos.length != 2) return false;
+    if (dir < 0 || dir > 3) return false;
+    this.levels[player.level.levelNumber].removePlayer(player);
+    let succ = this.levels[level].spawnAt(player, pos, dir);
+    if (!succ) succ = this.levels[level].spawn(player);
+    if (succ) player.dontScore = true;
+    if (!succ) player.log.write('No space to spawn!');
+    return succ;
   }
 
   exitPlayer(player) {
     let n = player.level.levelNumber;
     if (!player.dontScore) this.levels[n].score(player);
-    this.removePlayer(player);
+    this.levels[n].removePlayer(player);
     player.log.write(`Completed level ${n}!`);
     player.log.write(`Score is now: ${player.score}`);
-    n = player.dontScore ? 0 : (n + 1) % this.levels.length;
+    n = player.dontScore? 0 : (n + 1) % this.levels.length;
     player.level = this.levels[n];
     this.levels[n].spawn(player);
     delete player.dontScore;
-  }
-
-  removePlayer(player) {
-    this.levels[player.level.levelNumber].movePlayer(player, undefined);
-    player.level = undefined;
   }
 
   getLevel(player) {
@@ -159,8 +160,8 @@ export default class Game {
   createNewHandle() {
     const maxHandle = Util.getMaxHandle();
     if (this.playerHandles.size >= maxHandle) {
-      console.log('Max handles exceeded!');
-      return false;
+        console.log('Max handles exceeded!');
+        return false;
     }
     while (true) {
       let handle = Math.floor(Math.random() * maxHandle);
