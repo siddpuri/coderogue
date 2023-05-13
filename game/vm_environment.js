@@ -16,8 +16,8 @@ export default class VmEnvironment {
             turnRight: () => this.turnRight(),
             turnLeft: () => this.turnLeft(),
             canMove: dir => this.canMove(dir),
-            respawn: () => this.game.killPlayer(this.player),
-            respawnAt: (level, pos, dir) => this.game.respawnAt(this.player, level, pos, dir),
+            respawn: () => this.respawn(),
+            respawnAt: (level, pos, dir) => this.respawnAt(level, pos, dir),
 
             forward: 0,
             right: 1,
@@ -58,6 +58,20 @@ export default class VmEnvironment {
     }
 
     canMove(dir) {
+        if (!Number.isInteger(dir) || dir < 0 || dir > 3) return false;
         return this.player.level.canMove(this.player, dir);
+    }
+
+    respawn() {
+        if (!this.player.useTurn()) return false;
+        this.game.killPlayer(this.player);
+    }
+
+    respawnAt(level, pos, dir) {
+        if (!this.game.levels[level]) return false;
+        if (!Array.isArray(pos) || pos.length != 2) return false;
+        if (!Number.isInteger(dir) || dir < 0 || dir > 3) return false;
+        if (!this.player.useTurn()) return false;
+        this.game.respawnAt(this.player, level, pos, dir);
     }
 }
