@@ -90,21 +90,21 @@ export default class Game {
   }
 
   killPlayer(player) {
-    this.levels[player.level.levelNumber].removePlayer(player);
     player.log.write('You have been killed!');
+    this.respawn(player);
+  }
+
+  respawn(player) {
+    this.levels[player.level.levelNumber].removePlayer(player);
     this.levels[0].spawn(player);
   }
 
   respawnAt(player, level, pos, dir) {
-    if (!this.levels[level]) return false;
-    if (!pos.length || pos.length != 2) return false;
-    if (dir < 0 || dir > 3) return false;
     this.levels[player.level.levelNumber].removePlayer(player);
-    let succ = this.levels[level].spawnAt(player, pos, dir);
-    if (!succ) succ = this.levels[level].spawn(player);
-    if (succ) player.dontScore = true;
-    if (!succ) player.log.write('No space to spawn!');
-    return succ;
+    if (!this.levels[level].spawnAt(player, pos, dir)) {
+      this.levels[level].spawn(player);
+    }
+    player.dontScore = true;
   }
 
   exitPlayer(player) {
@@ -114,7 +114,6 @@ export default class Game {
     player.log.write(`Completed level ${n}!`);
     player.log.write(`Score is now: ${player.score}`);
     n = player.dontScore? 0 : (n + 1) % this.levels.length;
-    player.level = this.levels[n];
     this.levels[n].spawn(player);
     delete player.dontScore;
   }

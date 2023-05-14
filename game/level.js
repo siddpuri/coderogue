@@ -53,24 +53,27 @@ export default class Level {
                 }
             }
         }
-        if (candidates.length == 0) return null;
+        if (candidates.length == 0) {
+            return this.getSpawnPos(this.spawnTargetPos);
+        }
         return Util.randomElement(candidates);
     }
 
     spawn(player) {
+        if (player.level) console.log('Error in spawn');
         const dir = Util.randomElement([0, 1, 2, 3]);
         return this.spawnAt(player, this.spawnTargetPos, dir);
     }
 
     spawnAt(player, targetPos, dir) {
+        if (player.level) console.log('Error in spawnAt');
         let pos = targetPos;
-        if (!this.map ||
-            !this.map[targetPos[1]] ||
+        if (!this.map[targetPos[1]] ||
+            !this.cell() ||
             !this.cell(pos) ||
             !this.cell(pos).canSpawn)
         {
             pos = this.getSpawnPos(targetPos);
-            if (!pos) return false;
         }
         player.level = this;
         this.movePlayer(player, pos);
@@ -103,6 +106,7 @@ export default class Level {
     }
 
     removePlayer(player) {
+        if (player.level != this) console.log('Error in removePlayer');
         player.level = undefined;
         this.movePlayer(player, undefined);
     }
