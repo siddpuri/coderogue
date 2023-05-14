@@ -40,6 +40,14 @@ export default class Player {
         }
     }
 
+    onNewCode() {
+        delete this.action;
+        this.idle = 0;
+        this.timeouts = 0;
+        this.jailtime = 0;
+        this.log.write('New code loaded.');
+    }
+
     getState() {
         return {
             id: this.id,

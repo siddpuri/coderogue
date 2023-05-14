@@ -68,7 +68,7 @@ export default class Game {
     try {
       player.turns = 1;
       await player.action();
-      if (!idle) player.timeouts = 0;
+      if (!player.idle) player.timeouts = 0;
       if (player.idle++ > maxIdleTime) {
         this.timeout(player, 'Idle');
       }
@@ -129,15 +129,6 @@ export default class Game {
 
   getLevel(player) {
     return this.levels[player.level.levelNumber];
-  }
-
-  onNewCode(playerId) {
-    const player = this.players[playerId];
-    delete player.action;
-    this.idle = 0;
-    this.timeouts = 0;
-    player.jailtime = 0;
-    player.log.write('New code loaded.');
   }
 
   async createPlayerAction(player) {

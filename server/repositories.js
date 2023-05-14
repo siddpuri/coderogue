@@ -40,7 +40,6 @@ export default class Repositories {
         let filePath = this.filePath(playerId);
         await fs.mkdir(path.dirname(filePath), { recursive: true });
         await fs.writeFile(filePath, code);
-        this.server.game.onNewCode(playerId);
     }
 
     filePath(playerId) {
