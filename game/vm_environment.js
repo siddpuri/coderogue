@@ -26,9 +26,9 @@ export default class VmEnvironment {
 
             // Robot sensors
             getLevel: () => this.player.level.levelNumber,
-            getPosition: () => this.player.pos,
+            getPosition: () => this.player.pos.slice(),
             getDirection: () => this.player.dir,
-            getExitPosition: () => this.player.level.exitPos,
+            getExitPosition: () => this.player.level.exitPos.slice(),
 
             // AppLab functions
             randomNumber: (a, b) => Math.floor(Math.random() * (b - a + 1)) + a,
