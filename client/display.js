@@ -57,7 +57,8 @@ export default class Display {
         }
         this.levels = state.levels;
         if (this.highlightedPlayer) {
-            this.levelToRender = this.players[this.highlightedPlayer].level;
+            let playerLevel = this.players[this.highlightedPlayer].level;
+            if (playerLevel != 'jail') this.levelToRender = playerLevel;
         }
         this.renderMap();
         this.renderPlayers();

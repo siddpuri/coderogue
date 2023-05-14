@@ -58,13 +58,15 @@ export default class Game {
         player.log.write(this.trimError(e));
       }
     }
-    if (player.idle++ > maxIdleTime) this.killPlayer(player);
     if (player.jailtime) {
       player.log.write(`In jail for ${player.jailtime--} more turns.`);
       return;
     }
-    player.turns = 1;
+    if (!player.level) {
+      this.levels[0].spawn(player);
+    }
     try {
+      player.turns = 1;
       await player.action();
       player.timeouts = 0;
     } catch(e) {
@@ -75,6 +77,12 @@ export default class Game {
       } else {
         player.log.write(this.trimError(e));
       }
+    }
+    if (player.idle++ > maxIdleTime) {
+      player.log.write('Idle timeout!');
+      if (player.idleouts < 3) player.idleouts++;
+      player.jailtime = 10 ** player.idleouts;
+      this.levels[player.level.levelNumber].removePlayer(player);
     }
   }
 

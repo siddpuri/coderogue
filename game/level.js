@@ -102,6 +102,7 @@ export default class Level {
             this.cell(pos).setPlayer(player);
         }
         player.idle = 0;
+        player.idleouts = 0;
     }
 
     removePlayer(player) {

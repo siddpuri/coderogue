@@ -23,7 +23,12 @@ export default class Player {
         this.turns = 0;
         this.idle = 0;
         this.timeouts = 0;
-        this.jailtime = 0 ;
+        this.idleouts = 0;
+        this.jailtime = 0;
+    }
+
+    get levelNumber() {
+        return this.level? this.level.levelNumber : 'jail';
     }
 
     useTurn() {
@@ -42,7 +47,7 @@ export default class Player {
             period: this.period,
             handle: this.textHandle,
             score: this.score,
-            level: this.level.levelNumber,
+            level: this.levelNumber,
             pos: this.pos,
             dir: this.dir,
         };
