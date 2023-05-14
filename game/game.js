@@ -9,6 +9,7 @@ import Player from './player.js';
 import VmEnvironment from './vm_environment.js';
 
 const maxIdleTime = 60;
+const jailtimes = [60, 600, 3600];
 
 export default class Game {
   constructor(server) {
@@ -50,17 +51,20 @@ export default class Game {
   }
 
   async doPlayerAction(player) {
+    if (player.jailtime) {
+      player.log.write(`In jail for ${player.jailtime} more turns.`);
+      player.jailtime--;
+      return;
+    }
     if (!player.action) {
       try {
         player.action = await this.createPlayerAction(player);
       } catch(e) {
         player.log.write('Failed to compile script!');
         player.log.write(this.trimError(e));
+        this.punish(player);
+        return;
       }
-    }
-    if (player.jailtime) {
-      player.log.write(`In jail for ${player.jailtime--} more turns.`);
-      return;
     }
     if (!player.level) {
       this.levels[0].spawn(player);
@@ -68,25 +72,28 @@ export default class Game {
     try {
       player.turns = 1;
       await player.action();
-      if (!player.idle) player.timeouts = 0;
-      if (player.idle++ > maxIdleTime) {
-        this.timeout(player, 'Idle');
-      }
     } catch(e) {
       if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
-        this.timeout(player, 'Script execution');
+        player.log.write('Script execution timed out!');
+        this.punish(player);
+        return;
       } else {
         player.log.write(this.trimError(e));
       }
     }
+    if (!player.idle) player.offenses = 0;
+    if (player.idle++ > maxIdleTime) {
+      player.log.write('Idle timeout!');
+      this.punish(player);
+      player.idle = 1;
+    }
   }
 
-  timeout(player, message) {
-    player.log.write(message + ' timed out!');
-    if (player.timeouts < 4) player.timeouts++;
-    const maxJailtime = 10 ** (player.timeouts - 1);
-    player.jailtime = Math.floor(Math.random() * maxJailtime);
+  punish(player) {
     this.levels[player.level.levelNumber].removePlayer(player);
+    player.offenses++;
+    const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
+    player.jailtime = Math.floor(Math.random() * maxJailtime);
   }
 
   trimError(e) {

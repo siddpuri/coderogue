@@ -44,7 +44,7 @@ export default class WebServer {
         return;
       }
       await this.server.repositories.writeCode(playerId, req.body.code);
-      this.server.players[playerId].onNewCode();
+      this.server.game.players[playerId].onNewCode();
       res.send(JSON.stringify({}));
     });
 

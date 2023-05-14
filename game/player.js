@@ -22,7 +22,7 @@ export default class Player {
         this.dir = 0;
         this.turns = 0;
         this.idle = 0;
-        this.timeouts = 0;
+        this.offenses = 0;
         this.jailtime = 0;
     }
 
@@ -43,7 +43,7 @@ export default class Player {
     onNewCode() {
         delete this.action;
         this.idle = 0;
-        this.timeouts = 0;
+        this.offenses = 0;
         this.jailtime = 0;
         this.log.write('New code loaded.');
     }

@@ -76,7 +76,6 @@ export default class Level {
         player.level = this;
         player.pos = pos;
         player.dir = dir;
-        player.idle = 0;
         this.cell(pos).setPlayer(player);
     }
 
