@@ -76,7 +76,6 @@ export default class Level {
         player.level = this;
         player.pos = pos;
         player.dir = dir;
-        player.idle = 0;
         this.cell(pos).setPlayer(player);
     }
 
@@ -93,7 +92,6 @@ export default class Level {
             this.server.game.exitPlayer(player);
         }
         player.idle = 0;
-        player.idleouts = 0;
     }
 
     removePlayer(player) {

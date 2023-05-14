@@ -68,7 +68,7 @@ export default class Game {
     try {
       player.turns = 1;
       await player.action();
-      player.timeouts = 0;
+      if (!idle) player.timeouts = 0;
     } catch(e) {
       if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
         this.timeout(player, 'Script execution');
