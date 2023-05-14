@@ -59,7 +59,6 @@ export default class Game {
       }
     }
     if (player.jailtime) {
-      console.log(player.id, 'in jail for', player.jailtime, 'more turns.');
       player.log.write(`In jail for ${player.jailtime--} more turns.`);
       return;
     }
@@ -83,8 +82,6 @@ export default class Game {
   }
 
   timeout(player, message) {
-    console.log(player.id, message, 'timed out!');
-    console.log(player.level);
     player.log.write(message + ' timed out!');
     if (player.timeouts < 4) player.timeouts++;
     const maxJailtime = 10 ** (player.timeouts - 1);
