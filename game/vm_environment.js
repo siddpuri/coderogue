@@ -43,18 +43,21 @@ export default class VmEnvironment {
     }
 
     moveForward() {
-        if (!this.player.useTurn()) return false;
-        return this.player.level.moveForward(this.player);
+        if (this.player.useTurn()) {
+            this.player.level.moveForward(this.player);
+        }
     }
 
     turnRight() {
-        if (!this.player.useTurn()) return false;
-        return this.player.level.turnRight(this.player);
+        if (this.player.useTurn()) {
+            this.player.level.turnRight(this.player);
+        }
     }
 
     turnLeft() {
-        if (!this.player.useTurn()) return false;
-        return this.player.level.turnLeft(this.player);
+        if (this.player.useTurn()) {
+            return this.player.level.turnLeft(this.player);
+        }
     }
 
     canMove(dir) {
@@ -63,8 +66,9 @@ export default class VmEnvironment {
     }
 
     respawn() {
-        if (!this.player.useTurn()) return false;
-        this.game.respawn(this.player);
+        if (this.player.useTurn()) {
+            this.game.respawn(this.player);
+        }
     }
 
     respawnAt(level, pos, dir) {

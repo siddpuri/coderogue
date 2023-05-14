@@ -109,9 +109,7 @@ export default class Game {
 
   respawnAt(player, level, pos, dir) {
     this.levels[player.level.levelNumber].removePlayer(player);
-    if (!this.levels[level].spawnAt(player, pos, dir)) {
-      this.levels[level].spawn(player);
-    }
+    this.levels[level].spawnAt(player, pos, dir);
     player.dontScore = true;
   }
 

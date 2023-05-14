@@ -62,44 +62,34 @@ export default class Level {
     spawn(player) {
         if (player.level) console.log('Error in spawn');
         const dir = Util.randomElement([0, 1, 2, 3]);
-        return this.spawnAt(player, this.spawnTargetPos, dir);
+        this.spawnAt(player, this.spawnTargetPos, dir);
     }
 
-    spawnAt(player, targetPos, dir) {
+    spawnAt(player, pos, dir) {
         if (player.level) console.log('Error in spawnAt');
-        let pos = targetPos;
         if (!this.map[pos[1]] ||
             !this.cell(pos) ||
             !this.cell(pos).canSpawn)
         {
-            pos = this.getSpawnPos(targetPos);
+            pos = this.getSpawnPos(pos);
         }
         player.level = this;
-        this.movePlayer(player, pos);
+        player.pos = pos;
         player.dir = dir;
-        return true;
+        this.cell(pos).setPlayer(player);
     }
 
     moveForward(player) {
         const newPos = this.movePos(player.pos, player.dir);
         if (!this.cell(newPos).canEnter) {
             this.bump(player);
-            return false;
+            return;
         }
-        this.movePlayer(player, newPos);
-        if (this.cell(newPos).isExit) {
+        this.cell(player.pos).clearPlayer();
+        player.pos = newPos;
+        this.cell(player.pos).setPlayer(player);
+        if (this.cell(player.pos).isExit) {
             this.server.game.exitPlayer(player);
-        }
-        return true;
-    }
-
-    movePlayer(player, pos) {
-        if (player.pos) {
-            this.cell(player.pos).clearPlayer();
-        }
-        player.pos = pos;
-        if (player.pos) {
-            this.cell(pos).setPlayer(player);
         }
         player.idle = 0;
         player.idleouts = 0;
@@ -107,8 +97,9 @@ export default class Level {
 
     removePlayer(player) {
         if (player.level != this) console.log('Error in removePlayer');
+        this.cell(player.pos).clearPlayer();
         player.level = undefined;
-        this.movePlayer(player, undefined);
+        player.pos = undefined;
     }
 
     turnRight(player) {
