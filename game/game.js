@@ -134,6 +134,8 @@ export default class Game {
   onNewCode(playerId) {
     const player = this.players[playerId];
     delete player.action;
+    this.idle = 0;
+    this.timeouts = 0;
     player.jailtime = 0;
     player.log.write('New code loaded.');
   }
