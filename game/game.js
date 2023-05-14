@@ -80,8 +80,9 @@ export default class Game {
     }
     if (player.idle++ > maxIdleTime) {
       player.log.write('Idle timeout!');
-      if (player.idleouts < 3) player.idleouts++;
-      player.jailtime = 10 ** player.idleouts;
+      if (player.idleouts < 4) player.idleouts++;
+      const maxJailtime = 10 ** (player.idleouts - 1);
+      player.jailtime = Math.floor(Math.random() * maxJailtime);
       this.levels[player.level.levelNumber].removePlayer(player);
     }
   }
