@@ -71,21 +71,22 @@ export default class Game {
       player.timeouts = 0;
     } catch(e) {
       if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
-        player.log.write('Script execution timed out!');
-        if (player.timeouts < 3) player.timeouts++;
-        player.jailtime = 10 ** player.timeouts;
+        this.timeout(player, 'Script execution');
       } else {
         player.log.write(this.trimError(e));
       }
     }
     if (player.idle++ > maxIdleTime) {
-      player.log.write('Idle timeout!');
-      if (player.idleouts < 4) player.idleouts++;
-      player.idle = 0;
-      const maxJailtime = 10 ** (player.idleouts - 1);
-      player.jailtime = Math.floor(Math.random() * maxJailtime);
-      this.levels[player.level.levelNumber].removePlayer(player);
+      this.timeout(player, 'Idle');
     }
+  }
+
+  timeout(player, message) {
+    player.log.write(message + ' timed out!');
+    if (player.timeouts < 4) player.timeouts++;
+    const maxJailtime = 10 ** (player.timeouts - 1);
+    player.jailtime = Math.floor(Math.random() * maxJailtime);
+    this.levels[player.level.levelNumber].removePlayer(player);
   }
 
   trimError(e) {
