@@ -69,15 +69,15 @@ export default class Game {
       player.turns = 1;
       await player.action();
       if (!idle) player.timeouts = 0;
+      if (player.idle++ > maxIdleTime) {
+        this.timeout(player, 'Idle');
+      }
     } catch(e) {
       if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
         this.timeout(player, 'Script execution');
       } else {
         player.log.write(this.trimError(e));
       }
-    }
-    if (player.idle++ > maxIdleTime) {
-      this.timeout(player, 'Idle');
     }
   }
 
