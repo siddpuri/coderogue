@@ -19,7 +19,7 @@ export default class CaveLevel extends Level {
     get exitPos() { return [this.width - 8, this.height - 8]; }
 
     score(player) {
-        player.score += 500;
+        player.score += 300;
         super.score(player);
     }
 
@@ -28,8 +28,8 @@ export default class CaveLevel extends Level {
         if (cell.hasPlayer) {
             let other = this.server.game.players[cell.playerId];
             this.server.game.respawn(other);
-            player.log.write('You just bumped off ${other.textHandle}!');
-            other.log.write('You were bumped off by ${player.textHandle}!');
+            player.log.write(`You just bumped off ${other.textHandle}!`);
+            other.log.write(`You were bumped off by ${player.textHandle}!`);
             this.score(player);
         } else {
             super.bump(player);
