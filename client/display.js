@@ -77,7 +77,7 @@ export default class Display {
                 let highlighted = false;
                 let currentPlayer = false;
                 if (Object.hasOwn(cell, 'playerId')) {
-                    const dir = this.players[cell.playerId].dir;
+                    let dir = this.players[cell.playerId].dir;
                     char = '^>v<'[dir];
                     highlighted = cell.playerId == this.highlightedPlayer;
                     currentPlayer = cell.playerId == this.client.credentials.playerId;

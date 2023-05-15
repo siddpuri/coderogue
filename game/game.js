@@ -90,7 +90,7 @@ export default class Game {
   }
 
   punish(player) {
-    this.levels[player.level.levelNumber].removePlayer(player);
+    player.level.removePlayer(player);
     player.offenses++;
     const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
     player.jailtime = Math.floor(Math.random() * maxJailtime);
@@ -113,29 +113,26 @@ export default class Game {
   }
 
   respawn(player) {
-    this.levels[player.level.levelNumber].removePlayer(player);
+    player.level.removePlayer(player);
     this.levels[0].spawn(player);
   }
 
   respawnAt(player, level, pos, dir) {
-    this.levels[player.level.levelNumber].removePlayer(player);
-    this.levels[level].spawnAt(player, pos, dir);
+    player.level.removePlayer(player);
+    level.spawnAt(player, pos, dir);
     player.dontScore = true;
   }
 
   exitPlayer(player) {
-    let n = player.level.levelNumber;
-    if (!player.dontScore) this.levels[n].score(player);
-    this.levels[n].removePlayer(player);
-    player.log.write(`Completed level ${n}!`);
+    let levelNumber = player.level.levelNumber;
+    player.log.write(`Completed level ${levelNumber}!`);
+    if (!player.dontScore) player.level.score(player);
     player.log.write(`Score is now: ${player.score}`);
-    n = player.dontScore? 0 : (n + 1) % this.levels.length;
-    this.levels[n].spawn(player);
+    player.level.removePlayer(player);
+    levelNumber = (levelNumber + 1) % this.levels.length;
+    if (player.dontScore) levelNumber = 0;
+    this.levels[levelNumber].spawn(player);
     delete player.dontScore;
-  }
-
-  getLevel(player) {
-    return this.levels[player.level.levelNumber];
   }
 
   async createPlayerAction(player) {

@@ -67,10 +67,7 @@ export default class Level {
 
     spawnAt(player, pos, dir) {
         if (player.level) console.log('Error in spawnAt');
-        if (!this.map[pos[1]] ||
-            !this.cell(pos) ||
-            !this.cell(pos).canSpawn)
-        {
+        if (!this.cell(pos).canSpawn) {
             pos = this.getSpawnPos(pos);
         }
         player.level = this;
