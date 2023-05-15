@@ -132,7 +132,7 @@ class Cave {
         for (let c = pos[0]; c < pos[0] + size[0]; c++) {
             for (let r = pos[1]; r < pos[1] + size[1]; r++) {
                 let cell = this.level.cell([c, r]);
-                if (cell.hasPlayer) result.push(cell.player);
+                if (cell.hasPlayer) result.push(cell.playerId);
             }
         }
         return result;
@@ -193,12 +193,12 @@ class Tunnel {
         let dy = Math.sign(corner[1] - y);
         for (; y != corner[1]; y += dy) {
             let cell = this.level.cell([x, y]);
-            if (cell.hasPlayer) result.push(cell.player);
+            if (cell.hasPlayer) result.push(cell.playerId);
         }
         let dx = Math.sign(this.endCave.pos[0] - x);
         for (; x != this.endCave.pos[0]; x += dx) {
             let cell = this.level.cell([x, y]);
-            if (cell.hasPlayer) result.push(cell.player);
+            if (cell.hasPlayer) result.push(cell.playerId);
         }
         return result;
     }
