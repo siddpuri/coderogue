@@ -115,7 +115,7 @@ export default class Game {
   }
 
   respawn(player) {
-    player.level.removePlayer(player);
+    if (player.level) player.level.removePlayer(player);
     this.levels[0].spawn(player);
   }
 
