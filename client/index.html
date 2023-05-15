@@ -9,32 +9,38 @@
         <link rel="stylesheet" href="coderogue.css">
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
             <div class="row mb-5">
-                <div class="col">
-                    <h3>
-                        Coderogue
-                        <span class="small">
-                            level
-                            <span id="level">0</span>
-                            : &nbsp;
+                <div class="col ml-3 mr-3">
+                    <div class="row">
+                        <div class="col-3 h2">
+                            Coderogue
+                        </div>
+                        <div class="col h4 align-self-center">
+                            level <span id="level">0</span>:
                             <span id="level-name">The Plains</span>
-                        </span>
-                    </h3>
-                    <canvas id="canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <canvas id="canvas"></canvas>
+                    </div>
                 </div>
-                <div class="col">
-                    <h3>Players</h3>
-                    <table class="table" id="players">
-                        <thread>
-                            <tr>
-                                <th>Score</th>
-                                <th>Level</th>
-                                <th>Handle</th>
-                            </tr>
-                        </thread>
-                        <tbody></tbody>
-                    </table>
+                <div class="col ml-3 mr-3">
+                    <div class="row h2">
+                        Players
+                    </div>
+                    <div class="row">
+                        <table class="table" id="players">
+                            <thread>
+                                <tr>
+                                    <th>Score</th>
+                                    <th>Level</th>
+                                    <th>Handle</th>
+                                </tr>
+                            </thread>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <ul class="nav nav-tabs mb-3">
