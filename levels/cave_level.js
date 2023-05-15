@@ -27,7 +27,7 @@ export default class CaveLevel extends Level {
         let cell = this.cell(this.movePos(player.pos, player.dir));
         if (cell.hasPlayer) {
             let other = this.server.game.players[cell.playerId];
-            this.game.respawn(other);
+            this.server.game.respawn(other);
             player.log.write('You just bumped off ${other.textHandle}!');
             other.log.write('You were bumped off by ${player.textHandle}!');
             this.score(player);
