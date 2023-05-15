@@ -7,8 +7,10 @@ export default class Updater {
         this.busy = false;
         this.timer = setInterval(() => this.tick(), 1000);
         await this.loadCode();
-        await this.loadApi();
-        await this.loadAccount();
+        await this.loadHtml('general', 'general-text');
+        await this.loadHtml('api', 'api-text');
+        await this.loadHtml('levels', 'levels-text');
+        await this.loadHtml('account', 'account');
     }
 
     async tick() {
@@ -59,21 +61,6 @@ export default class Updater {
         this.client.display.setLog(result.log);
     }
 
-    async loadApi() {
-        let html = await this.getHtml('api');
-        document.getElementById('api-text').innerHTML = html;
-    }
-
-    async loadAccount() {
-        let html = await this.getHtml('account');
-        document.getElementById('account').innerHTML = html;
-    }
-
-    async getHtml(name) {
-        let response = await fetch(`${this.client.baseUrl}/${name}.html`);
-        return await response.text();
-    }
-
     async getJson(name) {
         let response = await fetch(`${this.client.baseUrl}/api/${name}`);
         let result = await response.json();
@@ -97,5 +84,11 @@ export default class Updater {
             this.client.display.say(result.error, 3);
         }
         return result;
+    }
+
+    async loadHtml(name, id) {
+        let response = await fetch(`${this.client.baseUrl}/${name}.html`);
+        let html = await response.text();
+        document.getElementById(id).innerHTML = html;
     }
 }
