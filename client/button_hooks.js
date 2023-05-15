@@ -7,6 +7,7 @@ export default class ButtonHooks {
         this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('login', async () => await this.login());
         this.onClick('logout', async () => await this.logout());
+        this.onClick('respawn', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());
         this.onClick('show-all', () => this.client.display.showAll());
@@ -28,6 +29,21 @@ export default class ButtonHooks {
 
     async logout() {
         await this.client.credentials.logout();
+    }
+
+    async respawn() {
+        let response = await fetch(
+            this.client.baseUrl + '/api/respawn',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}),
+            }
+        );
+        let result = await response.json();
+        if (result.error) {
+            this.say(result.error, 3);
+        }
     }
 
     async reformat() {

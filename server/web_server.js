@@ -27,33 +27,32 @@ export default class WebServer {
       res.send(JSON.stringify(response));
     });
 
+    this.app.post('/api/respawn', async (req, res) => {
+      let playerId = this.validatePlayerId(req, res);
+      if (!playerId) return;
+      let player = this.server.game.players[playerId];
+      this.server.game.respawn(player);
+      res.send(JSON.stringify({}));
+    });
+
     this.app.get('/api/code', async (req, res) => {
-      let playerId = this.validatePlayerId(req);
-      if (!playerId) {
-        res.send(JSON.stringify({error: 'Not logged in.'}));
-        return;
-      }
+      let playerId = this.validatePlayerId(req, res);
+      if (!playerId) return;
       let code = await this.server.repositories.readCode(playerId);
       res.send(JSON.stringify({ code }));
     });
 
     this.app.post('/api/code', async (req, res) => {
-      let playerId = this.validatePlayerId(req);
-      if (!playerId) {
-        res.send(JSON.stringify({error: 'Not logged in.'}));
-        return;
-      }
+      let playerId = this.validatePlayerId(req, res);
+      if (!playerId) return;
       await this.server.repositories.writeCode(playerId, req.body.code);
       this.server.game.players[playerId].onNewCode();
       res.send(JSON.stringify({}));
     });
 
     this.app.get('/api/log', async (req, res) => {
-      let playerId = this.validatePlayerId(req);
-      if (!playerId) {
-        res.send(JSON.stringify({error: 'Not logged in.'}));
-        return;
-      }
+      let playerId = this.validatePlayerId(req, res);
+      if (!playerId) return;
       let log = this.server.game.players[playerId].log.toString();
       res.send(JSON.stringify({ log }));
     });
@@ -63,7 +62,7 @@ export default class WebServer {
     });
   }
 
-  validatePlayerId(req) {
+  validatePlayerId(req, res) {
     let playerId = req.cookies.playerId;
     let authToken = req.cookies.authToken;
     if (
@@ -72,6 +71,7 @@ export default class WebServer {
       !this.server.game.players[playerId] ||
       this.server.game.players[playerId].authToken != authToken
     ) {
+      res.send(JSON.stringify({ error: 'Not logged in.' }));
       return undefined;
     }
     return playerId;
