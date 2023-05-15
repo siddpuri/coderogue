@@ -32,15 +32,7 @@ export default class ButtonHooks {
     }
 
     async respawn() {
-        let response = await fetch(
-            this.client.baseUrl + '/api/respawn',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({}),
-            }
-        );
-        let result = await response.json();
+        let result = await this.client.updater.postJson('respawn', {});
         if (result.error) {
             this.say(result.error, 3);
         }
@@ -60,15 +52,7 @@ export default class ButtonHooks {
 
     async submit() {
         let code = this.client.display.getCode();
-        let response = await fetch(
-            this.client.baseUrl + '/api/code',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code }),
-            }
-        );
-        let result = await response.json();
+        let result = this.client.updater.postJson('code', { code });
         if (result.error) {
             this.say(result.error, 3);
         }

@@ -25,49 +25,77 @@ export default class Updater {
     }
 
     async doTickActions() {
-        let response = await fetch(this.client.baseUrl + "/api/state");
-        let state = await response.json();
+        let state = await this.getJson('state');
         this.client.display.render(state);
         if (this.client.display.isShowingLogTab()) {
             await this.loadLog();
         }
     }
 
-    async loadCode() {
-        let code = 'Log in to see your code.';
-        if (this.client.credentials.isLoggedIn) {
-            let response = await fetch(this.client.baseUrl + "/api/code");
-            let result = await response.json();
-            if (result.error) {
-                this.client.display.say(result.error, 3);
-                return;
-            }
-            code = result.code;
+    async login(credentials) {
+        let result = await this.postJson('login', credentials);
+        if (result.error) {
+            this.client.display.say(result.error, 3);
+            return false;
         }
-        this.client.display.setCode(code);
+        this.client.credentials.login(result);
+    }
+
+    async loadCode() {
+        let result = await this.getJson('code');
+        if (result.error) {
+            this.client.display.say(result.error, 3);
+            return;
+        }
+        this.client.display.setCode(result.code);
     }
 
     async loadLog() {
-        let log = 'Log in to see your log.';
-        if (this.client.credentials.isLoggedIn) {
-            let response = await fetch(this.client.baseUrl + "/api/log");
-            let result = await response.json();
-            if (result.error) {
-                this.client.display.say(result.error, 3);
-                return;
-            }
-            log = result.log;
+        let result = await this.getJson('log');
+        if (result.error) {
+            this.client.display.say(result.error, 3);
+            return;
         }
-        this.client.display.setLog(log);
+        this.client.display.setLog(result.log);
     }
 
     async loadApi() {
-        let response = await fetch(this.client.baseUrl + "/api.html");
-        document.getElementById('api-text').innerHTML = await response.text();
+        let html = await this.getHtml('api');
+        document.getElementById('api-text').innerHTML = html;
     }
 
     async loadAccount() {
-        let response = await fetch(this.client.baseUrl + "/account.html");
-        document.getElementById('account').innerHTML = await response.text();
+        let html = await this.getHtml('account');
+        document.getElementById('account').innerHTML = html;
+    }
+
+    async getHtml(name) {
+        let response = await fetch(`${this.client.baseUrl}/${name}.html`);
+        return await response.text();
+    }
+
+    async getJson(name) {
+        let response = await fetch(`${this.client.baseUrl}/api/${name}`);
+        let result = await response.json();
+        if (result.error) {
+            this.client.display.say(result.error, 3);
+        }
+        return result;
+    }
+
+    async postJson(name, args) {
+        let response = await fetch(
+            `${this.client.baseUrl}/api/${name}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(args),
+            }
+        );
+        let result = await response.json();
+        if (result.error) {
+            this.client.display.say(result.error, 3);
+        }
+        return result;
     }
 }

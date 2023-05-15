@@ -38,22 +38,10 @@ export default class Credentials {
         document.cookie = `${key}=;${expire_now}`
     }
 
-    async login(credentials) {
-        let response = await fetch(
-            this.client.baseUrl + '/api/login',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
-            }
-        );
-        let result = await response.json();
-        if (result.error) {
-            return false;
-        }
-        this.playerId = result.playerId;
-        this.authToken = result.authToken;
-        this.handle = result.handle;
+    async login(serverResponse) {
+        this.playerId = serverResponse.playerId;
+        this.authToken = serverResponse.authToken;
+        this.handle = serverResponse.handle;
         this.writeCookie('playerId', this.playerId);
         this.writeCookie('authToken', this.authToken);
         this.writeCookie('handle', this.handle);
