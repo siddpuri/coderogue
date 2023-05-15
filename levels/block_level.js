@@ -18,7 +18,9 @@ export default class BlockLevel extends Level {
         }
     }
 
-    get name() { return 'Seismic Hazard Zone'; }
+    get name() { return 'Rolling Hills'; }
+    get spawnTargetPos() { return super.exitPos; }
+    get exitPos() { return super.spawnTargetPos; }
 
     score(player) { player.score += 200; }
 
@@ -26,9 +28,6 @@ export default class BlockLevel extends Level {
         super.bump(player);
         if (player.score > 0) player.score--;
     }
-
-    get spawnTargetPos() { return super.exitPos; }
-    get exitPos() { return super.spawnTargetPos; }
 
     async doLevelAction() {
         for (let block of this.blocks) {
