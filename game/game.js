@@ -4,6 +4,7 @@ import util from 'util';
 import Util from '../shared/util.js';
 import IntroLevel from '../levels/intro_level.js';
 import BlockLevel from '../levels/block_level.js';
+import CaveLevel from '../levels/cave_level.js';
 
 import Player from './player.js';
 import VmEnvironment from './vm_environment.js';
@@ -17,6 +18,7 @@ export default class Game {
     this.levels = [
       new IntroLevel(server),
       new BlockLevel(server),
+      new CaveLevel(server),
     ];
     for (let i = 0; i < this.levels.length; i++) {
       this.levels[i].levelNumber = i;
@@ -127,7 +129,6 @@ export default class Game {
     let levelNumber = player.level.levelNumber;
     player.log.write(`Completed level ${levelNumber}!`);
     if (!player.dontScore) player.level.score(player);
-    player.log.write(`Score is now: ${player.score}`);
     player.level.removePlayer(player);
     levelNumber = (levelNumber + 1) % this.levels.length;
     if (player.dontScore) levelNumber = 0;

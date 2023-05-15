@@ -28,7 +28,7 @@ export default class Level {
     get spawnTargetPos() { return [10, 10]; }
     get exitPos() { return [this.width - 10, this.height - 10]; }
 
-    score(player) {}
+    score(player) { player.log.write(`Score is now: ${player.score}`); }
     bump(player) { player.log.write('Bump!'); }
     async doLevelAction() {}
 

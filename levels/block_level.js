@@ -22,7 +22,10 @@ export default class BlockLevel extends Level {
     get spawnTargetPos() { return super.exitPos; }
     get exitPos() { return super.spawnTargetPos; }
 
-    score(player) { player.score += 200; }
+    score(player) {
+        player.score += 200;
+        super.score();
+    }
 
     bump(player) {
         super.bump(player);
@@ -73,8 +76,8 @@ class Block {
         if (
             size[0] < minBlockSize || size[1] < minBlockSize ||
             size[0] > maxBlockSize || size[1] > maxBlockSize ||
-            pos[0] < minBlockCol || pos[1] < 0 ||
-            pos[0] + size[0] > maxBlockCol || pos[1] + size[1] > this.level.height
+            pos[0] < minBlockCol || pos[1] <= 0 ||
+            pos[0] + size[0] > maxBlockCol || pos[1] + size[1] >= this.level.height
         ) return false;
         for (let c = 0; c < size[0]; c++) {
             for (let r = 0; r < size[1]; r++) {
