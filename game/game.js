@@ -9,7 +9,7 @@ import Player from './player.js';
 import VmEnvironment from './vm_environment.js';
 
 const maxIdleTime = 60;
-const jailtimes = [60, 600, 3600];
+const jailtimes = [10, 60, 600, 3600];
 
 export default class Game {
   constructor(server) {
