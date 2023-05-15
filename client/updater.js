@@ -17,8 +17,11 @@ export default class Updater {
             return;
         }
         this.busy = true;
-        await this.doTickActions();
-        this.busy = false;
+        try {
+            await this.doTickActions();
+        } finally {
+            this.busy = false;
+        }
     }
 
     async doTickActions() {
