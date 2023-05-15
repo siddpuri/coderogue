@@ -9,6 +9,6 @@ export default class IntroLevel extends Level {
 
     score(player) {
         player.score += 100;
-        super.score();
+        super.score(player);
     }
 }

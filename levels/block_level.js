@@ -24,7 +24,7 @@ export default class BlockLevel extends Level {
 
     score(player) {
         player.score += 200;
-        super.score();
+        super.score(player);
     }
 
     bump(player) {

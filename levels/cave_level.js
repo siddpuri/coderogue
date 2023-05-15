@@ -20,7 +20,7 @@ export default class CaveLevel extends Level {
 
     score(player) {
         player.score += 500;
-        super.score();
+        super.score(player);
     }
 
     bump(player) {
