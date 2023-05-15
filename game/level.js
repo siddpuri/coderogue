@@ -24,10 +24,12 @@ export default class Level {
         this.cell(this.exitPos).setExit();
     }
     
-    score(player) {}
-    bump(player) { player.log.write('Bump!'); }
+    get name() { return 'Mystery Level'; }
     get spawnTargetPos() { return [10, 10]; }
     get exitPos() { return [this.width - 10, this.height - 10]; }
+
+    score(player) {}
+    bump(player) { player.log.write('Bump!'); }
     async doLevelAction() {}
 
     drawBorderWalls() {
@@ -127,6 +129,9 @@ export default class Level {
     }
 
     getState() {
-        return this.map;
+        return {
+            name: this.name,
+            map: this.map,
+        };
     }
 }

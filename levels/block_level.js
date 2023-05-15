@@ -18,6 +18,8 @@ export default class BlockLevel extends Level {
         }
     }
 
+    get name() { return 'Seismic Hazard Zone'; }
+
     score(player) { player.score += 200; }
 
     bump(player) {

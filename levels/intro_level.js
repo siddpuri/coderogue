@@ -5,5 +5,7 @@ export default class IntroLevel extends Level {
         super(server);
     }
 
+    get name() { return 'The Plains'; }
+    
     score(player) { player.score += 100; }
 }

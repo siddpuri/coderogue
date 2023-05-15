@@ -60,15 +60,22 @@ export default class Display {
             let playerLevel = this.players[this.highlightedPlayer].level;
             if (playerLevel != 'jail') this.levelToRender = playerLevel;
         }
+        this.renderTitle();
         this.renderMap();
         this.renderPlayers();
     }
 
-    renderMap() {
+    renderTitle() {
         let span = document.getElementById('level');
         span.removeChild(span.firstChild);
         span.appendChild(document.createTextNode(this.levelToRender));
-        this.map = this.levels[this.levelToRender];
+        span = document.getElementById('level-name');
+        span.removeChild(span.firstChild);
+        span.appendChild(document.createTextNode(this.levels[this.levelToRender].name));
+    }
+
+    renderMap() {
+        this.map = this.levels[this.levelToRender].map;
         this.clearCanvas();
         for (let row = 0; row < this.map.length; row++) {
             for (let col = 0; col < this.map[row].length; col++) {
