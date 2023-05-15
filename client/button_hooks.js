@@ -22,8 +22,11 @@ export default class ButtonHooks {
     async login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        if (!await this.client.credentials.login({ email, password })) {
-            this.say('Login failed!', 3);
+        let result = await this.client.updater.postJson('login', { email, password });
+        if (result.error) {
+            this.say(result.error, 3);
+        } else {
+            this.client.credentials.login(result);
         }
     }
 
