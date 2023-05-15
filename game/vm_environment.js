@@ -5,8 +5,8 @@ export default class VmEnvironment {
         this.sandbox = {
             // General functionality
             console: {
-                log: obj => this.log(obj),
-                debug: obj => console.debug(obj),
+                log: value => this.log(value),
+                debug: value => console.debug(value),
             },
 
             state: 'initial',
@@ -39,8 +39,12 @@ export default class VmEnvironment {
         };
     }
 
-    log(obj) {
-        this.player.log.write(obj.toString());
+    log(value) {
+        let text = Array.isArray(value)?
+            '[' + value.map(e => String(e)).join(', ') + ']':
+            String(value);
+        text = JSON.stringify(value);
+        this.player.log.write(text);
     }
 
     moveForward() {
