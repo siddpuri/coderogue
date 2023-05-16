@@ -16,6 +16,7 @@ export default class WebServer {
 
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
+    this.app.use(express.static('client/static'));
 
     this.app.post('/api/login', async (req, res) => {
       let response = await this.server.auth.login(req.body);

@@ -1,55 +1,54 @@
-if (!getLevel() && randomNumber(0,1)) moveRandomly();
-else if (canKill())                   moveForward();
-else if (state == 'initial')          moveTowardExit();
-else if (state == 'circumnavigate')   circumnavigate();
+// Constants
+var none = 0;
+var forward = 1;
+var left = 2;
+var right = 3;
 
-function canKill() {
-    if (getLevel() != 2) return false;
-    let facing = getPosition();
-    if (getDirection() == 0) facing[1]--;
-    if (getDirection() == 1) facing[0]++;
-    if (getDirection() == 2) facing[1]++;
-    if (getDirection() == 3) facing[0]--;
-    return '^>v<'.includes(whatsAt(facing));
+// Lookup table
+var table;
+if (!table) table = new Uint16Array(80 * 40 * 4);
+
+function clearMoves() {
+    table.fill(0);
 }
 
-function moveRandomly() {
-    [moveForward, turnRight, turnLeft][randomNumber(0, 2)]();
+// Index calculations
+function index(y, x, dir) {
+    return (y * 80 + x) * 4 + dir;
 }
 
-function moveTowardExit() {
-    state = 'initial';
-    if      (isGood(forward))  moveForward();
-    else if (isGood(right))    turnRight();
-    else if (isGood(left))     turnLeft();
-    else if (isGood(backward)) turnRight();
-    else if (!isWallOnLeft())  turnRight();
-    else                       circumnavigate();
+function yOf(i) {
+    let pos = i / 4 |0;
+    return pos / 80 |0;
 }
 
-function circumnavigate() {
-    state = 'circumnavigate';
-    if      (isGood(forward))  moveTowardExit();
-    else if (isGood(left))     moveTowardExit();
-    else if (canMove(left))    turnLeft();
-    else if (canMove(forward)) moveForward();
-    else                       turnRight();
+function xOf(i) {
+    let pos = i / 4 |0;
+    return pos % 80;
 }
 
-function isGood(dir) {
-    return isWarmer(dir) && canMove(dir);
+function dirOf(i) {
+    return i & 3;
 }
 
-function isWallOnLeft() {
-    return isWarmer(left) && !canMove(left);
+// Queue
+var head;
+var tail;
+
+function enqueue(i) {
+    table[tail] ||= i << 2;
+    tail = i;
 }
 
-function isWarmer(dir) {
-    let dx = getExitPosition()[0] - getPosition()[0];
-    let dy = getExitPosition()[1] - getPosition()[1];
-    let realDir = (getDirection() + dir) % 4;
-    return realDir == 0 && dy < 0 ||
-           realDir == 1 && dx > 0 ||
-           realDir == 2 && dy > 0 ||
-           realDir == 3 && dx < 0;
+function dequeue() {
+    let result = head;
+    head = table[head] >> 2;
+    return result;
 }
+
+function isEmpty() {
+    return !head;
+}
+
+// Pathfinding
+function expand()
