@@ -1,6 +1,17 @@
 if (!getLevel() && randomNumber(0,1)) moveRandomly();
+else if (canKill())                   moveForward();
 else if (state == 'initial')          moveTowardExit();
 else if (state == 'circumnavigate')   circumnavigate();
+
+function canKill() {
+    if (getLevel() != 2) return false;
+    let facing = getPosition();
+    if (getDirection() == 0) facing[1]--;
+    if (getDirection() == 1) facing[0]++;
+    if (getDirection() == 2) facing[1]++;
+    if (getDirection() == 3) facing[0]--;
+    return '^>v<'.includes(whatsAt(facing));
+}
 
 function moveRandomly() {
     [moveForward, turnRight, turnLeft][randomNumber(0, 2)]();
