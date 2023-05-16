@@ -44,7 +44,6 @@ export default class VmEnvironment {
         let text = Array.isArray(value)?
             '[' + value.map(e => String(e)).join(', ') + ']':
             String(value);
-        text = JSON.stringify(value);
         this.player.log.write(text);
     }
 
