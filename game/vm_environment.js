@@ -4,47 +4,49 @@ export default class VmEnvironment {
         this.player = player;
         this.sandbox = {
             // General functionality
-            console: {
-                log: value => this.log(value),
-                debug: value => console.debug(value),
-            },
+            console: { log: this.log.bind(this) },
 
             state: 'initial',
 
             // Robot movement
-            moveForward: () => this.moveForward(),
-            turnRight: () => this.turnRight(),
-            turnLeft: () => this.turnLeft(),
-            canMove: dir => this.canMove(dir),
-            respawn: () => this.respawn(),
-            respawnAt: (level, pos, dir) => this.respawnAt(level, pos, dir),
+            moveForward: this.moveForward.bind(this),
+            turnRight:   this.turnRight.bind(this),
+            turnLeft:    this.turnLeft.bind(this),
+            canMove:     this.canMove.bind(this),
+            respawn:     this.respawn.bind(this),
+            respawnAt:   this.respawnAt.bind(this),
 
-            forward: 0,
-            right: 1,
+            forward:  0,
+            right:    1,
             backward: 2,
-            left: 3,
+            left:     3,
 
             // Robot sensors
-            getLevel: () => this.player.level.levelNumber,
-            getPosition: () => this.player.pos.slice(),
-            getDirection: () => this.player.dir,
+            getLevel:         () => this.player.level.levelNumber,
+            getPosition:      () => this.player.pos.slice(),
+            getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
-            getExitPosition: () => this.player.level.exitPos.slice(),
-            whatsAt: pos => this.whatsAt(pos),
+            getExitPosition:  () => this.player.level.exitPos.slice(),
+            whatsAt:          this.whatsAt.bind(this),
 
             // AppLab functions
-            randomNumber: (a, b) => Math.floor(Math.random() * (b - a + 1)) + a,
-            appendItem: (l, x) => l.push(x),
-            insertItem: (l, i, x) => l.splice(i, 0, x),
-            removeItem: (l, i) => l.splice(i, 1),
+            randomNumber: (a, b)    => Math.floor(Math.random() * (b - a + 1)) + a,
+            appendItem:   (l, x)    => l.push(x),
+            insertItem:   (l, i, x) => l.splice(i, 0, x),
+            removeItem:   (l, i)    => l.splice(i, 1),
         };
     }
 
-    log(value) {
-        let text = Array.isArray(value)?
-            '[' + value.map(e => String(e)).join(', ') + ']':
-            String(value);
+    log(...args) {
+        let text = args.map(e => this.stringify(e)).join(' ');
         this.player.log.write(text);
+    }
+
+    stringify(obj) {
+        if (Array.isArray(obj)) {
+            return `[${obj.map(e => this.stringify(e)).join(', ')}]`;
+        }
+        return String(obj);
     }
 
     moveForward() {
