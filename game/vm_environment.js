@@ -28,6 +28,7 @@ export default class VmEnvironment {
             getLevel: () => this.player.level.levelNumber,
             getPosition: () => this.player.pos.slice(),
             getDirection: () => this.player.dir,
+            getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition: () => this.player.level.exitPos.slice(),
             whatsAt: pos => this.whatsAt(pos),
 
