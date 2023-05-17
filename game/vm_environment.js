@@ -1,3 +1,5 @@
+import Util from '../shared/util.js';
+
 export default class VmEnvironment {
     constructor(game, player) {
         this.game = game;
@@ -28,6 +30,7 @@ export default class VmEnvironment {
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition:  () => this.player.level.exitPos.slice(),
             whatsAt:          this.whatsAt.bind(this),
+            getMap:           this.getMap.bind(this),
 
             // AppLab functions
             randomNumber: (a, b)    => Math.floor(Math.random() * (b - a + 1)) + a,
@@ -38,15 +41,8 @@ export default class VmEnvironment {
     }
 
     log(...args) {
-        let text = args.map(e => this.stringify(e)).join(' ');
+        let text = args.map(e => Util.stringify(e)).join(' ');
         this.player.log.write(text);
-    }
-
-    stringify(obj) {
-        if (Array.isArray(obj)) {
-            return `[${obj.map(e => this.stringify(e)).join(', ')}]`;
-        }
-        return String(obj);
     }
 
     moveForward() {
@@ -97,6 +93,22 @@ export default class VmEnvironment {
         }
         return char;
     }
+
+    getMap() {
+        let map = new Uint8Array(80 * 40);
+        for (let y = 0; y < 40; y++) {
+            for (let x = 0; x < 80; x++) {
+                let cell = this.player.level.cell([x, y]);
+                let char = cell.type?? ' ';
+                if (Object.hasOwn(cell, 'playerId')) {
+                    let dir = this.game.players[cell.playerId].dir;
+                    char = '^>v<'[dir];
+                }
+                map[y * 80 + x] = char.charCodeAt(0);
+            }
+        }
+        return map;
+    }
 }
 
 class ArgumentChecker {
@@ -125,7 +137,7 @@ class ArgumentChecker {
     }
 
     checkPos(level, pos) {
-        this.setParameter('pos', pos);
+        this.setParameter('pos', Util.stringify(pos));
         if (!this.check(Array.isArray(pos))) return false;
         if (!this.check(pos.length == 2)) return false;
         if (!this.check(level.map[pos[1]])) return false;

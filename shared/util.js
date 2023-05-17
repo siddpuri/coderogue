@@ -21,4 +21,11 @@ export default class Util {
     static getMaxHandle() {
         return words.reduce((a, l) => a * l.length, 1);
     }
+
+    static stringify(obj) {
+        if (Array.isArray(obj)) {
+            return `[${obj.map(e => this.stringify(e)).join(', ')}]`;
+        }
+        return String(obj);
+    }
 }
