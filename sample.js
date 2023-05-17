@@ -68,7 +68,7 @@ function search() {
         }
     }
     let a = table.getAction(pack(y0, x0, dir0));
-    this.dumpTable(dir0);
+    // this.dumpTable(dir0);
     [giveUp, moveForward, turnLeft, turnRight][a]();
 }
 
