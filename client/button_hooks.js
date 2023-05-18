@@ -5,15 +5,16 @@ export default class ButtonHooks {
 
     async start() {
         this.onClick('canvas', event => this.handleMapClick(event));
-        this.onClick('login', async () => await this.login());
-        this.onClick('logout', async () => await this.logout());
         this.onClick('respawn1', async () => await this.respawn());
         this.onClick('respawn2', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());
+        this.onEvent('code-text', 'keydown', async event => await this.handleKey(event));
         this.onClick('show-all', () => this.client.display.showAll());
         this.onClick('show-latest', () => this.client.display.showLatest());
         this.onClick('show-filtered', () => this.client.display.showFiltered());
+        this.onClick('login', async () => await this.login());
+        this.onClick('logout', async () => await this.logout());
     }
 
     handleMapClick(event) {
@@ -65,8 +66,18 @@ export default class ButtonHooks {
         }
     }
 
+    async handleKey(event) {
+        if (event.ctrlKey && event.key == 's') {
+            event.preventDefault();
+            await this.submit();
+        }
+    }
+
     onClick(id, f) {
-        document.getElementById(id).onclick = f;
+        this.onEvent(id, 'click', f);
+    }
+    onEvent(id, event, f) {
+        document.getElementById(id).addEventListener(event, f, false);
     }
 
     say(message, level) {
