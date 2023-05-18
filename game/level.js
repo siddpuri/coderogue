@@ -62,13 +62,12 @@ export default class Level {
     }
 
     spawn(player) {
-        if (player.level) console.log('Error in spawn');
-        const dir = Util.randomElement([0, 1, 2, 3]);
-        this.spawnAt(player, this.spawnTargetPos, dir);
+        let dir = Util.randomElement([0, 1, 2, 3]);
+        let pos = this.getSpawnPos(this.spawnTargetPos);
+        this.spawnAt(player, pos, dir);
     }
 
     spawnAt(player, pos, dir) {
-        if (player.level) console.log('Error in spawnAt');
         if (!this.cell(pos).canSpawn) {
             pos = this.getSpawnPos(pos);
         }
