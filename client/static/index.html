@@ -73,7 +73,7 @@
                         </div>
                         <div class="col">
                             <div class="row mb-2">
-                                <button type="button" class="btn btn-secondary" id="respawn">Respawn</button>
+                                <button type="button" class="btn btn-secondary" id="respawn1">Respawn</button>
                             </div>
                             <div class="row mb-2">
                                 <button type="button" class="btn btn-secondary" id="reformat">Reformat</button>
@@ -92,12 +92,17 @@
                             <textarea class="form-control" id="log-text" rows="20"></textarea>
                         </div>
                         <div class="col">
-                            <div class="btn-group-vertical" role="group">
+                            <div class="row mb-2">
+                                <button type="button" class="btn btn-secondary" id="respawn2">Respawn</button>
+                            </div>
+                            <div class="row btn-group-vertical" role="group">
                                 <button type="button" class="btn btn-secondary active" id="show-all">Show all</button>
                                 <button type="button" class="btn btn-secondary" id="show-latest">Just latest</button>
                                 <button type="button" class="btn btn-secondary" id="show-filtered">Filter by</button>
                             </div>
-                            <input type="text" class="form-control" id="filter-text" placeholder="Filter">
+                            <div class="row">
+                                <input type="text" class="form-control ml-0 col-4" id="filter-text" placeholder="Filter">
+                            </div>
                         </div>
                     </div>
                 </div>

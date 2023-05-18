@@ -7,7 +7,8 @@ export default class ButtonHooks {
         this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('login', async () => await this.login());
         this.onClick('logout', async () => await this.logout());
-        this.onClick('respawn', async () => await this.respawn());
+        this.onClick('respawn1', async () => await this.respawn());
+        this.onClick('respawn2', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());
         this.onClick('show-all', () => this.client.display.showAll());
