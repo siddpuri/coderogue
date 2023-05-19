@@ -29,7 +29,6 @@ export default class VmEnvironment {
             getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition:  () => this.player.level.exitPos.slice(),
-            whatsAt:          this.whatsAt.bind(this),
             getMap:           this.getMap.bind(this),
 
             // AppLab functions

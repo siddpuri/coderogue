@@ -1,5 +1,5 @@
-import { VM, VMScript } from 'vm2';
 import util from 'util';
+import { VM, VMScript } from 'vm2';
 
 import Util from '../shared/util.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -7,6 +7,7 @@ import BlockLevel from '../levels/block_level.js';
 import CaveLevel from '../levels/cave_level.js';
 
 import Player from './player.js';
+import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
 
 const maxIdleTime = 60;
@@ -146,7 +147,7 @@ export default class Game {
             allowAsync: false,
         });
         const code = await this.server.repositories.readCode(player.id);
-        const script = new VMScript(code);
+        const script = new VMScript(Preamble.code + code);
         return () => vm.run(script);
     }
 

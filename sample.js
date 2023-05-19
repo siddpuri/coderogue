@@ -23,7 +23,6 @@ var level0 = getLevel();
 var dir0 = getDirection();
 var [x0, y0] = getPosition();
 var [x1, y1] = getExitPosition();
-var map = getMap();
 
 search();
 
@@ -79,21 +78,12 @@ function visit(y, x, dir, a) {
     enqueue(i);
 }
 
-function isBlockedOld(y, x) {
+function isBlocked(y, x) {
     let char = whatsAt([x, y]);
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (level0 == 2) return false;
     return x != x0 || y != y0;
-}
-
-function isBlocked(y, x) {
-    let char = map[y * 80 + x];
-    if (char == 35) return true;
-    if (!(char == 94 || char == 62 || char == 118 || char == 60)) return false;
-    if (level0 == 2) return false;
-    if (x == x0 && y == y0) return false;
-    return true;
 }
 
 function giveUp() {
@@ -110,3 +100,5 @@ function dumpTable(dir) {
         console.log(line);
     }
 }
+
+dumpTable(dir0);
