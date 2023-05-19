@@ -9,12 +9,12 @@ export default class ButtonHooks {
         this.onClick('respawn2', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());
-        this.onEvent('code-text', 'keydown', async event => await this.handleKey(event));
         this.onClick('show-all', () => this.client.display.showAll());
         this.onClick('show-latest', () => this.client.display.showLatest());
         this.onClick('show-filtered', () => this.client.display.showFiltered());
         this.onClick('login', async () => await this.login());
         this.onClick('logout', async () => await this.logout());
+        document.addEventListener('keydown', async event => await this.handleKey(event));
     }
 
     handleMapClick(event) {
@@ -76,10 +76,7 @@ export default class ButtonHooks {
     }
 
     onClick(id, f) {
-        this.onEvent(id, 'click', f);
-    }
-    onEvent(id, event, f) {
-        document.getElementById(id).addEventListener(event, f, false);
+        document.getElementById(id).addEventListener('click', f, false);
     }
 
     say(message, level) {
