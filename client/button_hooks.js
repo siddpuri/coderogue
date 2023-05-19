@@ -29,11 +29,13 @@ export default class ButtonHooks {
             this.say(result.error, 3);
         } else {
             this.client.credentials.login(result);
+            this.say('You have been logged in.', 0);
         }
     }
 
     async logout() {
         await this.client.credentials.logout();
+        this.say('You have been logged out.', 1);
     }
 
     async respawn() {

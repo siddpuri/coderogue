@@ -10,7 +10,7 @@ const characterHeight = 10;
 
 const alertLevels = [
     'alert-success',
-    'alert-info',
+    'alert-secondary',
     'alert-warning',
     'alert-danger',
 ];
@@ -248,6 +248,9 @@ export default class Display {
         const n = ++this.messageNumber;
         const div = document.getElementById('message');
         div.innerHTML = message;
+        for (let level of alertLevels) {
+            div.classList.remove(level);
+        }
         div.classList.add(alertLevels[level]);
         div.classList.add('show');
         setTimeout(() => {

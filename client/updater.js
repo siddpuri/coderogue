@@ -44,21 +44,29 @@ export default class Updater {
     }
 
     async loadCode() {
-        let result = await this.getJson('code');
-        if (result.error) {
-            this.client.display.say(result.error, 3);
-            return;
+        let code = 'Log in to see your code.'
+        if (this.client.credentials.isLoggedIn) {
+            let result = await this.getJson('code');
+            if (result.error) {
+                this.client.display.say(result.error, 3);
+                return;
+            }
+            code = result.code;
         }
-        this.client.display.setCode(result.code);
+        this.client.display.setCode(code);
     }
 
     async loadLog() {
-        let result = await this.getJson('log');
-        if (result.error) {
-            this.client.display.say(result.error, 3);
-            return;
+        let log = 'Log in to see your log.';
+        if (this.client.credentials.isLoggedIn) {
+            let result = await this.getJson('log');
+            if (result.error) {
+                this.client.display.say(result.error, 3);
+                return;
+            }
+            log = result.log;
         }
-        this.client.display.setLog(result.log);
+        this.client.display.setLog(log);
     }
 
     async getJson(name) {
