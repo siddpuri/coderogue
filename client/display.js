@@ -15,7 +15,7 @@ const alertLevels = [
     'alert-danger',
 ];
 
-const numPlayersToRender = 10;
+const numPlayersToRender = 12;
 
 export default class Display {
     constructor(client) {
