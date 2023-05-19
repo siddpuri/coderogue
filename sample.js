@@ -82,8 +82,9 @@ function isBlocked(y, x) {
     let char = whatsAt([x, y]);
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
-    if (level0 == 2) return false;
-    return x != x0 || y != y0;
+    if (x == x0 && y == y0) return false;
+    if (level0 <= 2) return true;
+    return x < 16 && y < 16 || x > 64 && y > 24;
 }
 
 function giveUp() {

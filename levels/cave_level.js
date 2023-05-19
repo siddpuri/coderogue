@@ -28,7 +28,7 @@ export default class CaveLevel extends Level {
         let cell = this.cell(dest);
         if (cell.hasPlayer && !player.dontScore) {
             if (dest[0] < 16 && dest[1] < 16 ||
-                dest[0] >= 64 && dest[1] >= 64) {
+                dest[0] > 64 && dest[1] > 24) {
                 player.log.write('Player protected by spawn and exit!');
                 return;
             }
