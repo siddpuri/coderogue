@@ -153,11 +153,11 @@ export default class Display {
         }
         let topPlayers = this.players.slice();
         topPlayers.sort((a, b) => b.score - a.score);
-        for (let i = 0; i < numPlayersToRender; i++) {
-            if (!topPlayers[i]) break;
-            if (!result.some(p => p.id == topPlayers[i].id)) {
-                result.push(topPlayers[i]);
-            }
+        for (let player of topPlayers) {
+            if (!player) continue;
+            if (result.some(p => p.id == player.id)) continue;
+            result.push(player);
+            if (result.length >= numPlayersToRender) break;
         }
         result.sort((a, b) => b.score - a.score);
         return result;
