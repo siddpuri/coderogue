@@ -27,6 +27,7 @@ export default class Display {
         this.clearCanvas();
         this.ctx.font = font;
         this.levelToRender = 0;
+        this.players = [];
         this.messageNumber = 0;
         this.messagesToShow = 'all';
     }
@@ -37,6 +38,7 @@ export default class Display {
         const col = (constants.levelWidth - loadingText.length) / 2;
         this.clearCanvas();       
         this.setText(row, col, loadingText);
+        this.createPlayerRows();
     }
 
     isShowingLogTab() {
@@ -109,22 +111,35 @@ export default class Display {
         this.ctx.fillStyle = foregroundColor;
     }
 
-    renderPlayers() {
-        const table = document.getElementById('players');
-        while(table.rows.length > 1) {
-            table.deleteRow(1);
+    createPlayerRows() {
+        this.table = document.getElementById('players');
+        for (let i = 0; i < numPlayersToRender; i++) {
+            let row = this.table.insertRow();
+            for (let j = 0; j < 3; j++) {
+                row.insertCell();
+            }
+            row.onclick = () => this.highlightPlayer(i);
         }
-        for (let player of this.findPlayersToRender()) {
-            const row = table.insertRow();
-            for (let col of ['score', 'level', 'handle']) {
-                const cell = row.insertCell();
-                cell.innerHTML = player[col];
+    }
+
+    renderPlayers() {
+        this.players = this.findPlayersToRender();
+        for (let i = 0; i < numPlayersToRender; i++) {
+            let row = this.table.rows[i + 1];
+            if (i < this.players.length) {
+                row.classList.remove('hidden');
+                let player = this.players[i];
+                row.cells[0].innerHTML = player.score;
+                row.cells[1].innerHTML = player.level;
+                row.cells[2].innerHTML = player.handle;
+                if (player.id == this.highlightedPlayer) {
+                    row.classList.add('highlighted');
+                } else {
+                    row.classList.remove('highlighted');
+                }
+            } else {
+                row.classList.add('hidden');
             }
-            if (player.id == this.highlightedPlayer) {
-                row.classList.add('highlighted');
-                this.highlightedRow = row;
-            }
-            row.onclick = () => this.highlightPlayer(row, player.id);
         }
     }
 
@@ -138,7 +153,7 @@ export default class Display {
         }
         let topPlayers = this.players.slice();
         topPlayers.sort((a, b) => b.score - a.score);
-        for (let i = 0; result.length < numPlayersToRender; i++) {
+        for (let i = 0; i < numPlayersToRender; i++) {
             if (!topPlayers[i]) break;
             if (!result.some(p => p.id == topPlayers[i].id)) {
                 result.push(topPlayers[i]);
@@ -148,17 +163,21 @@ export default class Display {
         return result;
     }
 
-    highlightPlayer(row, playerId) {
-        if (Object.hasOwn(this, 'highlightedRow')) {
-            this.highlightedRow.classList.remove('highlighted');
-            let oldHighlightedRow = this.highlightedRow;
-            delete this.highlightedRow;
-            delete this.highlightedPlayer;
-            if (row == oldHighlightedRow) return;
+    highlightPlayer(index) {
+        let playerId = this.players[index].id;
+        if (playerId == this.highlightedPlayer) {
+            this.highlightedPlayer = undefined;
+        } else {
+            this.highlightedPlayer = playerId;
         }
-        this.highlightedRow = row;
-        this.highlightedPlayer = playerId;
-        row.classList.add('highlighted');
+        for (let i = 0; i < this.players.length; i++) {
+            let row = this.table.rows[i + 1];
+            if (this.players[i].id == playerId) {
+                row.classList.add('highlighted');
+            } else {
+                row.classList.remove('highlighted');
+            }
+        }
     }
 
     highlightTile(x, y) {
