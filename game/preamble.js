@@ -5,7 +5,8 @@ var _map = getMap();
 
 function whatsAt(pos) {
     let [x, y] = pos;
-    return String.fromCharCode(_map[y * 80 + x]);
+    let code = _map[y * 80 + x];
+    return String.fromCharCode(code?? 35);
 }
 
 `; }}
