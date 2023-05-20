@@ -82,7 +82,7 @@ function isBlocked(y, x) {
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (x == x0 && y == y0) return false;
-    if (level0 <= 2) return true;
+    if (level0 < 2) return true;
     return x < 14 && y < 20 || x > 66 && y > 20;
 }
 
