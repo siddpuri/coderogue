@@ -128,8 +128,6 @@ export default class Game {
 
     exitPlayer(player) {
         let levelNumber = player.level.levelNumber;
-        player.log.write(`Completed level ${levelNumber}!`);
-        if (!player.dontScore) player.level.score(player);
         player.level.removePlayer(player);
         levelNumber = (levelNumber + 1) % this.levels.length;
         if (player.dontScore) levelNumber = 0;

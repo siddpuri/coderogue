@@ -27,9 +27,11 @@ export default class Level {
     get name() { return 'Mystery Level'; }
     get spawnTargetPos() { return [10, 10]; }
     get exitPos() { return [this.width - 10, this.height - 10]; }
+    get exitScore() { return 100; }
+    get killScore() { return 200; }
+    get bumpScore() { return 0; }
 
-    score(player) { player.log.write(`Score is now: ${player.score}`); }
-    bump(player) { player.log.write('Bump!'); }
+    isProtected(pos) { return true; }
     async doLevelAction() {}
 
     drawBorderWalls() {
@@ -78,18 +80,42 @@ export default class Level {
     }
 
     moveForward(player) {
-        const newPos = this.movePos(player.pos, player.dir);
-        if (!this.cell(newPos).canEnter) {
-            this.bump(player);
-            return;
+        let dest = this.movePos(player.pos, player.dir)
+        let cell0 = this.cell(player.pos);
+        let cell1 = this.cell(dest);
+        if (cell1.canEnter) {
+            player.pos = dest;
+            cell0.clearPlayer();
+            cell1.setPlayer(player);
+            if (cell1.isExit) {
+                player.log.write(`Completed level ${this.levelNumber}!`);
+                if (!player.dontScore) {
+                    player.score += this.exitScore;
+                }
+                this.server.game.exitPlayer(player);
+            }
+            player.idle = 0;
         }
-        this.cell(player.pos).clearPlayer();
-        player.pos = newPos;
-        this.cell(player.pos).setPlayer(player);
-        if (this.cell(player.pos).isExit) {
-            this.server.game.exitPlayer(player);
+        else if (cell1.hasPlayer) {
+            let other = this.server.game.players[cell.playerId];
+            if (player.dontScore) {
+                player.log.write(`Can't bump players after respawnAt.`);
+            }
+            else if (this.isProtected(dest)) {
+                player.log.write(`Player ${other.textHandle} is protected.`);
+            }
+            else {
+                this.server.game.respawn(other);
+                player.log.write(`You just bumped off ${other.textHandle}!`);
+                other.log.write(`You were bumped off by ${player.textHandle}!`);
+                player.score += this.killScore;
+                player.idle = 0;
+            }
         }
-        player.idle = 0;
+        else {
+            player.log.write(`Bump!`);
+            if (player.score > 0) player.score += this.bumpScore;
+        }
     }
 
     removePlayer(player) {

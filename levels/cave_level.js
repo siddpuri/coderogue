@@ -17,31 +17,15 @@ export default class CaveLevel extends Level {
     get name() { return 'Moria'; }
     get spawnTargetPos() { return [8, 8]; }
     get exitPos() { return [this.width - 8, this.height - 8]; }
+    get exitScore() { return 500; }
+    get bumpScore() { return -1; }
 
-    score(player) {
-        player.score += 500;
-        super.score(player);
-    }
-
-    bump(player) {
-        let dest = this.movePos(player.pos, player.dir)
-        let cell = this.cell(dest);
-        if (cell.hasPlayer && !player.dontScore) {
-            if (dest[0] < 14 && dest[1] < 20 ||
-                dest[0] > 66 && dest[1] > 20) {
-                player.log.write('Player protected by spawn and exit!');
-                return;
-            }
-            let other = this.server.game.players[cell.playerId];
-            this.server.game.respawn(other);
-            player.log.write(`You just bumped off ${other.textHandle}!`);
-            other.log.write(`You were bumped off by ${player.textHandle}!`);
-            player.score += 200;
-            super.score(player);
-        } else {
-            super.bump(player);
-            if (player.score > 0) player.score--;
-        }
+    isProtected(pos) {
+        let [x, y] = pos;
+        return (
+            x < 14 && y < 14 ||
+            x > this.width - 14 && y > this.height - 14
+        );
     }
 
     async doLevelAction() {

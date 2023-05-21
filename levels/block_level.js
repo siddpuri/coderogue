@@ -19,18 +19,10 @@ export default class BlockLevel extends Level {
     }
 
     get name() { return 'Rolling Hills'; }
-    get spawnTargetPos() { return super.exitPos; }
-    get exitPos() { return super.spawnTargetPos; }
-
-    score(player) {
-        player.score += 200;
-        super.score(player);
-    }
-
-    bump(player) {
-        super.bump(player);
-        if (player.score > 0) player.score--;
-    }
+    get spawnTargetPos() { return [this.width - 10, this.height - 10]; }
+    get exitPos() { return [10, 10]; }
+    get exitScore() { return 200; }
+    get bumpScore() { return -1; }
 
     async doLevelAction() {
         for (let block of this.blocks) {
