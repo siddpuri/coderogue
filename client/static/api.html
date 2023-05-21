@@ -2,7 +2,7 @@
 <table class="table">
     <thread>
         <tr>
-            <th>Function</th>
+            <th class="col-4">Function</th>
             <th>Description</th>
         </tr>
     </thread>
@@ -61,6 +61,13 @@
         <tr>
             <td><code>getExitPosition()</code></td>
             <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the exit that the player is trying to reach</td>
+        </tr>
+        <tr>
+            <td><code>isProtected(pos)</code></td>
+            <td>
+                <p>Returns whether a player at that position is protected from PVP attacks.</p>
+                <p>This is always true on levels 0 and 1, and is true on level 2 if the position is near spawn or exit.</p>
+            </td>
         </tr>
         <tr>
             <td><code>whatsAt(pos)</code></td>
