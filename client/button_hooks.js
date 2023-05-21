@@ -70,9 +70,16 @@ export default class ButtonHooks {
     }
 
     async handleKey(event) {
-        if (event.ctrlKey && event.key == 's') {
+        if (!event.ctrlKey) return;
+        if (event.key == 's') {
             event.preventDefault();
             await this.submit();
+        }
+        else if (event.key == 'ArrowLeft') {
+            this.client.display.switchTab(-1);
+        }
+        else if (event.key == 'ArrowRight') {
+            this.client.display.switchTab(1);
         }
     }
 

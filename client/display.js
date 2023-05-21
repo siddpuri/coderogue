@@ -269,6 +269,19 @@ export default class Display {
         document.getElementById('logout-form').classList.add('d-none');
     }
 
+    switchTab(dir) {
+        let navLinks = document.getElementsByClassName('nav-link');
+        let activeIndex = 0;
+        for (let i = 0; i < navLinks.length; i++) {
+            if (navLinks[i].classList.contains('active')) {
+                activeIndex = i;
+            }
+        }
+        navLinks[activeIndex].classList.remove('active');
+        let newIndex = (activeIndex + dir + navLinks.length) % navLinks.length;
+        navLinks[newIndex].click();
+    }
+
     say(message, level) {
         const n = ++this.messageNumber;
         const div = document.getElementById('message');
