@@ -173,7 +173,7 @@ export default class Display {
         }
         for (let i = 0; i < this.players.length; i++) {
             let row = this.table.rows[i + 1];
-            if (this.players[i].id == playerId) {
+            if (this.players[i].id == this.highlightedPlayer) {
                 row.classList.add('highlighted');
             } else {
                 row.classList.remove('highlighted');
