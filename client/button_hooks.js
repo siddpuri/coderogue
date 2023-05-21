@@ -6,9 +6,10 @@ export default class ButtonHooks {
     async start() {
         this.onClick('canvas', event => this.handleMapClick(event));
         this.onClick('respawn1', async () => await this.respawn());
-        this.onClick('respawn2', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());
+        this.onClick('respawn2', async () => await this.respawn());
+        this.onClick('freeze', () => this.client.display.toggleFreeze());
         this.onClick('show-all', () => this.client.display.showAll());
         this.onClick('show-latest', () => this.client.display.showLatest());
         this.onClick('show-filtered', () => this.client.display.showFiltered());

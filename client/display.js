@@ -29,6 +29,7 @@ export default class Display {
         this.levelToRender = 0;
         this.players = [];
         this.messageNumber = 0;
+        this.freezeLog = false;
         this.messagesToShow = 'all';
     }
 
@@ -215,6 +216,11 @@ export default class Display {
     setLog(log) {
         const logArea = document.getElementById('log-text');
         logArea.value = this.filterLog(log);
+    }
+
+    toggleFreeze() {
+        let button = document.getElementById('freeze').classList.toggle('active');
+        this.freezeLog = !this.freezeLog;
     }
 
     showAll() {

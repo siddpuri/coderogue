@@ -59,6 +59,7 @@ export default class Updater {
     async loadLog() {
         let log = 'Log in to see your log.';
         if (this.client.credentials.isLoggedIn) {
+            if (this.client.display.freezeLog) return;
             let result = await this.getJson('log');
             if (result.error) {
                 this.client.display.say(result.error, 3);
