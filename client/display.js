@@ -277,7 +277,6 @@ export default class Display {
                 activeIndex = i;
             }
         }
-        navLinks[activeIndex].classList.remove('active');
         let newIndex = (activeIndex + dir + navLinks.length) % navLinks.length;
         navLinks[newIndex].click();
     }

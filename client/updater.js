@@ -10,6 +10,7 @@ export default class Updater {
         await this.loadHtml('general', 'general-text');
         await this.loadHtml('api', 'api-text');
         await this.loadHtml('levels', 'levels-text');
+        await this.loadHtml('keybindings', 'keybindings-text');
         await this.loadHtml('account', 'account');
     }
 
