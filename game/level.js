@@ -97,7 +97,7 @@ export default class Level {
             player.idle = 0;
         }
         else if (cell1.hasPlayer) {
-            let other = this.server.game.players[cell.playerId];
+            let other = this.server.game.players[cell1.playerId];
             if (player.dontScore) {
                 player.log.write(`Can't bump players after respawnAt.`);
             }
