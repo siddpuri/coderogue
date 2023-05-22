@@ -89,8 +89,8 @@ export default class NewMap {
     }
 
     renderExit(row, col) {
-        let x = col * characterWidth;
-        let y = row * characterHeight;
+        let x = (col + .5) * characterWidth;
+        let y = (row + .5) * characterHeight;
         this.ctx.strokeStyle = currentPlayerColor;
         this.ctx.beginPath();
         this.ctx.ellipse(x, y, 5, 5, 0, 0, 2 * Math.PI);
