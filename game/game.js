@@ -118,6 +118,7 @@ export default class Game {
     respawn(player) {
         if (player.level) player.level.removePlayer(player);
         this.levels[0].spawn(player);
+        delete player.dontScore;
     }
 
     respawnAt(player, level, pos, dir) {
