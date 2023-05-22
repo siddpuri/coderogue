@@ -108,7 +108,9 @@ export default class Level {
                 this.server.game.respawn(other);
                 player.log.write(`You just bumped off ${other.textHandle}!`);
                 other.log.write(`You were bumped off by ${player.textHandle}!`);
-                player.score += this.killScore;
+                if (!other.dontScore) {
+                    player.score += this.killScore;
+                }
                 player.idle = 0;
             }
         }
