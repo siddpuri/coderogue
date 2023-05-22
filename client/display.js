@@ -1,12 +1,4 @@
-import constants from './constants.js';
-
-const backgroundColor = '#f0f0f0';
-const foregroundColor = '#101010';
-const highlightColor = '#ffff00';
-const currentPlayerColor = '#ff0000';
-const font = '10pt sans-serif';
-const characterWidth = 8;
-const characterHeight = 10;
+import AsciiMap from './ascii_map.js';
 
 const alertLevels = [
     'alert-success',
@@ -20,96 +12,17 @@ const numPlayersToRender = 12;
 export default class Display {
     constructor(client) {
         this.client = client;
-        this.canvas = document.getElementById('canvas');
-        this.canvas.width = characterWidth * constants.levelWidth;
-        this.canvas.height = characterHeight * constants.levelHeight;
-        this.ctx = this.canvas.getContext('2d');
-        this.clearCanvas();
-        this.ctx.font = font;
+        this.map = new AsciiMap(client, 'canvas');
         this.levelToRender = 0;
-        this.players = [];
+        this.renderedPlayers = [];
         this.messageNumber = 0;
         this.freezeLog = false;
         this.messagesToShow = 'all';
     }
 
     async start() {
-        const loadingText = 'Loading ...';
-        const row = 15;
-        const col = (constants.levelWidth - loadingText.length) / 2;
-        this.clearCanvas();       
-        this.setText(row, col, loadingText);
+        await this.map.start();
         this.createPlayerRows();
-    }
-
-    isShowingLogTab() {
-        const logTab = document.getElementById('log-tab');
-        return logTab.classList.contains('active');
-    }
-
-    clearCanvas() {
-        this.ctx.fillStyle = backgroundColor;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = foregroundColor;
-    }
-
-    render(state) {
-        this.players = [];
-        for (let player of state.players) {
-            if (player) this.players[player.id] = player;
-        }
-        this.levels = state.levels;
-        if (this.highlightedPlayer) {
-            let playerLevel = this.players[this.highlightedPlayer].level;
-            if (playerLevel != 'jail') this.levelToRender = playerLevel;
-        }
-        this.renderTitle();
-        this.renderMap();
-        this.renderPlayers();
-    }
-
-    renderTitle() {
-        let span = document.getElementById('level');
-        span.removeChild(span.firstChild);
-        span.appendChild(document.createTextNode(this.levelToRender));
-        span = document.getElementById('level-name');
-        span.removeChild(span.firstChild);
-        span.appendChild(document.createTextNode(this.levels[this.levelToRender].name));
-    }
-
-    renderMap() {
-        this.map = this.levels[this.levelToRender].map;
-        this.clearCanvas();
-        for (let row = 0; row < this.map.length; row++) {
-            for (let col = 0; col < this.map[row].length; col++) {
-                let cell = this.map[row][col];
-                let char = cell.type;
-                let highlighted = false;
-                let currentPlayer = false;
-                if (Object.hasOwn(cell, 'playerId')) {
-                    let dir = this.players[cell.playerId].dir;
-                    char = '^>v<'[dir];
-                    highlighted = cell.playerId == this.highlightedPlayer;
-                    currentPlayer = cell.playerId == this.client.credentials.playerId;
-                }
-                if (char) this.setText(row, col, char, highlighted, currentPlayer);
-            }
-        }
-    }
-
-    setText(row, col, text, highlighted, currentPlayer) {
-        row = (row + 1) * characterHeight;
-        col *= characterWidth;
-        if (highlighted) {
-            this.ctx.fillStyle = highlightColor;
-            this.ctx.fillRect(col, row - characterHeight, characterWidth, characterHeight);
-            this.ctx.fillStyle = foregroundColor;
-        }
-        if (currentPlayer) {
-            this.ctx.fillStyle = currentPlayerColor;
-        }
-        this.ctx.fillText(text, col, row);
-        this.ctx.fillStyle = foregroundColor;
     }
 
     createPlayerRows() {
@@ -123,36 +36,56 @@ export default class Display {
         }
     }
 
-    renderPlayers() {
-        this.players = this.findPlayersToRender();
+    render(state) {
+        let players = [];
+        for (let player of state.players) {
+            if (player) players[player.id] = player;
+        }
+        if (this.highlightedPlayer) {
+            let playerLevel = players[this.highlightedPlayer].level;
+            if (playerLevel != 'jail') this.levelToRender = playerLevel;
+        }
+        let level = state.levels[this.levelToRender];
+        this.renderTitle(level.name);
+        this.map.render(level.map, players);
+        this.renderPlayers(players);
+    }
+
+    renderTitle(name) {
+        let span = document.getElementById('level');
+        span.removeChild(span.firstChild);
+        span.appendChild(document.createTextNode(this.levelToRender));
+        span = document.getElementById('level-name');
+        span.removeChild(span.firstChild);
+        span.appendChild(document.createTextNode(name));
+    }
+
+    renderPlayers(players) {
+        this.renderedPlayers = this.findPlayersToRender(players);
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = this.table.rows[i + 1];
-            if (i < this.players.length) {
+            if (i < this.renderedPlayers.length) {
                 row.classList.remove('hidden');
-                let player = this.players[i];
+                let player = this.renderedPlayers[i];
                 row.cells[0].innerHTML = player.score;
                 row.cells[1].innerHTML = player.level;
                 row.cells[2].innerHTML = player.handle;
-                if (player.id == this.highlightedPlayer) {
-                    row.classList.add('highlighted');
-                } else {
-                    row.classList.remove('highlighted');
-                }
             } else {
                 row.classList.add('hidden');
             }
         }
+        this.renderPlayerHighlight();
     }
 
-    findPlayersToRender() {
+    findPlayersToRender(players) {
         let result = [];
         if (this.client.credentials.playerId) {
-            result.push(this.players[this.client.credentials.playerId]);
+            result.push(players[this.client.credentials.playerId]);
         }
         if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
-            result.push(this.players[this.highlightedPlayer]);
+            result.push(players[this.highlightedPlayer]);
         }
-        let topPlayers = this.players.slice();
+        let topPlayers = players.slice();
         topPlayers.sort((a, b) => b.score - a.score);
         for (let player of topPlayers) {
             if (!player) continue;
@@ -165,33 +98,31 @@ export default class Display {
     }
 
     highlightPlayer(index) {
-        let playerId = this.players[index].id;
-        if (playerId == this.highlightedPlayer) {
-            this.highlightedPlayer = undefined;
-        } else {
-            this.highlightedPlayer = playerId;
-        }
-        for (let i = 0; i < this.players.length; i++) {
-            let row = this.table.rows[i + 1];
-            if (this.players[i].id == this.highlightedPlayer) {
-                row.classList.add('highlighted');
-            } else {
-                row.classList.remove('highlighted');
-            }
-        }
+        this.toggleHighlight(this.renderedPlayers[index].id);
     }
 
     highlightTile(x, y) {
-        if (!this.map) return;
-        let row = Math.floor(y / characterHeight);
-        let col = Math.floor(x / characterWidth);
-        if (!this.map[row] || !this.map[row][col]) return;
-        let playerId = this.map[row][col].playerId;
+        this.toggleHighlight(this.map.getPlayerAt(x, y));
+    }
+
+    toggleHighlight(playerId) {
         if (!playerId) return;
         if (playerId == this.highlightedPlayer) {
             delete this.highlightedPlayer;
         } else {
             this.highlightedPlayer = playerId;
+        }
+        this.renderPlayerHighlight();
+    }
+
+    renderPlayerHighlight() {
+        for (let i = 0; i < this.renderedPlayers.length; i++) {
+            let row = this.table.rows[i + 1];
+            if (this.renderedPlayers[i].id == this.highlightedPlayer) {
+                row.classList.add('highlighted');
+            } else {
+                row.classList.remove('highlighted');
+            }
         }
     }
 
@@ -211,6 +142,11 @@ export default class Display {
 
     getCodeCursor() {
         return document.getElementById('code-text').selectionStart;
+    }
+
+    isShowingLogTab() {
+        const logTab = document.getElementById('log-tab');
+        return logTab.classList.contains('active');
     }
 
     setLog(log) {
@@ -297,6 +233,6 @@ export default class Display {
     }
 
     lookup(handle) {
-        return this.players.find(p => p && p.handle == handle);
+        return this.renderedPlayers.find(p => p && p.handle == handle);
     }
 }
