@@ -1,3 +1,6 @@
+var shouldDump = true;
+var startTime = new Date();
+
 // Actions
 var none    = 0;
 var forward = 1;
@@ -83,7 +86,7 @@ function isBlocked(y, x) {
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (x == x0 && y == y0) return false;
-    return isProtected(pos);
+    return false; // isProtected(pos);
 }
 
 function giveUp() {
@@ -101,4 +104,9 @@ function dumpTable(dir) {
     }
 }
 
-// dumpTable(dir0);
+if (shouldDump) {
+    dumpTable(dir0);
+    let endTime = new Date();
+    let timeTaken = endTime - startTime;
+    console.log(`Executed in ${timeTaken / 1000} seconds.`);
+  }
