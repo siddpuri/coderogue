@@ -12,10 +12,7 @@ export default class AsciiMap {
     constructor(client, id) {
         this.client = client;
         this.canvas = document.getElementById(id);
-        this.canvas.width = characterWidth * constants.levelWidth;
-        this.canvas.height = characterHeight * constants.levelHeight;
         this.ctx = this.canvas.getContext('2d');
-        this.ctx.font = font;
     }
 
     async start() {
@@ -27,6 +24,9 @@ export default class AsciiMap {
     }
 
     clearCanvas() {
+        this.canvas.width = characterWidth * constants.levelWidth;
+        this.canvas.height = characterHeight * constants.levelHeight;
+        this.ctx.font = font;
         this.ctx.fillStyle = backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = foregroundColor;

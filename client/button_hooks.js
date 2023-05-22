@@ -81,6 +81,22 @@ export default class ButtonHooks {
         else if (event.key == 'ArrowRight') {
             this.client.display.switchTab(1);
         }
+        else if (event.key == 'ArrowUp') {
+            if (event.shiftKey) {
+                this.client.display.map = this.client.display.newMap;
+            } else {
+                delete this.client.display.highlightedPlayer;
+                this.client.display.levelToRender = Math.min(this.client.display.levelToRender + 1, 2);
+            }
+        }
+        else if (event.key == 'ArrowDown') {
+            if (event.shiftKey) {
+                this.client.display.map = this.client.display.asciiMap;
+            } else {
+                delete this.client.display.highlightedPlayer;
+                this.client.display.levelToRender = Math.max(this.client.display.levelToRender - 1, 0);
+            }
+        }
     }
 
     onClick(id, f) {

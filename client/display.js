@@ -1,4 +1,5 @@
 import AsciiMap from './ascii_map.js';
+import NewMap from './new_map.js';
 
 const alertLevels = [
     'alert-success',
@@ -12,7 +13,9 @@ const numPlayersToRender = 12;
 export default class Display {
     constructor(client) {
         this.client = client;
-        this.map = new AsciiMap(client, 'canvas');
+        this.asciiMap = new AsciiMap(client, 'canvas');
+        this.newMap = new NewMap(client, 'canvas');
+        this.map = this.asciiMap;
         this.levelToRender = 0;
         this.renderedPlayers = [];
         this.messageNumber = 0;
@@ -21,7 +24,8 @@ export default class Display {
     }
 
     async start() {
-        await this.map.start();
+        await this.asciiMap.start();
+        await this.newMap.start();
         this.createPlayerRows();
     }
 
