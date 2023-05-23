@@ -23,3 +23,7 @@ textarea {
 .clickthrough {
     pointer-events: none;
 }
+
+.alert {
+    border-radius: 0;
+}
