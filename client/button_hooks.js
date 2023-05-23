@@ -85,10 +85,10 @@ export default class ButtonHooks {
             event.preventDefault();
             await this.submit();
         }
-        else if (event.key == 'ArrowLeft') {
+        else if (event.key == '[') {
             this.client.display.switchTab(-1);
         }
-        else if (event.key == 'ArrowRight') {
+        else if (event.key == ']') {
             this.client.display.switchTab(1);
         }
         else if (event.key == 'ArrowUp') {
