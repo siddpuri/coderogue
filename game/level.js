@@ -105,12 +105,12 @@ export default class Level {
                 player.log.write(`Player ${other.textHandle} is protected.`);
             }
             else {
-                this.server.game.respawn(other);
-                player.log.write(`You just bumped off ${other.textHandle}!`);
-                other.log.write(`You were bumped off by ${player.textHandle}!`);
                 if (!other.dontScore) {
                     player.score += this.killScore;
                 }
+                this.server.game.respawn(other);
+                player.log.write(`You just bumped off ${other.textHandle}!`);
+                other.log.write(`You were bumped off by ${player.textHandle}!`);
                 player.idle = 0;
             }
         }
