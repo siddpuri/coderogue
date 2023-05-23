@@ -198,6 +198,20 @@ export default class Display {
         return lines.join('\n');
     }
 
+    onMouseEnter() {
+        document.getElementById('coords').classList.add('show');
+    }
+
+    onMouseMove(x, y) {
+        let [col, row] = this.map.getPosAt(x, y);
+        document.getElementById('x-coord').innerHTML = col;
+        document.getElementById('y-coord').innerHTML = row;
+    }
+
+    onMouseLeave() {
+        document.getElementById('coords').classList.remove('show');
+    }
+
     showLoggedIn() {
         document.getElementById('login-form').classList.add('d-none');
         document.getElementById('logout-form').classList.remove('d-none');

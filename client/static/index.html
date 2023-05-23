@@ -16,12 +16,22 @@
                 <div class="row mb-5">
                     <div class="col">
                         <div class="row align-items-baseline">
-                            <div class="col-3 h2">
+                            <div class="col h2">
                                 Coderogue
                             </div>
-                            <div class="col h4">
-                                level <span id="level">0</span>:
-                                <span id="level-name">The Plains</span>
+                            <div class="col h4 d-flex justify-content-center">
+                                <div>
+                                    level <span id="level">0</span>:
+                                    <span id="level-name">The Plains</span>
+                                </div>
+                            </div>
+                            <div class="col d-flex justify-content-end fade" id="coords">
+                                <div>
+                                    &#91;
+                                    <span class="coord" id="x-coord"></span> ,
+                                    <span class="coord" id="y-coord"></span>
+                                    &#93;
+                                </div>
                             </div>
                         </div>
                         <canvas id="canvas"></canvas>

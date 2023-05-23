@@ -2,6 +2,14 @@ html {
     font-size: 80%;
 }
 
+span {
+    display: inline-block;
+}
+.coord {
+    width: 1rem;
+    text-align: end;
+}
+
 .table td, .table th {
     padding: 0.2rem;
 }

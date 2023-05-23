@@ -2,7 +2,7 @@ import constants from './constants.js';
 
 const backgroundColor = '#f0f0f0';
 const foregroundColor = '#000000';
-const wallColor = '#102060';
+const wallColor = '#8080a0';
 const highlightColor = '#4040ff';
 const currentPlayerColor = '#ff4040';
 const characterWidth = 8;
@@ -99,9 +99,14 @@ export default class NewMap {
 
     getPlayerAt(x, y) {
         if (!this.map) return;
-        let row = Math.floor(y / characterHeight);
-        let col = Math.floor(x / characterWidth);
+        let [col, row] = this.getPosAt(x, y);
         if (!this.map[row] || !this.map[row][col]) return;
         return this.map[row][col].playerId;
+    }
+
+    getPosAt(x, y) {
+        let row = Math.floor(y / characterHeight);
+        let col = Math.floor(x / characterWidth);
+        return [col, row];
     }
 }

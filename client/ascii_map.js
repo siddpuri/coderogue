@@ -70,9 +70,14 @@ export default class AsciiMap {
 
     getPlayerAt(x, y) {
         if (!this.map) return;
-        let row = Math.floor(y / characterHeight);
-        let col = Math.floor(x / characterWidth);
+        let [col, row] = this.getPosAt(x, y);
         if (!this.map[row] || !this.map[row][col]) return;
         return this.map[row][col].playerId;
+    }
+
+    getPosAt(x, y) {
+        let row = Math.floor(y / characterHeight);
+        let col = Math.floor(x / characterWidth);
+        return [col, row];
     }
 }

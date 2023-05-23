@@ -15,7 +15,17 @@ export default class ButtonHooks {
         this.onClick('show-filtered', () => this.client.display.showFiltered());
         this.onClick('login', async () => await this.login());
         this.onClick('logout', async () => await this.logout());
+
+        let canvas = document.getElementById('canvas');
+        canvas.addEventListener('mouseenter', () => this.client.display.onMouseEnter());
+        canvas.addEventListener('mousemove', event => this.handleMouseMove(event));
+        canvas.addEventListener('mouseleave', () => this.client.display.onMouseLeave());
+
         document.addEventListener('keydown', async event => await this.handleKey(event));
+    }
+
+    handleMouseMove(event) {
+        this.client.display.onMouseMove(event.offsetX, event.offsetY);
     }
 
     handleMapClick(event) {
