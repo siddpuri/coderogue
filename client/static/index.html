@@ -9,11 +9,13 @@
         <link rel="stylesheet" href="coderogue.css">
     </head>
     <body>
-        <div class="container-fluid mt-3">
-            <div class="row mb-5">
-                <div class="col ml-3">
+        <div class="container-fluid">
+
+            <!-- Top pane -->
+            <div class="row pt-3 pb-5">
+                <div class="col mx-2">
                     <div class="row align-items-baseline">
-                        <div class="col-3 h2 mr-3">
+                        <div class="col-3 h2">
                             Coderogue
                         </div>
                         <div class="col h4">
@@ -21,11 +23,9 @@
                             <span id="level-name">The Plains</span>
                         </div>
                     </div>
-                    <div class="row">
-                        <canvas id="canvas"></canvas>
-                    </div>
+                     <canvas id="canvas"></canvas>
                 </div>
-                <div class="col ml-3 mr-3">
+                <div class="col mx-2">
                     <div class="row h2">
                         Players
                     </div>
@@ -43,6 +43,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Nav tabs in bottom pane -->
             <ul class="nav nav-tabs mb-3" id="nav">
                 <li class="nav-item">
                     <a class="nav-link active" id="code-tab" data-toggle="tab" href="#code" role="tab">Code</a>
@@ -66,10 +68,11 @@
                     <a class="nav-link" id="account-tab" data-toggle="tab" href="#account" role="tab">Account</a>
                 </li>
             </ul>
+
             <div class="tab-content">
 
                 <!-- Code tab -->
-                <div class="tab-pane show active" id="code" role="tabpanel">
+                <div class="tab-pane active" id="code" role="tabpanel">
                     <div class="row">
                         <div class="col-10">
                             <textarea class="form-control" id="code-text" rows="100"></textarea>
@@ -89,7 +92,7 @@
                 </div>
 
                 <!-- Log tab -->
-                <div class="tab-pane" id="log" role="tabpanel"">
+                <div class="tab-pane" id="log" role="tabpanel">
                     <div class="row">
                         <div class="col-10">
                             <textarea class="form-control" id="log-text" rows="20"></textarea>
