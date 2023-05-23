@@ -24,6 +24,8 @@ export default class Player {
         this.idle = 0;
         this.offenses = 0;
         this.jailtime = 0;
+        this.kills = 0;
+        this.deaths = 0;
     }
 
     get levelNumber() {
@@ -55,6 +57,8 @@ export default class Player {
             handle: this.textHandle,
             score: this.score,
             level: this.levelNumber,
+            kills: this.kills,
+            deaths: this.deaths,
             pos: this.pos,
             dir: this.dir,
         };

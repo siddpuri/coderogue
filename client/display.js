@@ -33,7 +33,7 @@ export default class Display {
         this.table = document.getElementById('players');
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = this.table.insertRow();
-            for (let j = 0; j < 3; j++) {
+            for (let j = 0; j < 5; j++) {
                 row.insertCell();
             }
             row.onclick = () => this.highlightPlayer(i);
@@ -74,6 +74,8 @@ export default class Display {
                 row.cells[0].innerHTML = player.score;
                 row.cells[1].innerHTML = player.level;
                 row.cells[2].innerHTML = player.handle;
+                row.cells[3].innerHTML = player.kills;
+                row.cells[4].innerHTML = player.deaths;
             } else {
                 row.classList.add('hidden');
             }

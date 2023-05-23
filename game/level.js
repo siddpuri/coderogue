@@ -107,6 +107,8 @@ export default class Level {
             else {
                 if (!other.dontScore) {
                     player.score += this.killScore;
+                    player.kills++;
+                    other.deaths++;
                 }
                 this.server.game.respawn(other);
                 player.log.write(`You just bumped off ${other.textHandle}!`);
