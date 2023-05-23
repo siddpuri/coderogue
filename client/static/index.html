@@ -10,135 +10,140 @@
     </head>
     <body>
         <div class="container-fluid">
+            <div class="px-3 pt-3 pb-5">
 
-            <!-- Top pane -->
-            <div class="row pt-3 pb-5">
-                <div class="col mx-2">
-                    <div class="row align-items-baseline">
-                        <div class="col-3 h2">
-                            Coderogue
-                        </div>
-                        <div class="col h4">
-                            level <span id="level">0</span>:
-                            <span id="level-name">The Plains</span>
-                        </div>
-                    </div>
-                     <canvas id="canvas"></canvas>
-                </div>
-                <div class="col mx-2">
-                    <div class="row h2">
-                        Players
-                    </div>
-                    <div class="row">
-                        <table class="table" id="players">
-                            <thread>
-                                <tr>
-                                    <th>Score</th>
-                                    <th>Level</th>
-                                    <th>Handle</th>
-                                </tr>
-                            </thread>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Nav tabs in bottom pane -->
-            <nav class="nav nav-tabs mb-3">
-                <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
-                <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
-                <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>
-                <a class="nav-item nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="tab">Api</a>
-                <a class="nav-item nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="tab">Levels</a>
-                <a class="nav-item nav-link" id="keybindings-tab" data-bs-toggle="tab" data-bs-target="#keybindings" role="tab">Shortcuts</a>
-                <a class="nav-item nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" role="tab">Account</a>
-            </nav>
-
-            <div class="tab-content ms-3 mb-5">
-
-                <!-- Code tab -->
-                <div class="tab-pane active" id="code" role="tabpanel">
-                    <div class="row">
-                        <div class="col-10">
-                            <textarea class="form-control" id="code-text" rows="100"></textarea>
-                        </div>
-                        <div class="col">
-                            <div class="d-grid col-2 gap-2">
-                                <button type="button" class="btn btn-secondary" id="respawn1">Respawn</button>
-                                <button type="button" class="btn btn-secondary" id="reformat">Reformat</button>
-                                <button type="button" class="btn btn-primary" id="submit">Submit</button>
+                <!-- Top pane -->
+                <div class="row mb-5">
+                    <div class="col">
+                        <div class="row align-items-baseline">
+                            <div class="col-3 h2">
+                                Coderogue
+                            </div>
+                            <div class="col h4">
+                                level <span id="level">0</span>:
+                                <span id="level-name">The Plains</span>
                             </div>
                         </div>
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <div class="col mx-3">
+                        <div class="row h2">
+                            Players
+                        </div>
+                        <div class="row">
+                            <table class="table" id="players">
+                                <thread>
+                                    <tr>
+                                        <th>Score</th>
+                                        <th>Level</th>
+                                        <th>Handle</th>
+                                    </tr>
+                                </thread>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Log tab -->
-                <div class="tab-pane" id="log" role="tabpanel">
-                    <div class="row">
-                        <div class="col-10">
-                            <textarea class="form-control" id="log-text" rows="20"></textarea>
-                        </div>
-                        <div class="col">
-                            <div class="d-grid col-2 gap-2">
-                                <button type="button" class="btn btn-secondary" id="respawn2">Respawn</button>
-                                <button type="button" class="btn btn-secondary" id="freeze">Freeze</button>
-                                <div class="btn-group-vertical">
-                                    <button type="button" class="btn btn-secondary active" id="show-all">Show all</button>
-                                    <button type="button" class="btn btn-secondary" id="show-latest">Just latest</button>
-                                    <button type="button" class="btn btn-secondary" id="show-filtered">Filter by</button>
-                                    <input type="text" class="form-control" id="filter-text" placeholder="Filter">
+                <!-- Nav tabs in bottom pane -->
+                <nav class="nav nav-tabs mb-3">
+                    <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
+                    <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
+                    <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>
+                    <a class="nav-item nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="tab">Api</a>
+                    <a class="nav-item nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="tab">Levels</a>
+                    <a class="nav-item nav-link" id="keybindings-tab" data-bs-toggle="tab" data-bs-target="#keybindings" role="tab">Shortcuts</a>
+                    <a class="nav-item nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" role="tab">Account</a>
+                </nav>
+
+                <div class="tab-content">
+
+                    <!-- Code tab -->
+                    <div class="tab-pane active" id="code" role="tabpanel">
+                        <div class="row">
+                            <div class="col">
+                                <textarea class="form-control" id="code-text" rows="100"></textarea>
+                            </div>
+                            <div class="col-2">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-secondary" id="respawn1">Respawn</button>
+                                    <button type="button" class="btn btn-secondary" id="reformat">Reformat</button>
+                                    <button type="button" class="btn btn-primary" id="submit">Submit</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- General documentation tab -->
-                <div class="tab-pane" id="general" role="tabpanel">
-                    <div class="row">
-                        <div class="col-8" id="general-text">
-                            <!-- Loaded from general.html -->
+                    <!-- Log tab -->
+                    <div class="tab-pane" id="log" role="tabpanel">
+                        <div class="row">
+                            <div class="col">
+                                <textarea class="form-control" id="log-text" rows="20"></textarea>
+                            </div>
+                            <div class="col-2">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-secondary" id="respawn2">Respawn</button>
+                                    <button type="button" class="btn btn-secondary" id="freeze">Freeze</button>
+                                    <div class="btn-group-vertical">
+                                        <button type="button" class="btn btn-secondary active" id="show-all">Show all</button>
+                                        <button type="button" class="btn btn-secondary" id="show-latest">Just latest</button>
+                                        <button type="button" class="btn btn-secondary" id="show-filtered">Filter by</button>
+                                        <input type="text" class="form-control" id="filter-text" placeholder="Filter">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- API documentation tab -->
-                <div class="tab-pane" id="api" role="tabpanel">
-                    <div class="row">
-                        <div class="col-8" id="api-text">
-                            <!-- Loaded from api.html -->
+                    <!-- General documentation tab -->
+                    <div class="tab-pane" id="general" role="tabpanel">
+                        <div class="row">
+                            <div class="col-8" id="general-text">
+                                <!-- Loaded from general.html -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Level documentation tab -->
-                <div class="tab-pane" id="levels" role="tabpanel">
-                    <div class="row">
-                        <div class="col-8" id="levels-text">
-                            <!-- Loaded from levels.html -->
+                    <!-- API documentation tab -->
+                    <div class="tab-pane" id="api" role="tabpanel">
+                        <div class="row">
+                            <div class="col-8" id="api-text">
+                                <!-- Loaded from api.html -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Keybindings documentation tab -->
-                <div class="tab-pane" id="keybindings" role="tabpanel">
-                    <div class="row">
-                        <div class="col-8" id="keybindings-text">
-                            <!-- Loaded from keybindings.html -->
+                    <!-- Level documentation tab -->
+                    <div class="tab-pane" id="levels" role="tabpanel">
+                        <div class="row">
+                            <div class="col-8" id="levels-text">
+                                <!-- Loaded from levels.html -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Account tab -->
-                <div class="tab-pane" id="account" role="tabpanel">
-                    <!-- Loaded from account.html -->
+                    <!-- Keybindings documentation tab -->
+                    <div class="tab-pane" id="keybindings" role="tabpanel">
+                        <div class="row">
+                            <div class="col-8" id="keybindings-text">
+                                <!-- Loaded from keybindings.html -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account tab -->
+                    <div class="tab-pane" id="account" role="tabpanel">
+                        <!-- Loaded from account.html -->
+                    </div>
+
                 </div>
             </div>
         </div>
+
         <div class="toast-container fixed-bottom">
             <div class="alert fade mb-0" id="message"></div>
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
