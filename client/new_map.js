@@ -45,9 +45,11 @@ export default class NewMap {
                 if (Object.hasOwn(cell, 'playerId')) {
                     this.renderPlayer(row, col, cell.playerId);
                 }
-                else if (char == '#') this.renderWall(row, col);
-                else if (char == '.') this.renderSpawn(row, col);
-                else if (char == 'o') this.renderExit(row, col);
+                else switch(char) {
+                    case '#': this.renderWall(row, col); break;
+                    case '.': this.renderSpawn(row, col); break;
+                    case 'o': this.renderExit(row, col); break;
+                }
             }
         }
     }

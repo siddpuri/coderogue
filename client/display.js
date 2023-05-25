@@ -245,7 +245,7 @@ export default class Display {
     switchMap(dir) {
         switch (dir) {
             case -1: this.map = this.asciiMap; break;
-            case  1: this.map = this.newMap;   break;
+            case 1: this.map = this.newMap; break;
         }
         this.render();
     }
