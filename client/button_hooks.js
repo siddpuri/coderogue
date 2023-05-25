@@ -81,31 +81,24 @@ export default class ButtonHooks {
 
     async handleKey(event) {
         if (!event.ctrlKey) return;
-        if (event.key == 's') {
-            event.preventDefault();
-            await this.submit();
-        }
-        else if (event.key == '[') {
-            this.client.display.switchTab(-1);
-        }
-        else if (event.key == ']') {
-            this.client.display.switchTab(1);
-        }
-        else if (event.key == 'ArrowUp') {
-            if (event.shiftKey) {
-                this.client.display.map = this.client.display.newMap;
-            } else {
-                delete this.client.display.highlightedPlayer;
-                this.client.display.levelToRender = Math.min(this.client.display.levelToRender + 1, 2);
-            }
-        }
-        else if (event.key == 'ArrowDown') {
-            if (event.shiftKey) {
-                this.client.display.map = this.client.display.asciiMap;
-            } else {
-                delete this.client.display.highlightedPlayer;
-                this.client.display.levelToRender = Math.max(this.client.display.levelToRender - 1, 0);
-            }
+        let key = (event.shiftKey? 'S-' : '') + event.key;
+        switch (key) {
+            case 's':
+                event.preventDefault();
+                await this.submit();
+                break;
+            case '[':
+                this.client.display.switchTab(-1); break;
+            case ']':
+                this.client.display.switchTab(1); break;
+            case 'ArrowUp':
+                this.client.display.switchLevel(1); break;
+            case 'ArrowDown':
+                this.client.display.switchLevel(-1); break;
+            case 'S-ArrowUp':
+                this.client.display.switchMap(1); break;
+            case 'S-ArrowDown':
+                this.client.display.switchMap(-1); break;
         }
     }
 

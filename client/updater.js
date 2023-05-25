@@ -28,8 +28,7 @@ export default class Updater {
     }
 
     async doTickActions() {
-        let state = await this.getJson('state');
-        this.client.display.render(state);
+        this.client.display.setState(await this.getJson('state'));
         if (this.client.display.isShowingLogTab()) {
             await this.loadLog();
         }

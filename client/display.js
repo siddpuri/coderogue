@@ -40,19 +40,24 @@ export default class Display {
         }
     }
 
-    render(state) {
-        let players = [];
+    setState(state) {
+        this.players = [];
         for (let player of state.players) {
-            if (player) players[player.id] = player;
+            if (player) this.players[player.id] = player;
         }
+        this.levels = state.levels;
+        this.render();
+    }
+
+    render() {
         if (this.highlightedPlayer) {
-            let playerLevel = players[this.highlightedPlayer].level;
+            let playerLevel = this.players[this.highlightedPlayer].level;
             if (playerLevel != 'jail') this.levelToRender = playerLevel;
         }
-        let level = state.levels[this.levelToRender];
+        let level = this.levels[this.levelToRender];
         this.renderTitle(level.name);
-        this.map.render(level.map, players);
-        this.renderPlayers(players);
+        this.map.render(level.map, this.players);
+        this.renderPlayers(this.players);
     }
 
     renderTitle(name) {
@@ -75,11 +80,15 @@ export default class Display {
                 for (let j = 0; j < cols.length; j++) {
                     row.cells[j].innerHTML = player[cols[j]];
                 }
+                if (player.id == this.highlightedPlayer) {
+                    row.classList.add('highlighted');
+                } else {
+                    row.classList.remove('highlighted');
+                }
             } else {
                 row.classList.add('hidden');
             }
         }
-        this.renderPlayerHighlight();
     }
 
     findPlayersToRender(players) {
@@ -98,7 +107,7 @@ export default class Display {
             result.push(player);
             if (result.length >= numPlayersToRender) break;
         }
-        result.sort((a, b) => b.score - a.score);
+        result.sort((a, b) => a.rank - b.rank);
         return result;
     }
 
@@ -117,18 +126,7 @@ export default class Display {
         } else {
             this.highlightedPlayer = playerId;
         }
-        this.renderPlayerHighlight();
-    }
-
-    renderPlayerHighlight() {
-        for (let i = 0; i < this.renderedPlayers.length; i++) {
-            let row = this.table.rows[i + 1];
-            if (this.renderedPlayers[i].id == this.highlightedPlayer) {
-                row.classList.add('highlighted');
-            } else {
-                row.classList.remove('highlighted');
-            }
-        }
+        this.render();
     }
 
     setCode(code) {
@@ -234,6 +232,22 @@ export default class Display {
         }
         let newIndex = (activeIndex + dir + navLinks.length) % navLinks.length;
         navLinks[newIndex].click();
+    }
+
+    switchLevel(dir) {
+        delete this.highlightedPlayer;
+        this.levelToRender += dir;
+        this.levelToRender = Math.max(this.levelToRender, 0);
+        this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
+        this.render();
+    }
+
+    switchMap(dir) {
+        switch (dir) {
+            case -1: this.map = this.asciiMap; break;
+            case  1: this.map = this.newMap;   break;
+        }
+        this.render();
     }
 
     say(message, level) {
