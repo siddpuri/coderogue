@@ -85,24 +85,32 @@ export default class ButtonHooks {
     }
 
     async handleKey(event) {
-        if (!event.ctrlKey) return;
-        let key = (event.shiftKey? 'S-' : '') + event.key;
+        let key =
+            (event.ctrlKey? 'C-' : '') +
+            (event.shiftKey? 'S-' : '') +
+            event.key;
         switch (key) {
-            case 's':
+            case 'Tab':
+                if (event.target.id == 'code-text') {
+                    event.preventDefault();
+                    document.execCommand('insertText', true, '    ');
+                }
+                break;
+            case 'C-s':
                 event.preventDefault();
                 await this.submit();
                 break;
-            case '[':
+            case 'C-[':
                 this.client.display.switchTab(-1); break;
-            case ']':
+            case 'C-]':
                 this.client.display.switchTab(1); break;
-            case 'ArrowUp':
+            case 'C-ArrowUp':
                 this.client.display.switchLevel(1); break;
-            case 'ArrowDown':
+            case 'C-ArrowDown':
                 this.client.display.switchLevel(-1); break;
-            case 'S-ArrowUp':
+            case 'C-S-ArrowUp':
                 this.client.display.switchMap(1); break;
-            case 'S-ArrowDown':
+            case 'C-S-ArrowDown':
                 this.client.display.switchMap(-1); break;
         }
     }

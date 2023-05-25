@@ -5,6 +5,7 @@ const dbParameters = {
     host: 'localhost',
     user: 'game',
     password: 'game',
+    port: '/var/run/mysqld/mysqld.sock',
 };
 
 export default class DB {
