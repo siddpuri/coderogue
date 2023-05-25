@@ -5,8 +5,13 @@ html {
 span {
     display: inline-block;
 }
+.level {
+    width: 13rem;
+}
 .coord {
-    width: 1rem;
+    color: #808080;
+    font-size: 0.8rem;
+    width: 0.8rem;
     text-align: end;
 }
 

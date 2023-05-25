@@ -45,7 +45,7 @@ export default class NewMap {
                 if (Object.hasOwn(cell, 'playerId')) {
                     this.renderPlayer(row, col, cell.playerId);
                 }
-                else switch(char) {
+                else switch (char) {
                     case '#': this.renderWall(row, col); break;
                     case '.': this.renderSpawn(row, col); break;
                     case 'o': this.renderExit(row, col); break;
