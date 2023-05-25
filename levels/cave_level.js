@@ -19,6 +19,7 @@ export default class CaveLevel extends Level {
     get exitPos() { return [this.width - 8, this.height - 8]; }
     get exitScore() { return 500; }
     get bumpScore() { return -1; }
+    get maxIdleTime() { return 5; }
 
     isProtected(pos) {
         let [x, y] = pos;

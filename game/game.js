@@ -10,7 +10,6 @@ import Player from './player.js';
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
 
-const maxIdleTime = 60;
 const jailtimes = [10, 60, 600, 3600];
 
 export default class Game {
@@ -85,7 +84,7 @@ export default class Game {
             }
         }
         if (!player.idle) player.offenses = 0;
-        if (player.idle++ > maxIdleTime) {
+        if (player.idle++ > player.level.maxIdleTime) {
             player.log.write('Idle timeout!');
             this.punish(player);
             player.idle = 1;

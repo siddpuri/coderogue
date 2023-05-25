@@ -30,6 +30,7 @@ export default class Level {
     get exitScore() { return 100; }
     get killScore() { return 200; }
     get bumpScore() { return 0; }
+    get maxIdleTime() { return 60; }
 
     isProtected(pos) { return true; }
     async doLevelAction() {}
