@@ -1,4 +1,5 @@
-var shouldDump = true;
+var shouldDump = false;
+var shouldTime = false;
 var startTime = new Date();
 
 // Actions
@@ -70,7 +71,7 @@ function search() {
         }
     }
     let a = table.getAction(pack(y0, x0, dir0));
-    [giveUp, moveForward, turnLeft, turnRight][a]();
+    [giveUp, moveForwardMaybe, turnLeft, turnRight][a]();
 }
 
 function visit(y, x, dir, a) {
@@ -86,11 +87,31 @@ function isBlocked(y, x) {
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (x == x0 && y == y0) return false;
-    return false; // isProtected(pos);
+    return isProtected(pos);
 }
 
 function giveUp() {
     console.log('No path found!');
+}
+
+function moveForwardMaybe() {
+    let newPos = movePos([x0, y0], dir0);
+    if (!isProtected(newPos)) {
+        for (dir of [3, 0, 1]) {
+            let enemyPos = movePos(newPos, (dir0 + dir) % 4);
+            let enemyDir = '^>v<'.indexOf(whatsAt(enemyPos));
+            if (enemyDir >= 0) {
+                let [ex, ey] = movePos(enemyPos, enemyDir);
+                if (ex == newPos[0] && dy == newPos[1]) return;
+            }
+        }
+    }
+    moveForward();
+}
+
+function movePos(pos, dir) {
+    let d = [[0, -1], [1, 0], [0, 1], [-1, 0]][dir];
+    return [pos[0] + d[0], pos[1] + d[1]];
 }
 
 function dumpTable(dir) {
@@ -104,8 +125,8 @@ function dumpTable(dir) {
     }
 }
 
-if (shouldDump) {
-    dumpTable(dir0);
+if (shouldDump) dumpTable(dir0);
+if (shouldTime) {
     let endTime = new Date();
     let timeTaken = endTime - startTime;
     console.log(`Executed in ${timeTaken / 1000} seconds.`);
