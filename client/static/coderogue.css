@@ -8,19 +8,13 @@ span {
 .level {
     width: 13rem;
 }
-.coord {
+.coords {
     color: #808080;
     font-size: 0.8rem;
-    width: 0.8rem;
     text-align: end;
-}
-
-span {
-    display: inline-block;
 }
 .coord {
-    width: 1rem;
-    text-align: end;
+    width: 0.8rem;
 }
 
 .table td,

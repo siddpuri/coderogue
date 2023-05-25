@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                             <div class="col d-flex justify-content-end fade" id="coords">
-                                <div>
+                                <div class="coords">
                                     &lbrack;
                                     <span class="coord" id="x-coord"></span> ,
                                     <span class="coord" id="y-coord"></span>
@@ -41,8 +41,16 @@
                         <canvas id="canvas"></canvas>
                     </div>
                     <div class="col mx-3">
-                        <div class="row h2">
-                            Players
+                        <div class="row">
+                            <div class="col h2">
+                                Players
+                            </div>
+                            <div class="col d-flex justify-content-end">
+                                <div class="btn-group ms-2 mb-2">
+                                    <button type="button" class="btn btn-sm btn-light" id="prev-players">&laquo;</button>
+                                    <button type="button" class="btn btn-sm btn-light" id="next-players">&raquo;</button>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <table class="table" id="players">

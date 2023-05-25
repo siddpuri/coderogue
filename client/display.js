@@ -17,6 +17,8 @@ export default class Display {
         this.newMap = new NewMap(client, 'canvas');
         this.map = this.asciiMap;
         this.levelToRender = 0;
+        this.renderPlayersFrom = 0;
+        this.numPlayers = 0;
         this.renderedPlayers = [];
         this.messageNumber = 0;
         this.freezeLog = false;
@@ -33,6 +35,7 @@ export default class Display {
         this.table = document.getElementById('players');
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = this.table.insertRow();
+            row.classList.add('invisible');
             for (let j = 0; j < 6; j++) {
                 row.insertCell();
             }
@@ -74,7 +77,7 @@ export default class Display {
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = this.table.rows[i + 1];
             if (i < this.renderedPlayers.length) {
-                row.classList.remove('hidden');
+                row.classList.remove('invisible');
                 let player = this.renderedPlayers[i];
                 let cols = ['rank', 'score', 'level', 'handle', 'kills', 'deaths'];
                 for (let j = 0; j < cols.length; j++) {
@@ -86,7 +89,7 @@ export default class Display {
                     row.classList.remove('highlighted');
                 }
             } else {
-                row.classList.add('hidden');
+                row.classList.add('invisible');
             }
         }
     }
@@ -100,9 +103,11 @@ export default class Display {
             result.push(players[this.highlightedPlayer]);
         }
         let topPlayers = players.filter(p => p);
+        this.numPlayers = topPlayers.length;
         topPlayers.sort((a, b) => b.score - a.score);
         topPlayers.forEach((p, i) => p.rank = i + 1);
-        for (let player of topPlayers) {
+        for (let i = this.renderPlayersFrom; i < topPlayers.length; i++) {
+            let player = topPlayers[i];
             if (result.some(p => p.id == player.id)) continue;
             result.push(player);
             if (result.length >= numPlayersToRender) break;
@@ -125,6 +130,29 @@ export default class Display {
             delete this.highlightedPlayer;
         } else {
             this.highlightedPlayer = playerId;
+        }
+        this.render();
+    }
+
+    switchLevel(dir) {
+        delete this.highlightedPlayer;
+        this.levelToRender += dir;
+        this.levelToRender = Math.max(this.levelToRender, 0);
+        this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
+        this.render();
+    }
+
+    showPlayers(dir) {
+        this.renderPlayersFrom += 10 * dir;
+        this.renderPlayersFrom = Math.max(this.renderPlayersFrom, 0);
+        this.renderPlayersFrom = Math.min(this.renderPlayersFrom, this.numPlayers - 10);
+        this.render();
+    }
+
+    switchMap(dir) {
+        switch (dir) {
+            case -1: this.map = this.asciiMap; break;
+            case 1: this.map = this.newMap; break;
         }
         this.render();
     }
@@ -232,22 +260,6 @@ export default class Display {
         }
         let newIndex = (activeIndex + dir + navLinks.length) % navLinks.length;
         navLinks[newIndex].click();
-    }
-
-    switchLevel(dir) {
-        delete this.highlightedPlayer;
-        this.levelToRender += dir;
-        this.levelToRender = Math.max(this.levelToRender, 0);
-        this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
-        this.render();
-    }
-
-    switchMap(dir) {
-        switch (dir) {
-            case -1: this.map = this.asciiMap; break;
-            case 1: this.map = this.newMap; break;
-        }
-        this.render();
     }
 
     say(message, level) {
