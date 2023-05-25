@@ -6,6 +6,7 @@ export default class ButtonHooks {
     async start() {
         this.onClick('prev-level', () => this.client.display.switchLevel(-1));
         this.onClick('next-level', () => this.client.display.switchLevel(1));
+        this.onClick('first-players', () => this.client.display.showPlayers(0));
         this.onClick('prev-players', () => this.client.display.showPlayers(-1));
         this.onClick('next-players', () => this.client.display.showPlayers(1));
         this.onClick('canvas', event => this.handleMapClick(event));
