@@ -1,6 +1,12 @@
+var startTime = new Date();
 var shouldDump = false;
 var shouldTime = false;
-var startTime = new Date();
+
+if (state == 'initial') {
+    state = {
+        idle: 0,
+    };
+}
 
 // Actions
 var none    = 0;
@@ -28,7 +34,11 @@ var dir0 = getDirection();
 var [x0, y0] = getPosition();
 var [x1, y1] = getExitPosition();
 
-search();
+state.idle++;
+if (level0 == 2 && state.idle == 5 && canMove(0)) {
+    moveForwardMaybe();
+}
+else search();
 
 // Index calculations
 function pack(y, x, dir) {
@@ -87,6 +97,7 @@ function isBlocked(y, x) {
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (x == x0 && y == y0) return false;
+    if (Math.abs(x - x0) + Math.abs(y - y0) > 10) return false;
     return isProtected(pos);
 }
 
@@ -102,11 +113,12 @@ function moveForwardMaybe() {
             let enemyDir = '^>v<'.indexOf(whatsAt(enemyPos));
             if (enemyDir >= 0) {
                 let [ex, ey] = movePos(enemyPos, enemyDir);
-                if (ex == newPos[0] && dy == newPos[1]) return;
+                if (ex == newPos[0] && ey == newPos[1]) return;
             }
         }
     }
     moveForward();
+    state.idle = 0;
 }
 
 function movePos(pos, dir) {
