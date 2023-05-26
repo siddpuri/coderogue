@@ -32,7 +32,7 @@ export default class Level {
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
-    isProtected(currentPlayerId, pos) { return true; }
+    isProtected(currentPlayer, pos) { return true; }
     async doLevelAction() {}
 
     drawBorderWalls() {
@@ -102,7 +102,7 @@ export default class Level {
             if (player.dontScore) {
                 player.log.write(`Can't bump players after respawnAt.`);
             }
-            else if (this.isProtected(player.id, dest)) {
+            else if (this.isProtected(player, dest)) {
                 player.log.write(`Player ${other.textHandle} is protected.`);
             }
             else {
