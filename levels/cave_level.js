@@ -1,5 +1,6 @@
 import Util from '../shared/util.js';
 import Level from '../game/level.js';
+import Grownups from '../game/grownups.js';
 
 const minCaveSize = 4;
 const maxCaveSize = 12;
@@ -21,12 +22,11 @@ export default class CaveLevel extends Level {
     get bumpScore() { return -1; }
     get maxIdleTime() { return 5; }
 
-    isProtected(player, pos) {
-        if (player.isGrownup) {
+    isProtected(currentPlayerId, pos) {
+        if (Grownups.list.includes(currentPlayerId)) {
             let cell1 = this.cell(pos);
             if (cell1.hasPlayer) {
-                let other = this.server.game.players[cell1.playerId];
-                if (!other.isGrownup) return true;
+                if (!Grownups.list.includes(cell1.playerId)) return true;
             }
         }
 
