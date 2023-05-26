@@ -21,7 +21,15 @@ export default class CaveLevel extends Level {
     get bumpScore() { return -1; }
     get maxIdleTime() { return 5; }
 
-    isProtected(pos) {
+    isProtected(player, pos) {
+        if (player.isGrownup) {
+            let cell1 = this.cell(pos);
+            if (cell1.hasPlayer) {
+                let other = this.server.game.players[cell1.playerId];
+                if (!other.isGrownup) return true;
+            }
+        }
+
         let [x, y] = pos;
         return (
             x < 14 && y < 14 ||

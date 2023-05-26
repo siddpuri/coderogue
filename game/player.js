@@ -1,6 +1,7 @@
 import Util from '../shared/util.js';
 
 import CircularLog from './circular_log.js';
+import Grownups from './grownups.js';
 
 export default class Player {
     constructor(dbEntry) {
@@ -10,6 +11,8 @@ export default class Player {
         this.period = dbEntry.period;
         this.handle = dbEntry.handle;
         this.score = dbEntry.score;
+
+        this.isGrownup = Grownups.list.includes(this.id);
 
         // Game plumbing
         this.textHandle = Util.getTextHandle(this.handle);

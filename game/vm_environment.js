@@ -29,7 +29,7 @@ export default class VmEnvironment {
             getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition:  () => this.player.level.exitPos.slice(),
-            isProtected:      pos => this.player.level.isProtected(pos),
+            isProtected:      pos => this.player.level.isProtected(this.player, pos),
 
             // Internal
             getMap:           this.getMap.bind(this),
@@ -82,18 +82,6 @@ export default class VmEnvironment {
         if (!checker.checkPos(level, pos)) return;
         if (!checker.checkDir(dir)) return;
         this.game.respawnAt(this.player, level, pos, dir);
-    }
-
-    whatsAt(pos) {
-        let checker = new ArgumentChecker(this.player, 'whatsAt');
-        if (!checker.checkPos(this.player.level, pos)) return '#';
-        let cell = this.player.level.cell(pos);
-        let char = cell.type?? ' ';
-        if (Object.hasOwn(cell, 'playerId')) {
-            let dir = this.game.players[cell.playerId].dir;
-            char = '^>v<'[dir];
-        }
-        return char;
     }
 
     getMap() {
