@@ -305,8 +305,4 @@ export default class Display {
             div.classList.remove('show');
         }, 3000);
     }
-
-    lookup(handle) {
-        return this.renderedPlayers.find(p => p && p.handle == handle);
-    }
 }
