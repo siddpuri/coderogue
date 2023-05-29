@@ -28,7 +28,7 @@ export default class WebServer {
       res.send(JSON.stringify(response));
     });
 
-    this.app.post('/api/respawn', async (req, res) => {
+    this.app.post('/api/respawn', (req, res) => {
       let playerId = this.validatePlayerId(req, res);
       if (!playerId) return;
       let player = this.server.game.players[playerId];
@@ -51,17 +51,22 @@ export default class WebServer {
       res.send(JSON.stringify({}));
     });
 
-    this.app.get('/api/log', async (req, res) => {
+    this.app.get('/api/log', (req, res) => {
       let playerId = this.validatePlayerId(req, res);
       if (!playerId) return;
       let log = this.server.game.players[playerId].log.toString();
       res.send(JSON.stringify({ log }));
     });
 
-    this.app.post('/api/player', async (req, res) => {
+    this.app.post('/api/player', (req, res) => {
         let { playerId } = req.body;
         let playerInfo = this.server.game.players[playerId].getInfo();
         res.send(JSON.stringify(playerInfo));
+    });
+
+    this.app.use((err, req, res, next) => {
+        console.log(err);
+        res.status(500).json({ error: 'Internal server error: ' + err.message });
     });
 
     this.app.listen(port, () => {
