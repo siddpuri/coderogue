@@ -87,6 +87,7 @@
                 <nav class="nav nav-tabs mt-3 mb-3">
                     <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
                     <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
+                    <a class="nav-item nav-link" id="player-tab" data-bs-toggle="tab" data-bs-target="#player" role="tab">Player</a>
                     <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>
                     <a class="nav-item nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="tab">Api</a>
                     <a class="nav-item nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="tab">Levels</a>
@@ -130,6 +131,18 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Player tab -->
+                    <div class="tab-pane" id="player" role="tabpanel">
+                        <div class="col">
+                            <table class="table" id="player-info">
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="col">
+                            <canvas id="player-stats" width="400" height="400"></canvas>
                         </div>
                     </div>
 

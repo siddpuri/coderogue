@@ -58,6 +58,12 @@ export default class WebServer {
       res.send(JSON.stringify({ log }));
     });
 
+    this.app.post('/api/player', async (req, res) => {
+        let { playerId } = req.body;
+        let playerInfo = this.server.game.players[playerId].getInfo();
+        res.send(JSON.stringify(playerInfo));
+    });
+
     this.app.listen(port, () => {
       console.log(`Web server listening on port ${port}`);
     });

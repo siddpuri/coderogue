@@ -189,9 +189,8 @@ export default class Display {
         return document.getElementById('code-text').selectionStart;
     }
 
-    isShowingLogTab() {
-        const logTab = document.getElementById('log-tab');
-        return logTab.classList.contains('active');
+    isShowing(tab) {
+        return document.getElementById(tab).classList.contains('active');
     }
 
     setLog(log) {
@@ -202,6 +201,22 @@ export default class Display {
     toggleFreeze() {
         let button = document.getElementById('freeze').classList.toggle('active');
         this.freezeLog = !this.freezeLog;
+    }
+
+    setPlayerInfo(playerInfo) {
+        let tbody = document.createElement('tbody');
+        for (const [key, value] of Object.entries(playerInfo)) {
+            let row = document.createElement('tr');
+            let keyCell = document.createElement('td');
+            keyCell.appendChild(document.createTextNode(key));
+            row.appendChild(keyCell);
+            let valueCell = document.createElement('td');
+            valueCell.appendChild(document.createTextNode(value));
+            row.appendChild(valueCell);
+            tbody.appendChild(row);
+        }   
+        let table = document.getElementById('player-info');
+        table.replaceChild(tbody, table.tBodies[0]);
     }
 
     showAll() {

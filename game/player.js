@@ -53,7 +53,7 @@ export default class Player {
     getState() {
         return {
             id: this.id,
-            period: this.period,
+            // period: this.period,
             handle: this.textHandle,
             score: this.score,
             level: this.levelNumber,
@@ -62,5 +62,10 @@ export default class Player {
             pos: this.pos,
             dir: this.dir,
         };
+    }
+
+    getInfo() {
+        let result = this.getState();
+        return result;
     }
 }

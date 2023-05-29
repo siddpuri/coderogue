@@ -29,17 +29,17 @@ export default class Updater {
 
     async doTickActions() {
         this.client.display.setState(await this.getJson('state'));
-        if (this.client.display.isShowingLogTab()) {
+        if (this.client.display.isShowing('log-tab')) {
             await this.loadLog();
+        }
+        else if (this.client.display.isShowing('player-tab')) {
+            await this.loadPlayerInfo();
         }
     }
 
     async login(credentials) {
         let result = await this.postJson('login', credentials);
-        if (result.error) {
-            this.client.display.say(result.error, 3);
-            return false;
-        }
+        if (result.error) return false;
         this.client.credentials.login(result);
     }
 
@@ -47,11 +47,7 @@ export default class Updater {
         let code = 'Log in to see your code.'
         if (this.client.credentials.isLoggedIn) {
             let result = await this.getJson('code');
-            if (result.error) {
-                this.client.display.say(result.error, 3);
-                return;
-            }
-            code = result.code;
+            if (!result.error) code = result.code;
         }
         this.client.display.setCode(code);
     }
@@ -61,13 +57,20 @@ export default class Updater {
         if (this.client.credentials.isLoggedIn) {
             if (this.client.display.freezeLog) return;
             let result = await this.getJson('log');
-            if (result.error) {
-                this.client.display.say(result.error, 3);
-                return;
-            }
-            log = result.log;
+            if (!result.error) log = result.log;
         }
         this.client.display.setLog(log);
+    }
+
+    async loadPlayerInfo() {
+        let playerInfo = {};
+        let playerId = this.client.display.highlightedPlayer;
+        if (!playerId) playerId = this.client.credentials.playerId;
+        if (playerId) {
+            let result = await this.postJson('player', { playerId });
+            if (!result.error) playerInfo = result;
+        }
+        this.client.display.setPlayerInfo(playerInfo);
     }
 
     async getJson(name) {
