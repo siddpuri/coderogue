@@ -35,7 +35,7 @@ var [x0, y0] = getPosition();
 var [x1, y1] = getExitPosition();
 
 state.idle++;
-if (level0 == 2 && state.idle == 5 && canMove(0)) {
+if (level0 == 2 && state.idle >= 4) {
     moveForwardMaybe();
 }
 else search();
@@ -103,10 +103,15 @@ function isBlocked(y, x) {
 
 function giveUp() {
     console.log('No path found!');
+    moveForwardMaybe();
 }
 
 function moveForwardMaybe() {
     let newPos = movePos([x0, y0], dir0);
+    if (whatsAt(newPos) == '#') {
+        turnRight();
+        return;
+    }
     if (!isProtected(newPos)) {
         for (dir of [3, 0, 1]) {
             let enemyPos = movePos(newPos, (dir0 + dir) % 4);
