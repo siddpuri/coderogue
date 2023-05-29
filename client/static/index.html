@@ -13,7 +13,7 @@
             <div class="px-3 pt-3 pb-5">
 
                 <!-- Top pane -->
-                <div class="row mb-5">
+                <div class="row">
                     <div class="col">
                         <div class="row align-items-baseline">
                             <div class="col h2">
@@ -70,11 +70,21 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-8 pe-0">
+                                <input type="text" class="form-control" id="handle" placeholder="Handle">
+                            </div>
+                            <div class="col pb-0">
+                                <div class="d-grid">
+                                    <button type="button" class="btn btn-secondary" id="find-handle">Find</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Nav tabs in bottom pane -->
-                <nav class="nav nav-tabs mb-3">
+                <nav class="nav nav-tabs mt-3 mb-3">
                     <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
                     <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
                     <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>

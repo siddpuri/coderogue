@@ -10,6 +10,7 @@ export default class ButtonHooks {
         this.onClick('prev-players', () => this.client.display.showPlayers(-1));
         this.onClick('next-players', () => this.client.display.showPlayers(1));
         this.onClick('canvas', event => this.handleMapClick(event));
+        this.onClick('find-handle', () => this.client.display.findHandle());
         this.onClick('respawn1', async () => await this.respawn());
         this.onClick('reformat', async () => await this.reformat());
         this.onClick('submit', async () => await this.submit());

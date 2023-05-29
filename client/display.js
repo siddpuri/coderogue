@@ -8,7 +8,7 @@ const alertLevels = [
     'alert-danger',
 ];
 
-const numPlayersToRender = 12;
+const numPlayersToRender = 10;
 
 export default class Display {
     constructor(client) {
@@ -156,6 +156,19 @@ export default class Display {
             case 1: this.map = this.newMap; break;
         }
         this.render();
+    }
+
+    findHandle() {
+        if (!players) return;
+        let handle = document.getElementById('handle').value;
+        let player = this.players.find(p => p && p.handle == handle);
+        if (player) {
+            this.highlightedPlayer = player.id;
+            this.render();
+            this.say('Highlighted ' + handle, 0);
+        } else {
+            this.say('Can\'t find ' + handle, 3);
+        }
     }
 
     setCode(code) {
