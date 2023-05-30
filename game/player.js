@@ -26,6 +26,10 @@ export default class Player {
         this.jailtime = 0;
         this.kills = 0;
         this.deaths = 0;
+
+        // Stats
+        this.timeOnLevel = [];
+        this.timesCompleted = [];
     }
 
     get levelNumber() {
@@ -61,11 +65,8 @@ export default class Player {
             deaths: this.deaths,
             pos: this.pos,
             dir: this.dir,
+            timeOnLevel: this.timeOnLevel,
+            timesCompleted: this.timesCompleted,
         };
-    }
-
-    getInfo() {
-        let result = this.getState();
-        return result;
     }
 }

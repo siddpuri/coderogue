@@ -32,9 +32,6 @@ export default class Updater {
         if (this.client.display.isShowing('log-tab')) {
             await this.loadLog();
         }
-        else if (this.client.display.isShowing('player-tab')) {
-            await this.loadPlayerInfo();
-        }
     }
 
     async login(credentials) {
@@ -60,17 +57,6 @@ export default class Updater {
             if (!result.error) log = result.log;
         }
         this.client.display.setLog(log);
-    }
-
-    async loadPlayerInfo() {
-        let playerInfo = {};
-        let playerId = this.client.display.highlightedPlayer;
-        if (!playerId) playerId = this.client.credentials.playerId;
-        if (playerId) {
-            let result = await this.postJson('player', { playerId });
-            if (!result.error) playerInfo = result;
-        }
-        this.client.display.setPlayerInfo(playerInfo);
     }
 
     async getJson(name) {

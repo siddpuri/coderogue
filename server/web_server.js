@@ -70,12 +70,6 @@ export default class WebServer {
         res.send(JSON.stringify({ log }));
     });
 
-    this.app.post('/api/player', (req, res) => {
-        let { playerId } = req.body;
-        let playerInfo = this.server.game.players[playerId].getInfo();
-        res.send(JSON.stringify(playerInfo));
-    });
-
     this.app.use((err, req, res, next) => {
         console.log(err);
         res.status(500).json({ error: 'Internal server error: ' + err.message });

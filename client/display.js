@@ -1,3 +1,5 @@
+import Util from './util.js';
+
 import AsciiMap from './ascii_map.js';
 import NewMap from './new_map.js';
 
@@ -32,9 +34,9 @@ export default class Display {
     }
 
     createPlayerRows() {
-        this.table = document.getElementById('players');
+        let playerTable = document.getElementById('players');
         for (let i = 0; i < numPlayersToRender; i++) {
-            let row = this.table.insertRow();
+            let row = playerTable.insertRow();
             row.classList.add('invisible');
             for (let j = 0; j < 6; j++) {
                 row.insertCell();
@@ -61,6 +63,9 @@ export default class Display {
         this.renderTitle(level.name);
         this.map.render(level.map, this.players);
         this.renderPlayers(this.players);
+        if (this.isShowing('player-tab')) {
+            this.renderPlayerTab();
+        }
     }
 
     renderTitle(name) {
@@ -74,8 +79,9 @@ export default class Display {
 
     renderPlayers(players) {
         this.renderedPlayers = this.findPlayersToRender(players);
+        let playerTable = document.getElementById('players');
         for (let i = 0; i < numPlayersToRender; i++) {
-            let row = this.table.rows[i + 1];
+            let row = playerTable.rows[i + 1];
             if (i < this.renderedPlayers.length) {
                 row.classList.remove('invisible');
                 let player = this.renderedPlayers[i];
@@ -203,20 +209,17 @@ export default class Display {
         this.freezeLog = !this.freezeLog;
     }
 
-    setPlayerInfo(playerInfo) {
-        let tbody = document.createElement('tbody');
-        for (const [key, value] of Object.entries(playerInfo)) {
-            let row = document.createElement('tr');
-            let keyCell = document.createElement('td');
-            keyCell.appendChild(document.createTextNode(key));
-            row.appendChild(keyCell);
-            let valueCell = document.createElement('td');
-            valueCell.appendChild(document.createTextNode(value));
-            row.appendChild(valueCell);
-            tbody.appendChild(row);
+    renderPlayerTab() {
+        let playerIdToRender = this.highlightedPlayer?? this.client.credentials.playerId;
+        if (!playerIdToRender) return;
+        let playerInfo = this.players[playerIdToRender];
+
+        let infoTable = document.getElementById('player-info');
+        let rows = ['level', 'pos', 'dir', 'id'];
+        for (let i = 0; i < rows.length; i++) {
+            let text = Util.stringify(playerInfo[rows[i]]);
+            infoTable.rows[i].cells[1].innerHTML = text;
         }   
-        let table = document.getElementById('player-info');
-        table.replaceChild(tbody, table.tBodies[0]);
     }
 
     showAll() {
