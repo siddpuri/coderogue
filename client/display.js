@@ -222,18 +222,26 @@ export default class Display {
         }
 
         let statsTable = document.getElementById('player-stats');
-        rows = ['timeSpent', 'timesCompleted', 'kills', 'deaths', 'score'];
-        for (let i = 0; i < rows.length; i++) {
-            for (let j = -1; j < 3; j++) {
-                let stats = playerInfo.statsArray[j >= 0? j: 'jail'];
-                let value = '';
-                if (stats) {
-                    value = stats[rows[i]];
-                    if (rows[i] == 'score') value = (value / stats.timeSpent).toFixed(2);
-                }
-                this.setColumn(statsTable.rows[i + 1], j + 2, value);
+        let totalTime = 0;
+        for (let col = 0; col < 4; col++) {
+            let values = [0, 0, 0, 0, ''];
+            let stats = playerInfo.statsArray[col == 0? 'jail': col - 1];
+            if (stats) {
+                totalTime += stats.timeSpent;
+                values[0] = stats.timesCompleted;
+                values[1] = this.renderRatio(stats.score, stats.timeSpent);
+                values[2] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
+                values[3] = this.renderRatio(totalTime, stats.timesCompleted);
+                if (col == 2) values[4] = values[3] < 300? '&#x2713': 'x';
             }
-        }
+            for (let row = 0; row < values.length; row++) {
+                this.setColumn(statsTable.rows[row + 1], col + 1, values[row]);
+            }
+       }
+    }
+
+    renderRatio(x, y) {
+        return (y > 0? x / y: 0).toFixed(2);
     }
 
     setColumn(row, col, text) {

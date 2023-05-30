@@ -19,6 +19,7 @@ span {
 
 .table-col {
     width: 4rem;
+    text-align: end;
 }
 
 .table td,
