@@ -1,4 +1,5 @@
 import Util from './util.js';
+import Player from './player.js';
 
 import AsciiMap from './ascii_map.js';
 import NewMap from './new_map.js';
@@ -47,8 +48,8 @@ export default class Display {
 
     setState(state) {
         this.players = [];
-        for (let player of state.players) {
-            if (player) this.players[player.id] = player;
+        for (let playerInfo of state.players) {
+            if (playerInfo) this.players[playerInfo.id] = new Player(playerInfo);
         }
         this.levels = state.levels;
         this.render();
@@ -56,7 +57,7 @@ export default class Display {
 
     render() {
         if (this.highlightedPlayer) {
-            let playerLevel = this.players[this.highlightedPlayer].level;
+            let playerLevel = this.players[this.highlightedPlayer].levelNumber;
             if (playerLevel != 'jail') this.levelToRender = playerLevel;
         }
         let level = this.levels[this.levelToRender];
@@ -85,7 +86,7 @@ export default class Display {
             if (i < this.renderedPlayers.length) {
                 row.classList.remove('invisible');
                 let player = this.renderedPlayers[i];
-                let cols = ['rank', 'score', 'level', 'handle', 'kills', 'deaths'];
+                let cols = ['rank', 'score', 'levelNumber', 'textHandle', 'kills', 'deaths'];
                 for (let j = 0; j < cols.length; j++) {
                     row.cells[j].innerHTML = player[cols[j]];
                 }
@@ -215,7 +216,7 @@ export default class Display {
         let playerInfo = this.players[playerIdToRender];
 
         let infoTable = document.getElementById('player-info');
-        let rows = ['level', 'pos', 'dir', 'id'];
+        let rows = ['levelNumber', 'pos', 'dir', 'id'];
         for (let i = 0; i < rows.length; i++) {
             let text = Util.stringify(playerInfo[rows[i]]);
             infoTable.rows[i].cells[1].innerHTML = text;

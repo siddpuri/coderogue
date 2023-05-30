@@ -2,13 +2,14 @@ import util from 'util';
 import { VM, VMScript } from 'vm2';
 
 import Util from '../shared/util.js';
+import Player from '../shared/player.js';
 import IntroLevel from '../levels/intro_level.js';
 import BlockLevel from '../levels/block_level.js';
 import CaveLevel from '../levels/cave_level.js';
 
-import Player from './player.js';
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
+import CircularLog from '../game/circular_log.js';
 
 const jailtimes = [10, 60, 600, 3600];
 
@@ -72,6 +73,7 @@ export default class Game {
             this.levels[0].spawn(player);
         }
         try {
+            player.incrementTimeSpent();
             player.turns = 1;
             await player.action();
         } catch (e) {
@@ -127,7 +129,8 @@ export default class Game {
     }
 
     exitPlayer(player) {
-        let levelNumber = player.level.levelNumber;
+        player.incrementTimesCompleted();
+        let levelNumber = player.levelNumber;
         player.level.removePlayer(player);
         levelNumber = (levelNumber + 1) % this.levels.length;
         if (player.dontScore) levelNumber = 0;
@@ -156,7 +159,8 @@ export default class Game {
     }
 
     addPlayer(dbEntry) {
-        const player = new Player(dbEntry);
+        let player = new Player(dbEntry);
+        player.log = new CircularLog(1000);
         this.players[player.id] = player;
         this.playerHandles.add(player.handle);
         this.levels[0].spawn(player);

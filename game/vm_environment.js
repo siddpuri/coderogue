@@ -24,7 +24,7 @@ export default class VmEnvironment {
             left:     3,
 
             // Robot sensors
-            getLevel:         () => this.player.level.levelNumber,
+            getLevel:         () => this.player.levelNumber,
             getPosition:      () => this.player.pos.slice(),
             getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),

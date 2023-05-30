@@ -17,6 +17,10 @@ span {
     width: 0.8rem;
 }
 
+.pos {
+    width: 4rem;
+}
+
 .table td,
 .table th {
     padding: 0.2rem;

@@ -18,15 +18,7 @@ export default class Credentials {
         let cookies = document.cookie.split('; ');
         for (let cookie of cookies) {
             let [name, value] = cookie.split('=');
-            if (name == 'playerId') {
-                this.playerId = value;
-            }
-            if (name == 'authToken') {
-                this.authToken = value;
-            }
-            if (name == 'handle') {
-                this.handle = value;
-            }
+            this[name] = value;
         }
     }
 
@@ -41,10 +33,10 @@ export default class Credentials {
     async login(serverResponse) {
         this.playerId = serverResponse.playerId;
         this.authToken = serverResponse.authToken;
-        this.handle = serverResponse.handle;
+        this.textHandle = serverResponse.textHandle;
         this.writeCookie('playerId', this.playerId);
         this.writeCookie('authToken', this.authToken);
-        this.writeCookie('handle', this.handle);
+        this.writeCookie('textHandle', this.textHandle);
         this.client.onLogin();
         return true;
     }
@@ -52,10 +44,10 @@ export default class Credentials {
     async logout() {
         delete this.authToken;
         delete this.playerId;
-        delete this.handle;
+        delete this.textHandle;
         this.deleteCookie('playerId');
         this.deleteCookie('authToken');
-        this.deleteCookie('handle');
+        this.deleteCookie('textHandle');
         this.client.onLogout();
     }
 }

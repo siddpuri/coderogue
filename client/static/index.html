@@ -136,18 +136,31 @@
 
                     <!-- Player tab -->
                     <div class="tab-pane" id="player" role="tabpanel">
-                        <div class="col">
-                            <table class="table" id="player-info">
-                                <tbody>
-                                    <tr><td>Level</td><td></td></tr>
-                                    <tr><td>Position</td><td></td></tr>
-                                    <tr><td>Direction</td><td></td></tr>
-                                    <tr><td>Player id</td><td></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col">
-                            <canvas id="player-stats" width="400" height="400"></canvas>
+                        <div class="row">
+                            <div class="col-2">
+                                <table class="table" id="player-info">
+                                    <tbody>
+                                        <tr><td>Level</td><td></td></tr>
+                                        <tr><td>Position</td><td class="pos"></td></tr>
+                                        <tr><td>Direction</td><td></td></tr>
+                                        <tr><td>Player id</td><td></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col">
+                                <table class="table mx-3" id="player-stats">
+                                    <tbody>
+                                        <tr><td>Time spent</td></tr>
+                                        <tr><td>Times completed</td></tr>
+                                        <tr><td>Kills</td></tr>
+                                        <tr><td>Deaths</td></tr>
+                                        <tr><td>Score per second</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col">
+                                <canvas id="player-chart" width="400" height="400"></canvas>
+                            </div>
                         </div>
                     </div>
 

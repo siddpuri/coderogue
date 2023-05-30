@@ -91,7 +91,7 @@ export default class Level {
             if (cell1.isExit) {
                 player.log.write(`Completed level ${this.levelNumber}!`);
                 if (!player.dontScore) {
-                    player.score += this.exitScore;
+                    player.addScore(this.exitScore);
                 }
                 this.server.game.exitPlayer(player);
             }
@@ -107,9 +107,9 @@ export default class Level {
             }
             else {
                 if (!other.dontScore) {
-                    player.score += this.killScore;
-                    player.kills++;
-                    other.deaths++;
+                    player.addScore(this.killScore);
+                    player.incrementKills();
+                    other.incrementDeaths();
                 }
                 this.server.game.respawn(other);
                 player.log.write(`You just bumped off ${other.textHandle}!`);
@@ -119,15 +119,14 @@ export default class Level {
         }
         else {
             player.log.write(`Bump!`);
-            if (player.score > 0) player.score += this.bumpScore;
+            if (player.score > 0) player.addScore(this.bumpScore);
         }
     }
 
     removePlayer(player) {
         if (player.level != this) console.log('Error in removePlayer');
         this.cell(player.pos).clearPlayer();
-        player.level = undefined;
-        player.pos = undefined;
+        player.jail();
     }
 
     turnRight(player) {
