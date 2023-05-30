@@ -278,7 +278,7 @@ export default class Display {
         let timesCompleted = statsArray[2].timesCompleted;
         if (timesCompleted < 10) return false;
         let totalTime = 0;
-        for (let i = 0; i < 3; i++) {
+        for (let i of ['jail', 0, 1]) {
             totalTime += statsArray[i].timeSpent;
         }
         return totalTime / timesCompleted < 300;
