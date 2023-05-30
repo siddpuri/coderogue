@@ -268,6 +268,18 @@ export default class Display {
         row.cells[col].innerHTML = Util.stringify(text);
     }
 
+    printPassed() {
+        let passed = this.players.filter(p => p && this.isGoalMet(p.statsArray));
+        console.log(passed.map(p => p.handle).join(' '));
+    }
+
+    isGoalMet(statsArray) {
+        let stats = statsArray[2];
+        return stats &&
+            stats.timesCompleted >= 10 &&
+            stats.timeSpent / stats.timesCompleted < 300;
+    }
+
     renderPlayerChart(playerInfo) {
         let labels = ['cur'];
         for (let i = 1; i < playerInfo.chartData.length; i++) {
