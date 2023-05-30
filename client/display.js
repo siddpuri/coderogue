@@ -274,10 +274,14 @@ export default class Display {
     }
 
     isGoalMet(statsArray) {
-        let stats = statsArray[2];
-        return stats &&
-            stats.timesCompleted >= 10 &&
-            stats.timeSpent / stats.timesCompleted < 300;
+        if (!statsArray[2]) return false;
+        let timesCompleted = statsArray[2].timesCompleted;
+        if (timesCompleted < 10) return false;
+        let totalTime = 0;
+        for (let i = 0; i < 3; i++) {
+            totalTime += statsArray[i].timeSpent;
+        }
+        return totalTime / timesCompleted < 300;
     }
 
     renderPlayerChart(playerInfo) {
