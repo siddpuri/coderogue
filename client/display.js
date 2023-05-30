@@ -231,15 +231,16 @@ export default class Display {
         let statsTable = document.getElementById('player-stats');
         let totalTime = 0;
         for (let col = 0; col < 4; col++) {
-            let values = [0, 0, 0, 0, ''];
+            let values = [0, 0, 0, 0, 0, ''];
             let stats = playerInfo.statsArray[col == 0? 'jail': col - 1];
             if (stats) {
                 totalTime += stats.timeSpent;
-                values[0] = stats.timesCompleted;
-                values[1] = this.renderRatio(stats.score, stats.timeSpent);
-                values[2] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
-                values[3] = this.renderRatio(totalTime, stats.timesCompleted);
-                if (col == 2 && values[0] >= 10) values[4] = values[3] < 300? '&#x2713': 'x';
+                values[0] = this.shorten(stats.timeSpent);
+                values[1] = stats.timesCompleted;
+                values[2] = this.renderRatio(stats.score, stats.timeSpent);
+                values[3] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
+                values[4] = this.renderRatio(totalTime, stats.timesCompleted);
+                if (col == 2 && values[0] >= 10) values[5] = values[4] < 300? '&#x2713': 'x';
             }
             for (let row = 0; row < values.length; row++) {
                 this.setColumn(statsTable.rows[row + 1], col + 1, values[row]);
@@ -247,8 +248,22 @@ export default class Display {
        }
     }
 
+    shorten(num) {
+        if (num < 1000) return num;
+        if (num < 1000000) return (num / 1000).toFixed(1) + 'k';
+        return (num / 1000000).toFixed(1) + 'm';
+    }
+
     renderRatio(x, y) {
         return (y > 0? x / y: 0).toFixed(2);
+    }
+
+    setColumn(row, col, text) {
+        while (row.cells.length <= col) {
+            let cell = row.insertCell(-1);
+            cell.classList.add('table-col');
+        }
+        row.cells[col].innerHTML = Util.stringify(text);
     }
 
     renderPlayerChart(playerInfo) {
@@ -283,14 +298,6 @@ export default class Display {
             this.chart.data.labels = labels;
             this.chart.update();
         }
-    }
-
-    setColumn(row, col, text) {
-        while (row.cells.length <= col) {
-            let cell = row.insertCell(-1);
-            cell.classList.add('table-col');
-        }
-        row.cells[col].innerHTML = Util.stringify(text);
     }
 
     showAll() {
