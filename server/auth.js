@@ -20,8 +20,8 @@ export default class Auth {
         }
         let playerId = dbEntry.id;
         let authToken = dbEntry.auth_token;
-        let handle = Util.getTextHandle(dbEntry.handle);
-        return { playerId, authToken, handle };
+        let textHandle = Util.getTextHandle(dbEntry.handle);
+        return { playerId, authToken, textHandle };
     }
 
     async createAccount(credentials) {

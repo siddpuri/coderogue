@@ -168,13 +168,13 @@ export default class Display {
     findHandle() {
         if (!players) return;
         let handle = document.getElementById('handle').value;
-        let player = this.players.find(p => p && p.handle == handle);
+        let player = this.players.find(p => p && p.textHandle == handle);
         if (player) {
             this.highlightedPlayer = player.id;
             this.render();
-            this.say('Highlighted ' + handle, 0);
+            this.say(`Highlighted ${handle}.`, 0);
         } else {
-            this.say('Can\'t find ' + handle, 3);
+            this.say(`Can't find ${handle}.`, 3);
         }
     }
 
@@ -354,7 +354,7 @@ export default class Display {
     showLoggedIn() {
         document.getElementById('login-form').classList.add('d-none');
         document.getElementById('logout-form').classList.remove('d-none');
-        document.getElementById('handle').innerHTML = this.client.credentials.handle;
+        document.getElementById('user-handle').innerHTML = this.client.credentials.textHandle;
     }
 
     showLoggedOut() {

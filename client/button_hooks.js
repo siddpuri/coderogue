@@ -27,6 +27,9 @@ export default class ButtonHooks {
         canvas.addEventListener('mousemove', event => this.handleMouseMove(event));
         canvas.addEventListener('mouseleave', () => this.client.display.onMouseLeave());
 
+        document.getElementById('handle').addEventListener('keydown', event => {
+            if (event.key == 'Enter') this.client.display.findHandle();
+        });
         document.addEventListener('keydown', async event => await this.handleKey(event));
     }
 
