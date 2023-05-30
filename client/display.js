@@ -257,7 +257,7 @@ export default class Display {
     }
 
     renderRatio(x, y) {
-        return (y > 0? x / y: 0).toFixed(2);
+        return this.shorten((y > 0? x / y: 0).toFixed(1));
     }
 
     setColumn(row, col, text) {
