@@ -57,6 +57,7 @@ export default class Game {
         if (player.jailtime) {
             player.log.write(`In jail for ${player.jailtime} more turns.`);
             player.jailtime--;
+            player.incrementTimeSpent();
             return;
         }
         if (!player.action) {
@@ -79,11 +80,11 @@ export default class Game {
         } catch (e) {
             if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
                 player.log.write('Script execution timed out!');
-                this.punish(player);
-                return;
             } else {
                 player.log.write(this.trimError(e));
             }
+            this.punish(player);
+            return;
         }
         if (!player.idle) player.offenses = 0;
         if (player.idle++ > player.level.maxIdleTime) {

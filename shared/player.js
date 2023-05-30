@@ -23,7 +23,13 @@ export default class Player {
         this.idle = info.idle?? 0;
         this.offenses = info.offenses?? 0;
         this.jailtime = info.jailtime?? 0;
-        this.statsArray = info.statsArray?? [];
+
+        this.statsArray = [];
+        if (info.statsArray) {
+            for (let key in info.statsArray) {
+                this.statsArray[key] = info.statsArray[key];
+            }
+        }
 
         // Fields only meaningful on the server
         this.action = null;
@@ -88,7 +94,7 @@ export default class Player {
             idle: this.idle,
             offenses: this.offenses,
             jailtime: this.jailtime,
-            statsArray: this.statsArray,
+            statsArray: { ...this.statsArray },
         };
     }
 }

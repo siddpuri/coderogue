@@ -218,9 +218,30 @@ export default class Display {
         let infoTable = document.getElementById('player-info');
         let rows = ['levelNumber', 'pos', 'dir', 'idle', 'offenses', 'jailtime', 'id', 'handle'];
         for (let i = 0; i < rows.length; i++) {
-            let text = Util.stringify(playerInfo[rows[i]]);
-            infoTable.rows[i].cells[1].innerHTML = text;
-        }   
+            this.setColumn(infoTable.rows[i], 1, playerInfo[rows[i]]);
+        }
+
+        let statsTable = document.getElementById('player-stats');
+        rows = ['timeSpent', 'timesCompleted', 'kills', 'deaths', 'score'];
+        for (let i = 0; i < rows.length; i++) {
+            for (let j = -1; j < 3; j++) {
+                let stats = playerInfo.statsArray[j >= 0? j: 'jail'];
+                let value = '';
+                if (stats) {
+                    value = stats[rows[i]];
+                    if (rows[i] == 'score') value = (value / stats.timeSpent).toFixed(2);
+                }
+                this.setColumn(statsTable.rows[i + 1], j + 2, value);
+            }
+        }
+    }
+
+    setColumn(row, col, text) {
+        while (row.cells.length <= col) {
+            let cell = row.insertCell(-1);
+            cell.classList.add('table-col');
+        }
+        row.cells[col].innerHTML = Util.stringify(text);
     }
 
     showAll() {
