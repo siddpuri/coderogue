@@ -216,7 +216,7 @@ export default class Display {
         let playerInfo = this.players[playerIdToRender];
 
         let infoTable = document.getElementById('player-info');
-        let rows = ['levelNumber', 'pos', 'dir', 'id'];
+        let rows = ['levelNumber', 'pos', 'dir', 'idle', 'offenses', 'jailtime', 'id', 'handle'];
         for (let i = 0; i < rows.length; i++) {
             let text = Util.stringify(playerInfo[rows[i]]);
             infoTable.rows[i].cells[1].innerHTML = text;
