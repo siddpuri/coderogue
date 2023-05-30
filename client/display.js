@@ -270,12 +270,12 @@ export default class Display {
 
     printPassed() {
         let passed = this.players.filter(p => p && this.isGoalMet(p.statsArray));
-        console.log(passed.map(p => p.handle).join(' '));
+        console.log(passed.map(p => p.id).join(' '));
     }
 
     isGoalMet(statsArray) {
-        if (!statsArray[2]) return false;
-        let timesCompleted = statsArray[2].timesCompleted;
+        if (!statsArray[1]) return false;
+        let timesCompleted = statsArray[1].timesCompleted;
         if (timesCompleted < 10) return false;
         let totalTime = 0;
         for (let i of ['jail', 0, 1]) {
