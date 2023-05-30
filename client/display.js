@@ -240,7 +240,9 @@ export default class Display {
                 values[2] = this.renderRatio(stats.score, stats.timeSpent);
                 values[3] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
                 values[4] = this.renderRatio(totalTime, stats.timesCompleted);
-                if (col == 2 && values[0] >= 10) values[5] = values[4] < 300? '&#x2713': 'x';
+                if (col == 2 && stats.timesCompleted >= 10) {
+                    values[5] = values[4] < 300? '&#x2713': 'x';
+                }
             }
             for (let row = 0; row < values.length; row++) {
                 this.setColumn(statsTable.rows[row + 1], col + 1, values[row]);
