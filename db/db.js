@@ -20,7 +20,7 @@ export default class DB {
     }
 
     async loadPlayers() {
-        return await this.query('SELECT * FROM players');
+        return await this.query('SELECT id, auth_token, handle FROM players');
     }
 
     async addPlayer(email, password, authToken) {
@@ -41,7 +41,7 @@ export default class DB {
 
     async getPlayerByEmail(email) {
         return await this.query(
-            'SELECT * FROM players WHERE email = ?',
+            'SELECT id, password, auth_token, handle FROM players WHERE email = ?',
             [email]
         );
     }
