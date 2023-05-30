@@ -12,6 +12,7 @@ import VmEnvironment from './vm_environment.js';
 import CircularLog from '../game/circular_log.js';
 
 const jailtimes = [10, 60, 600, 3600];
+const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
 
 export default class Game {
     constructor(server) {
@@ -26,6 +27,7 @@ export default class Game {
         }
         this.players = [];
         this.playerHandles = new Set();
+        this.lastChartUpdate = Date.now();
     }
 
     async start() {
@@ -45,6 +47,12 @@ export default class Game {
     }
 
     async doTickActions() {
+        if (Date.now() - this.lastChartUpdate > chartUpdateInterval) {
+            for (let player of this.players) {
+                if (player) player.addChartInterval();
+            }
+            this.lastChartUpdate += chartUpdateInterval;
+        }
         for (let player of this.players) {
             if (player) await this.doPlayerAction(player);
         }

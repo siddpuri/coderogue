@@ -214,13 +214,20 @@ export default class Display {
         let playerIdToRender = this.highlightedPlayer?? this.client.credentials.playerId;
         if (!playerIdToRender) return;
         let playerInfo = this.players[playerIdToRender];
+        this.renderPlayerInfo(playerInfo);
+        this.renderPlayerStats(playerInfo);
+        this.renderPlayerChart(playerInfo);
+    }
 
+    renderPlayerInfo(playerInfo) {
         let infoTable = document.getElementById('player-info');
         let rows = ['levelNumber', 'pos', 'dir', 'idle', 'offenses', 'jailtime', 'id', 'handle'];
         for (let i = 0; i < rows.length; i++) {
             this.setColumn(infoTable.rows[i], 1, playerInfo[rows[i]]);
         }
+    }
 
+    renderPlayerStats(playerInfo) {
         let statsTable = document.getElementById('player-stats');
         let totalTime = 0;
         for (let col = 0; col < 4; col++) {
@@ -232,7 +239,7 @@ export default class Display {
                 values[1] = this.renderRatio(stats.score, stats.timeSpent);
                 values[2] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
                 values[3] = this.renderRatio(totalTime, stats.timesCompleted);
-                if (col == 2) values[4] = values[3] < 300? '&#x2713': 'x';
+                if (col == 2 && values[0] >= 10) values[4] = values[3] < 300? '&#x2713': 'x';
             }
             for (let row = 0; row < values.length; row++) {
                 this.setColumn(statsTable.rows[row + 1], col + 1, values[row]);
@@ -242,6 +249,40 @@ export default class Display {
 
     renderRatio(x, y) {
         return (y > 0? x / y: 0).toFixed(2);
+    }
+
+    renderPlayerChart(playerInfo) {
+        let labels = ['cur'];
+        for (let i = 1; i < playerInfo.chartData.length; i++) {
+            labels.push(`cur - ${i * 5}`);
+        }
+
+        if (!this.chart) {
+            Chart.defaults.color = 'black';
+            this.chart = new Chart(document.getElementById('player-chart'), {
+                type: 'line',
+                options: {
+                    scales: { y: { beginAtZero: true, suggestedMax: 2000 }},
+                    animation: false,
+                },
+                data: {
+                    datasets: [{
+                        label: 'Score in five-minute intervals',
+                        borderColor: '#808080',
+                        backgroundColor: '#e0e0e0',
+                        borderWidth: 1,
+                        pointStyle: false,
+                        fill: true,
+                        labels: labels,
+                        data: playerInfo.chartData,
+                    }],
+                },
+            });
+        } else {
+            this.chart.data.datasets[0].data = playerInfo.chartData;
+            this.chart.data.labels = labels;
+            this.chart.update();
+        }
     }
 
     setColumn(row, col, text) {

@@ -23,6 +23,7 @@ export default class Player {
         this.idle = info.idle?? 0;
         this.offenses = info.offenses?? 0;
         this.jailtime = info.jailtime?? 0;
+        this.chartData = info.chartData?? [0];
 
         this.statsArray = [];
         if (info.statsArray) {
@@ -82,7 +83,16 @@ export default class Player {
     incrementTimesCompleted() { this.stats.timesCompleted++; }
     incrementKills() { this.stats.kills++; }
     incrementDeaths() { this.stats.deaths++; }
-    addScore(score) { this.stats.score += score; }
+
+    addScore(score) {
+        this.stats.score += score;
+        this.chartData[0] += score;
+    }
+
+    addChartInterval() {
+        this.chartData.unshift(0);
+        if (this.chartData.length > 100) this.chartData.pop();
+    }
 
     getState() {
         return {
@@ -95,6 +105,7 @@ export default class Player {
             offenses: this.offenses,
             jailtime: this.jailtime,
             statsArray: { ...this.statsArray },
+            chartData: this.chartData,
         };
     }
 }
