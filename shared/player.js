@@ -74,11 +74,6 @@ export default class Player {
         this.log.write('New code loaded.');
     }
 
-    jail() {
-        this.level = null;
-        this.pos = null;
-    }
-
     incrementTimeSpent() { this.stats.timeSpent++; }
     incrementTimesCompleted() { this.stats.timesCompleted++; }
     incrementKills() { this.stats.kills++; }
