@@ -97,7 +97,7 @@ function isBlocked(y, x) {
     if (char == '#') return true;
     if (!'^>v<'.includes(char)) return false;
     if (x == x0 && y == y0) return false;
-    if (Math.abs(x - x0) + Math.abs(y - y0) > 10) return false;
+    if (Math.abs(x - x0) + Math.abs(y - y0) > 5) return false;
     return isProtected(pos);
 }
 
