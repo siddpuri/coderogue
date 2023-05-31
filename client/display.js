@@ -107,8 +107,11 @@ export default class Display {
         let topPlayers = players.filter(p => p);
         if (this.client.credentials.playerId) {
             result.push(players[this.client.credentials.playerId]);
-            if (Grownups.list.includes(this.client.credentials.playerId)) {
-                topPlayers.forEach(p => p.score = 0);
+            if (!Grownups.list.includes(this.client.credentials.playerId)) {
+                topPlayers.forEach(p => {
+                    if (!Grownups.list.includes(p.id)) return;
+                    p.statsArray.forEach(s => s.score = 0);
+                });
             }
         }
         if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
