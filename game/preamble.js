@@ -1,7 +1,7 @@
 // Uncomment the next line to see syntax highlighting.
 export default class Preamble { static get code() { return `
 
-var _map;
+var _map = null;
 
 function whatsAt(pos) {
     if (!_map || getLevel() != _map.level) {
