@@ -97,7 +97,7 @@ export default class ButtonHooks {
             case 'Tab':
                 if (event.target.id == 'code-text') {
                     event.preventDefault();
-                    document.execCommand('insertText', true, '    ');
+                    document.execCommand('insertText', true, '  ');
                 }
                 break;
             case 'C-s':
