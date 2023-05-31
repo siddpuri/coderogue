@@ -150,10 +150,11 @@ export default class Display {
     }
 
     showPlayers(dir) {
+        let step = numPlayersToRender - 2;
         if (dir == 0) this.renderPlayersFrom = 0;
-        this.renderPlayersFrom += 10 * dir;
+        this.renderPlayersFrom += step * dir;
         this.renderPlayersFrom = Math.max(this.renderPlayersFrom, 0);
-        this.renderPlayersFrom = Math.min(this.renderPlayersFrom, this.numPlayers - 10);
+        this.renderPlayersFrom = Math.min(this.renderPlayersFrom, this.numPlayers - step);
         this.render();
     }
 
