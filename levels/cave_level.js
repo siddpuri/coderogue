@@ -1,6 +1,6 @@
 import Util from '../shared/util.js';
+import Grownups from '../shared/grownups.js';
 import Level from '../game/level.js';
-import Grownups from '../game/grownups.js';
 
 const minCaveSize = 4;
 const maxCaveSize = 12;

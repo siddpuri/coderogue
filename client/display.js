@@ -1,5 +1,6 @@
 import Util from './util.js';
 import Player from './player.js';
+import Grownups from './grownups.js';
 
 import AsciiMap from './ascii_map.js';
 import NewMap from './new_map.js';
@@ -103,13 +104,16 @@ export default class Display {
 
     findPlayersToRender(players) {
         let result = [];
+        let topPlayers = players.filter(p => p);
         if (this.client.credentials.playerId) {
             result.push(players[this.client.credentials.playerId]);
+            if (Grownups.list.includes(this.client.credentials.playerId)) {
+                topPlayers.forEach(p => p.score = 0);
+            }
         }
         if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
             result.push(players[this.highlightedPlayer]);
         }
-        let topPlayers = players.filter(p => p);
         this.numPlayers = topPlayers.length;
         topPlayers.sort((a, b) => b.score - a.score);
         topPlayers.forEach((p, i) => p.rank = i + 1);
