@@ -57,19 +57,17 @@ export default class Level {
 
     spawnAround(player, pos, dir, radius) {
         for (;; radius += 10) {
-            for (let tries = 0; tries < radius + 1; tries++) {
-                let [dx, dy] = [radius, radius];
-                while (dx * dx + dy * dy > radius * radius) {
-                    dx = Util.randomInt(-radius, radius);
-                    dy = Util.randomInt(-radius, radius);
-                }
-                let candidate = [pos[0] + dx, pos[1] + dy];
-                let [x, y] = candidate;
-                if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
-                if (this.cell(candidate).canSpawn) {
-                    this.addPlayer(player, candidate, dir);
-                    return;
-                }
+            let [dx, dy] = [radius, radius];
+            while (dx * dx + dy * dy > radius * radius) {
+                dx = Util.randomInt(-radius, radius);
+                dy = Util.randomInt(-radius, radius);
+            }
+            let candidate = [pos[0] + dx, pos[1] + dy];
+            let [x, y] = candidate;
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
+            if (this.cell(candidate).canSpawn) {
+                this.addPlayer(player, candidate, dir);
+                return;
             }
         }
     }
