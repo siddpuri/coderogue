@@ -238,7 +238,7 @@ export default class Display {
     renderPlayerStats(playerInfo) {
         let statsTable = document.getElementById('player-stats');
         let totalTime = 0;
-        for (let col = 0; col < 4; col++) {
+        for (let col = 0; col < 5; col++) {
             let values = [0, 0, 0, 0, 0, ''];
             let stats = playerInfo.statsArray[col == 0? 'jail': col - 1];
             if (stats) {

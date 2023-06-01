@@ -19,7 +19,7 @@ export default class CaveLevel extends Level {
 
     isProtected(currentPlayer, pos) {
         return (
-            super.isProtected(currentPlayer, pos) ||
+            super.hasGrownupProtection(currentPlayer, pos) ||
             pos[0] < 14 && pos[1] < 14 ||
             pos[0] > this.width - 14 && pos[1] > this.height - 14
         );

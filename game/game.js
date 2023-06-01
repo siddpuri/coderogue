@@ -3,13 +3,15 @@ import { VM, VMScript } from 'vm2';
 
 import Util from '../shared/util.js';
 import Player from '../shared/player.js';
+
 import IntroLevel from '../levels/intro_level.js';
 import BlockLevel from '../levels/block_level.js';
 import CaveLevel from '../levels/cave_level.js';
+import HunterLevel from '../levels/hunter_level.js';
 
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
-import CircularLog from '../game/circular_log.js';
+import CircularLog from './circular_log.js';
 
 const jailtimes = [10, 60, 600, 3600];
 const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
@@ -21,6 +23,7 @@ export default class Game {
             new IntroLevel(server),
             new BlockLevel(server),
             new CaveLevel(server),
+            new HunterLevel(server),
         ];
         for (let i = 0; i < this.levels.length; i++) {
             this.levels[i].levelNumber = i;

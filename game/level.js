@@ -20,20 +20,22 @@ export default class Level {
         this.map =
             Array(this.height).fill().map(() =>
                 Array(this.width).fill().map(() => new Cell()));
-        this.drawBorderWalls();
         this.cell(this.spawnTargetPos).setSpawn();
         this.cell(this.exitPos).setExit();
+        this.drawBorderWalls();
     }
     
     get name() { return 'Mystery Level'; }
     get spawnTargetPos() { return [10, 10]; }
     get exitPos() { return [this.width - 10, this.height - 10]; }
     get exitScore() { return 100; }
-    get killScore() { return 200; }
+    get killScore() { return 100; }
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
-    isProtected(currentPlayer, pos) {
+    isProtected(currentPlayer, pos) { return true; }
+
+    hasGrownupProtection(currentPlayer, pos) {
         if (Grownups.list.includes(currentPlayer.id)) {
             if (this.cell(pos).hasPlayer) {
                 let otherId = this.cell(pos).playerId;
