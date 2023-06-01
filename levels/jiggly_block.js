@@ -48,7 +48,7 @@ export default class JigglyBlock {
             size[1] <= this.maxSize &&
             pos[0] >= this.minCol &&
             pos[0] + size[0] < this.maxCol &&
-            pos[1] >= 0 &&
+            pos[1] > 0 &&
             pos[1] + size[1] < this.level.height
         );
     }
