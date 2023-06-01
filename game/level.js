@@ -56,11 +56,11 @@ export default class Level {
     }
 
     spawnAround(player, pos, dir, radius) {
-        for (;; radius += 10) {
-            let [dx, dy] = [radius, radius];
-            while (dx * dx + dy * dy > radius * radius) {
-                dx = Util.randomInt(-radius, radius);
-                dy = Util.randomInt(-radius, radius);
+        for (let r = radius; true; r++) {
+            let [dx, dy] = [r, r];
+            while (dx * dx + dy * dy > r * r) {
+                dx = Util.randomInt(-r, r);
+                dy = Util.randomInt(-r, r);
             }
             let candidate = [pos[0] + dx, pos[1] + dy];
             let [x, y] = candidate;
