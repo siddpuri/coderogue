@@ -34,7 +34,7 @@
         If you bump into a wall, you get a bloody nose and lose a point.
     </li>
     <li>
-        But if you bump into another player, you gain 200 points and
+        But if you bump into another player, you gain 100 points and
         bump them back to level 0. Players near spawn and exit are
         protected to avoid griefing. See the API function
         <code>isProtected</code> for an easy way to determine if a player
@@ -44,5 +44,39 @@
     <li>
         To avoid exit camping, the idle timer on this level is reduced
         to 5 seconds.
+    </li>
+</ul>
+
+<h5>Level 3: There Can Be Only One</h5>
+<ul>
+    <li>
+        This level is all about PVP. Most rules are the same as level 2,
+        with a few exceptions.
+    </li>
+    <li>
+        There's no exit! But you get 3 points per tick just for surviving.
+    </li>
+    <li>
+        You get 200 points every time you bump off another player.
+    </li>
+    <li>
+        The idle timer is back to 60 seconds. You're welcome to camp
+        anywhere you want, no holds barred.
+    </li>
+    <li>
+        Coming soon (not yet implemented): MOBs!
+        Creatures walk around and might try to bump you off.
+        They're worth less points than players.
+    </li>
+    <li>
+        Coming soon (not yet implemented): Line of sight.
+        If another player is behind a wall, whatsAt will return empty space.
+        In other words, you can hide!
+    </li>
+    <li>
+        Coming soon (not yet implemented): Powerups!
+        Randomly distributed powerups give you shields (extra lives) and
+        rams (extra bumping power). Powerups are consumable, that is, they
+        disappear when used.
     </li>
 </ul>
