@@ -1,4 +1,3 @@
-import Util from '../shared/util.js';
 import Level from '../game/level.js';
 
 import JigglyBlock from './jiggly_block.js';
@@ -21,6 +20,7 @@ export default class BlockLevel extends Level {
     get exitPos() { return [10, 10]; }
     get exitScore() { return 200; }
     get bumpScore() { return -1; }
+    isProtected(currentPlayer, pos) { return true; }
 
     doLevelAction() {
         for (let hill of this.hills) {

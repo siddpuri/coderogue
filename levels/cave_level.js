@@ -1,5 +1,4 @@
 import Util from '../shared/util.js';
-import Grownups from '../shared/grownups.js';
 import Level from '../game/level.js';
 
 import JigglyBlock from './jiggly_block.js';
@@ -19,13 +18,8 @@ export default class CaveLevel extends Level {
     get maxIdleTime() { return 5; }
 
     isProtected(currentPlayer, pos) {
-        if (Grownups.list.includes(currentPlayer.id)) {
-            if (this.cell(pos).hasPlayer) {
-                let otherId = this.cell(pos).playerId;
-                if (!Grownups.list.includes(otherId)) return true;
-            }
-        }
         return (
+            super.isProtected(currentPlayer, pos) ||
             pos[0] < 14 && pos[1] < 14 ||
             pos[0] > this.width - 14 && pos[1] > this.height - 14
         );

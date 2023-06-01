@@ -1,5 +1,6 @@
 import constants from '../shared/constants.js';
 import Util from '../shared/util.js';
+import Grownups from '../shared/grownups.js';
 
 import Cell from './cell.js';
 
@@ -32,7 +33,16 @@ export default class Level {
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
-    isProtected(currentPlayer, pos) { return true; }
+    isProtected(currentPlayer, pos) {
+        if (Grownups.list.includes(currentPlayer.id)) {
+            if (this.cell(pos).hasPlayer) {
+                let otherId = this.cell(pos).playerId;
+                if (!Grownups.list.includes(otherId)) return true;
+            }
+        }
+        return false;
+    }
+
     doLevelAction() {}
 
     drawBorderWalls() {
