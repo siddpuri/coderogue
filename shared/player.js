@@ -80,6 +80,7 @@ export default class Player {
     incrementDeaths() { this.stats.deaths++; }
 
     addScore(score) {
+        if (this.dontScore) return;
         this.stats.score += score;
         this.chartData[0] += score;
     }

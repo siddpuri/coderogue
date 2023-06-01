@@ -117,9 +117,7 @@ export default class Level {
         this.cell(player.pos).setPlayer(player);
         if (this.cell(player.pos).isExit) {
             player.log.write(`Completed level ${this.levelNumber}!`);
-            if (!player.dontScore) {
-                player.addScore(this.exitScore);
-            }
+            player.addScore(this.exitScore);
             this.server.game.exitPlayer(player);
         }
         player.idle = 0;
