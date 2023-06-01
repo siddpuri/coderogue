@@ -2,11 +2,7 @@ import Util from '../shared/util.js';
 import Grownups from '../shared/grownups.js';
 import Level from '../game/level.js';
 
-const minCaveSize = 4;
-const maxCaveSize = 12;
-const minCaveCol = 20;
-const maxCaveCol = 60;
-const jiggleChance = 0.1;
+import JigglyBlock from './jiggly_block.js';
 
 export default class CaveLevel extends Level {
     constructor(server) {
@@ -24,20 +20,18 @@ export default class CaveLevel extends Level {
 
     isProtected(currentPlayer, pos) {
         if (Grownups.list.includes(currentPlayer.id)) {
-            let cell1 = this.cell(pos);
-            if (cell1.hasPlayer) {
-                if (!Grownups.list.includes(cell1.playerId)) return true;
+            if (this.cell(pos).hasPlayer) {
+                let otherId = this.cell(pos).playerId;
+                if (!Grownups.list.includes(otherId)) return true;
             }
         }
-
-        let [x, y] = pos;
         return (
-            x < 14 && y < 14 ||
-            x > this.width - 14 && y > this.height - 14
+            pos[0] < 14 && pos[1] < 14 ||
+            pos[0] > this.width - 14 && pos[1] > this.height - 14
         );
     }
 
-    async doLevelAction() {
+    doLevelAction() {
         for (let cave of this.caves) {
             cave.jiggle();
         }
@@ -48,14 +42,16 @@ export default class CaveLevel extends Level {
     }
 
     createCaveSystem() {
-        this.caves = [new Cave(this, [1, 20], true)];
+        let leftAnchor = new Cave(this, [1, 20], true);
+        this.caves = [leftAnchor];
         this.tunnels = [];
         for (let row of [5, 15, 25, 35]) {
             for (let col of [25, 40, 55]) {
                 this.connectCave(new Cave(this, [col, row]));
             }
         }
-        this.connectCave(new Cave(this, [67, 20], true));
+        let rightAnchor = new Cave(this, [67, 20], true);
+        this.connectCave(rightAnchor);
     }
 
     connectCave(cave) {
@@ -65,87 +61,43 @@ export default class CaveLevel extends Level {
     }
 
     redraw() {
-        for (let c = minCaveCol - 5; c <= maxCaveCol + 5; c++) {
+        for (let c = 15; c <= 65; c++) {
             for (let r = 0; r < this.height; r++) {
                 this.cell([c, r]).setWall();
             }
         }
         for (let cave of this.caves) {
-            cave.draw();
+            cave.eraseWalls();
         }
         for (let tunnel of this.tunnels) {
-            tunnel.draw();
+            tunnel.eraseWalls();
         }
-        this.cell(this.spawnTargetPos).setSpawn();
-        this.cell(this.exitPos).setExit();
     }
 }
 
-class Cave {
+class Cave extends JigglyBlock {
     constructor(level, pos, fixedCol = false) {
-        this.level = level;
-        this.pos = pos;
+        super(level, pos);
         this.fixedCol = fixedCol;
-        this.size = [minCaveSize, minCaveSize];
     }
 
-    jiggle() {
-        if (Math.random() > jiggleChance) return;
-        let pos = this.pos;
-        let size = this.size;
-        let candidates = [
-            [[pos[0] - 1, pos[1]], size],
-            [[pos[0] + 1, pos[1]], size],
-            [[pos[0], pos[1] - 1], size],
-            [[pos[0], pos[1] + 1], size],
-            [pos, [size[0] - 1, size[1]]],
-            [pos, [size[0] + 1, size[1]]],
-            [pos, [size[0], size[1] - 1]],
-            [pos, [size[0], size[1] + 1]],
-            [[pos[0] - 1, pos[1]], [size[0] + 1, size[1]]],
-            [[pos[0] + 1, pos[1]], [size[0] - 1, size[1]]],
-            [[pos[0], pos[1] - 1], [size[0], size[1] + 1]],
-            [[pos[0], pos[1] + 1], [size[0], size[1] - 1]],
-        ];
-        let p = this.includedPlayers(pos, size);
-        candidates = candidates.filter(c => this.isValid(c, p));
-        if (candidates.length == 0) return;
-        [this.pos, this.size] = Util.randomElement(candidates);
-    }
+    get minSize() { return 4; }
+    get maxSize() { return 12; }
 
-    isValid([pos, size], originalPlayers) {
-        if (this.isFixedCol && pos[0] != this.pos[0]) return false;
-        if (
-            size[0] < minCaveSize || size[1] < minCaveSize ||
-            size[0] > maxCaveSize || size[1] > maxCaveSize ||
-            pos[0] < minCaveCol || pos[1] <= 0 ||
-            pos[0] + size[0] > maxCaveCol || pos[1] + size[1] >= this.level.height
-        ) return false;
-        if (this.level.tunnels.some(t => t.willDisconnect(this, pos, size))) return false;
-        let players = this.includedPlayers(pos, size);
-        if (originalPlayers.some(p => !players.includes(p))) return false;
-        return true;
+    isValidMove(pos0, size0, pos1, size1) {
+        let players0 = this.includedPlayers(pos0, size0);
+        let players1 = this.includedPlayers(pos1, size1);
+        return (
+            !(this.fixedCol && pos1[0] != pos0[0]) &&
+            !this.level.tunnels.some(t => t.willDisconnect(this, pos1, size1)) &&
+            !players0.some(p => !players1.includes(p))
+        );
     }
 
     includedPlayers(pos, size) {
         let result = [];
-        for (let c = pos[0]; c < pos[0] + size[0]; c++) {
-            for (let r = pos[1]; r < pos[1] + size[1]; r++) {
-                let cell = this.level.cell([c, r]);
-                if (cell.hasPlayer) result.push(cell.playerId);
-            }
-        }
+        this.applyCells(pos, size, c => c.hasPlayer && result.push(c.playerId));
         return result;
-    }
-
-    draw() {
-        let pos = this.pos;
-        let size = this.size;
-        for (let c = pos[0]; c < pos[0] + size[0]; c++) {
-            for (let r = pos[1]; r < pos[1] + size[1]; r++) {
-                this.level.cell([c, r]).clearWall();
-            }
-        }
     }
 }
 
@@ -155,13 +107,15 @@ class Tunnel {
         if (Math.random() > 0.5) cave1, cave2 = cave2, cave1;
         this.startCave = cave1;
         this.endCave = cave2;
-        let x = cave1.pos[0] + Math.floor(Math.random() * cave1.size[0]);
-        let y = cave2.pos[1] + Math.floor(Math.random() * cave2.size[1]);
+        let x = cave1.pos[0] + Util.randomInt(0, cave1.size[0]);
+        let y = cave2.pos[1] + Util.randomInt(0, cave2.size[1]);
         this.corner = [x, y];
     }
 
+    get jiggleChance() { return 0.1; }
+
     jiggle() {
-        if (Math.random() > jiggleChance) return;
+        if (Math.random() > this.jiggleChance) return;
         let candidates = [
             [this.corner[0] - 1, this.corner[1]],
             [this.corner[0] + 1, this.corner[1]],
@@ -214,7 +168,7 @@ class Tunnel {
         return false;
     }
 
-    draw() {
+    eraseWalls() {
         let x = this.corner[0];
         let y = this.startCave.pos[1];
         let dy = Math.sign(this.corner[1] - y);

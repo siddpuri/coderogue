@@ -33,7 +33,7 @@ export default class Level {
     get maxIdleTime() { return 60; }
 
     isProtected(currentPlayer, pos) { return true; }
-    async doLevelAction() {}
+    doLevelAction() {}
 
     drawBorderWalls() {
         for (let c = 0; c < this.width; c++) {

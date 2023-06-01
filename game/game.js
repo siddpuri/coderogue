@@ -57,7 +57,7 @@ export default class Game {
             if (player) await this.doPlayerAction(player);
         }
         for (let level of this.levels) {
-            await level.doLevelAction();
+            level.doLevelAction();
         }
     }
 
