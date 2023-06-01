@@ -8,7 +8,7 @@ export default class HunterLevel extends BlockLevel {
 
     get name() { return 'There Can Be Only One'; }
     get spawnTargetPos() { return [this.width / 2, this.height / 2]; }
-    get exitPos() { return [0, 0]; }
+    get exitPos() { return this.spawnTargetPos; }
     get killScore() { return 200; }
 
     isProtected(currentPlayer, pos) {

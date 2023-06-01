@@ -20,8 +20,8 @@ export default class Level {
         this.map =
             Array(this.height).fill().map(() =>
                 Array(this.width).fill().map(() => new Cell()));
-        this.cell(this.spawnTargetPos).setSpawn();
         this.cell(this.exitPos).setExit();
+        this.cell(this.spawnTargetPos).setSpawn();
         this.drawBorderWalls();
     }
     
