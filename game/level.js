@@ -35,6 +35,13 @@ export default class Level {
 
     isProtected(currentPlayer, pos) { return true; }
 
+    isWorthPoints(currentPlayer, pos) {
+        if (!this.cell(pos).hasPlayer) return false;
+        if (this.isProtected(currentPlayer, pos)) return false;
+        let other = this.server.game.players[this.cell(pos).playerId];
+        return !other.dontScore;
+    }
+
     hasGrownupProtection(currentPlayer, pos) {
         if (Grownups.list.includes(currentPlayer.id)) {
             if (this.cell(pos).hasPlayer) {

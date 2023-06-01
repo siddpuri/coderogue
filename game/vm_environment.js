@@ -30,6 +30,7 @@ export default class VmEnvironment {
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition:  () => this.player.level.exitPos.slice(),
             isProtected:      pos => this.player.level.isProtected(this.player, pos),
+            isWorthPoints:    pos => this.player.level.isWorthPoints(pos),
 
             // Internal
             getMap:           this.getMap.bind(this),
