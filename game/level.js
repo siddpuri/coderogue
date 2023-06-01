@@ -48,33 +48,30 @@ export default class Level {
 
     spawn(player) {
         let dir = Util.randomElement([0, 1, 2, 3]);
-        let pos = this.getSpawnPos(this.spawnTargetPos);
-        this.spawnAt(player, pos, dir);
+        this.spawnAround(player, this.spawnTargetPos, dir, 10);
     }
 
     spawnAt(player, pos, dir) {
-        if (!this.cell(pos).canSpawn) {
-            pos = this.getSpawnPos(pos);
-        }
-        this.addPlayer(player, pos, dir);
+        this.spawnAround(player, pos, dir, 0);
     }
 
-    getSpawnPos(pos) {
-        const candidates = [];
-        let [x0, y0] = pos;
-        for (let x = x0 - 10; x <= x0 + 10; x++) {
-            for (let y = y0 - 10; y <= y0 + 10; y++) {
+    spawnAround(player, pos, dir, radius) {
+        for (;; radius += 10) {
+            for (let tries = 0; tries < radius + 1; tries++) {
+                let [dx, dy] = [radius, radius];
+                while (dx * dx + dy * dy > radius * radius) {
+                    dx = Util.randomInt(-radius, radius);
+                    dy = Util.randomInt(-radius, radius);
+                }
+                let candidate = [pos[0] + dx, pos[1] + dy];
+                let [x, y] = candidate;
                 if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
-                const pos = [x,  y];
-                if (this.cell(pos).canSpawn) {
-                    candidates.push(pos);
+                if (this.cell(candidate).canSpawn) {
+                    this.addPlayer(player, candidate, dir);
+                    return;
                 }
             }
         }
-        if (candidates.length == 0) {
-            return this.getSpawnPos(this.spawnTargetPos);
-        }
-        return Util.randomElement(candidates);
     }
 
     addPlayer(player, pos, dir) {

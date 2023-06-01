@@ -5,6 +5,10 @@ const words = [
 ];
 
 export default class Util {
+    static randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
     static randomElement(list) {
         return list[Math.floor(Math.random() * list.length)];
     }
