@@ -20,6 +20,7 @@ export default class Credentials {
             let [name, value] = cookie.split('=');
             this[name] = value;
         }
+        this.playerId = Number(this.playerId);
     }
 
     writeCookie(key, value) {
