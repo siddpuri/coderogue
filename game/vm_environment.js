@@ -109,7 +109,7 @@ export default class VmEnvironment {
     isWorthPoints(pos) {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
         if (!checker.checkPos(this.player.level, pos)) return false;
-        return this.player.level.isWorthPoints(pos);
+        return this.player.level.isWorthPoints(this.player, pos);
     }
 }
 
