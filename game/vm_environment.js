@@ -29,11 +29,10 @@ export default class VmEnvironment {
             getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
             getExitPosition:  () => this.player.level.exitPos.slice(),
-            isProtected:      pos => this.player.level.isProtected(this.player, pos),
-            isWorthPoints:    pos => this.player.level.isWorthPoints(pos),
 
-            // Internal
             getMap:           this.getMap.bind(this),
+            isProtected:      this.isProtected.bind(this),
+            isWorthPoints:    this.isWorthPoints.bind(this),
 
             // AppLab functions
             randomNumber: (a, b)    => Math.floor(Math.random() * (b - a + 1)) + a,
@@ -99,6 +98,18 @@ export default class VmEnvironment {
             }
         }
         return map;
+    }
+
+    isProtected(pos) {
+        let checker = new ArgumentChecker(this.player, 'isProtected');
+        if (!checker.checkPos(this.player.level, pos)) return false;
+        return this.player.level.isProtected(this.player, pos);
+    }
+
+    isWorthPoints(pos) {
+        let checker = new ArgumentChecker(this.player, 'isWorthPoints');
+        if (!checker.checkPos(this.player.level, pos)) return false;
+        return this.player.level.isWorthPoints(pos);
     }
 }
 
