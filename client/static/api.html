@@ -26,9 +26,21 @@
         <tr>
             <td><code>canMove(dir)</code></td>
             <td>
-                <p>Returns <code>true</code> if the player can move in direction <code>dir</code> without touching a wall or another player.</p>
-                <p><code>dir</code> is an integer where 0 is forward, 1 is right, 2 is backward, and 3 is left, relative to the direction the player is facing.</p>
-                <p>For your convenience, you can use the pre-defined variables <code>forward</code>, <code>right</code>, <code>backward</code>, and <code>left</code>, which are set to their corresponding integers.</p>
+                <p>
+                    Returns <code>true</code> if the player can move in direction <code>dir</code>
+                    without touching a wall or another player.
+                </p>
+                <p>
+                    <code>dir</code> is an integer where 0 is forward, 1 is right, 2 is backward, and 3 is left,
+                    <span class="fw-bold">relative to the direction the player is facing.</span> This is the
+                    one function that uses relative direction in order to stay consistent with College Board's
+                    Psuedocode language.
+                </p>
+                <p>
+                    For your convenience, you can use the pre-defined variables <code>forward</code>,
+                    <code>right</code>, <code>backward</code>, and <code>left</code>, which are set to their
+                    corresponding integers.
+                </p>
             </td>
         </tr>
         <tr>
@@ -38,9 +50,18 @@
         <tr>
             <td><code>respawnAt(level, pos, dir)</code></td>
             <td>
-                <p>Immediately respawn on level <code>level</code>, at position <code>pos</code>, facing direction <code>dir</code>.</p>
-                <p>The next time the player exits after calling this function, it will yield no points! Similarly, bumping off another player on level 2 after respawning yields no points.</p>
-                <p>For example: <code>respawnAt(1, [10, 9], 2)</code> respaws the player on level 1, just above the exit and facing downward.</p>
+                <p>
+                    Immediately respawn on level <code>level</code>, at position <code>pos</code>, facing direction
+                    <code>dir</code>.
+                </p>
+                <p>
+                    The next time the player exits after calling this function, it will yield no points! Similarly,
+                    bumping off another player on level 2 after respawning yields no points.
+                </p>
+                <p>
+                    For example: <code>respawnAt(1, [10, 9], 2)</code> respaws the player on level 1, just above the
+                    exit and facing downward.
+                </p>
             </td>
         </tr>
         <tr>
@@ -49,24 +70,29 @@
         </tr>
         <tr>
             <td><code>getDirection()</code></td>
-            <td>Returns an integer represting the direciton the player is facing, where 0 is up, 1 is right, 2 is down, and 3 is left</p>
+            <td>
+                Returns an integer represting the direciton the player is facing, where 0 is up, 1 is right, 2 is down,
+                and 3 is left
+            </td>
         </tr>
         <tr>
             <td><code>getPosition()</code></td>
-            <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the current position of the player</td>
+            <td>
+                Returns a list of length 2 in the form of <code>[col, row]</code>, representing the current position
+                of the player
+            </td>
         </tr>
         <tr>
             <td><code>getStartPosition()</code></td>
-            <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the spawn point on the current level</td>
+            <td>
+                Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the
+                spawn point on the current level
+            </td>
         <tr>
             <td><code>getExitPosition()</code></td>
-            <td>Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the exit that the player is trying to reach</td>
-        </tr>
-        <tr>
-            <td><code>isProtected(pos)</code></td>
             <td>
-                <p>Returns whether a player at that position is protected from PVP attacks.</p>
-                <p>This is always true on levels 0 and 1, and is true on level 2 if the position is near spawn or exit.</p>
+                Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the
+                exit that the player is trying to reach
             </td>
         </tr>
         <tr>
@@ -74,6 +100,27 @@
             <td>
                 <p>Returns a string of length 1 correponding to what the map is showing at <code>pos</code>.</p>
                 <p>For example: <code>whatsAt([0, 0])</code> always returns <code>'#'</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td><code>isProtected(pos)</code></td>
+            <td>
+                <p>Returns whether a player at that position is protected from PVP attacks.</p>
+                <p>
+                    This is always true on levels 0 and 1, and is true on level 2 if the position is near spawn
+                    or exit.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td><code>isWorthPoints(pos)</code></td>
+            <td>
+                <p>Returns whether a player at that position is worth points if bumped off.</p>
+                <p>
+                    This always returns false if there is no player at that position, or if the player is protected.
+                    Aside from that, it returns false if the player recently called <code>respawnAt()</code>. Using
+                    this function can protect you from wasting your time hunting respawned players.
+                </p>
             </td>
         </tr>
         <tr>
