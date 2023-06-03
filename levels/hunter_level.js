@@ -17,19 +17,32 @@ export default class HunterLevel extends BlockLevel {
 
     doLevelAction() {
         super.doLevelAction();
+        this.givePoints();
+        this.spawnMob();
+    }
+
+    givePoints() {
         for (let player of this.server.game.players) {
             if (player && player.level == this) {
                 player.addScore(3);
             }
         }
-        if (this.mobs.length < 10 && Math.random() < 0.1) {
-            this.spawnMob();
-        }
     }
 
     spawnMob() {
+        if (Math.random() >= 0.1) return;
+        for (let i = 0; i < 10; i++) {
+            if (!this.mobs[i]) {
+                this.mobs[i] = new Mob(this, i);
+                break;
+            }
+        }
     }
 }
 
 class Mob {
+    constructor(level, mobId) {
+        this.level = level;
+        this.mobId = mobId;
+    }
 }
