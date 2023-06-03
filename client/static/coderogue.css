@@ -2,9 +2,14 @@ html {
     font-size: 80%;
 }
 
+p {
+    margin-bottom: 0.5rem;
+}
+
 span {
     display: inline-block;
 }
+
 .level {
     width: 20rem;
 }

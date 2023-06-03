@@ -94,6 +94,10 @@ export default class VmEnvironment {
                     let dir = this.game.players[cell.playerId].dir;
                     char = '^>v<'[dir];
                 }
+                if (Object.hasOwn(cell, 'mobId')) {
+                    let dir = this.player.level.mobs[cell.mobId].dir;
+                    char = '^>v<'[dir];
+                }
                 map[y * 80 + x] = char.charCodeAt(0);
             }
         }

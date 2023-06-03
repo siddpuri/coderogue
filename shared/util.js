@@ -14,7 +14,7 @@ export default class Util {
     }
 
     static getTextHandle(handle) {
-        var result = [];
+        let result = [];
         for (let part of words) {
             result.push(part[handle % part.length]);
             handle = Math.floor(handle / part.length);
@@ -24,6 +24,14 @@ export default class Util {
 
     static getMaxHandle() {
         return words.reduce((a, l) => a * l.length, 1);
+    }
+
+    static generateAutomatonHandle() {
+        return [
+            Util.randomElement(words[0]),
+            Util.randomElement(words[1]),
+            'automaton',
+        ].join('-');
     }
 
     static stringify(obj) {

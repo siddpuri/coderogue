@@ -63,7 +63,7 @@ export default class Display {
         }
         let level = this.levels[this.levelToRender];
         this.renderTitle(level.name);
-        this.map.render(level.map, this.players);
+        this.map.render(level, this.players);
         this.renderPlayers(this.players);
         if (this.isShowing('player-tab')) {
             this.renderPlayerTab();

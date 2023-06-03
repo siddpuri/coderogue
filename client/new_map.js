@@ -5,6 +5,7 @@ const foregroundColor = '#000000';
 const wallColor = '#8080a0';
 const highlightColor = '#4040ff';
 const currentPlayerColor = '#ff4040';
+const mobColor = '#00a000';
 const characterWidth = 8;
 const characterHeight = 8;
 
@@ -34,16 +35,20 @@ export default class NewMap {
         this.ctx.fillStyle = foregroundColor;
     }
 
-    render(map, players) {
-        this.map = map;
+    render(level, players) {
+        this.level = level;
         this.players = players;
         this.clearCanvas();
+        let map = level.map;
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
                 let cell = map[row][col];
                 let char = cell.type;
                 if (Object.hasOwn(cell, 'playerId')) {
                     this.renderPlayer(row, col, cell.playerId);
+                }
+                if (Object.hasOwn(cell, 'mobId')) {
+                    this.renderMob(row, col, cell.mobId);
                 }
                 else switch (char) {
                     case '#': this.renderWall(row, col); break;
@@ -63,6 +68,15 @@ export default class NewMap {
             color = currentPlayerColor;
         }
         let dir = this.players[playerId].dir;
+        this.renderArrow(row, col, dir, color);
+    }
+
+    renderMob(row, col, mobId) {
+        let dir = this.level.mobs[mobId].dir;
+        this.renderArrow(row, col, dir, mobColor);
+    }
+
+    renderArrow(row, col, dir, color) {
         let triangle = triangles[dir];
         let x = col * characterWidth;
         let y = row * characterHeight;
@@ -100,10 +114,11 @@ export default class NewMap {
     }
 
     getPlayerAt(x, y) {
-        if (!this.map) return;
+        if (!this.level) return;
+        let map = this.level.map;
         let [col, row] = this.getPosAt(x, y);
-        if (!this.map[row] || !this.map[row][col]) return;
-        return this.map[row][col].playerId;
+        if (!map[row] || !map[row][col]) return;
+        return map[row][col].playerId;
     }
 
     getPosAt(x, y) {

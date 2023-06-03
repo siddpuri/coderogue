@@ -23,6 +23,7 @@ export default class Level {
         this.cell(this.exitPos).setExit();
         this.cell(this.spawnTargetPos).setSpawn();
         this.drawBorderWalls();
+        this.mobs = [];
     }
     
     get name() { return 'Mystery Level'; }
@@ -30,16 +31,20 @@ export default class Level {
     get exitPos() { return [this.width - 10, this.height - 10]; }
     get exitScore() { return 100; }
     get killScore() { return 100; }
+    get killMobScore() { return 100; }
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
     isProtected(currentPlayer, pos) { return true; }
 
     isWorthPoints(currentPlayer, pos) {
-        if (!this.cell(pos).hasPlayer) return false;
-        if (this.isProtected(currentPlayer, pos)) return false;
-        let other = this.server.game.players[this.cell(pos).playerId];
-        return !other.dontScore;
+        if (
+            this.cell(pos).hasPlayer &&
+            !this.isProtected(currentPlayer, pos) &&
+            !this.server.game.players[this.cell(pos).playerId].dontScore
+        )
+        return this.killScore;
+        return 0;
     }
 
     hasGrownupProtection(currentPlayer, pos) {
@@ -66,7 +71,7 @@ export default class Level {
     }
 
     spawn(player) {
-        let dir = Util.randomElement([0, 1, 2, 3]);
+        let dir = Util.randomInt(0, 3);
         this.spawnAround(player, this.spawnTargetPos, dir, 10);
     }
 
@@ -112,6 +117,9 @@ export default class Level {
         else if (this.cell(dest).hasPlayer) {
             this.bumpPlayer(player, dest);
         }
+        else if (this.cell(dest).hasMob) {
+            this.bumpMob(player, dest);
+        }
         else {
             player.log.write(`Bump!`);
             if (player.score > 0) player.addScore(this.bumpScore);
@@ -134,30 +142,37 @@ export default class Level {
         let other = this.server.game.players[this.cell(dest).playerId];
         if (player.dontScore) {
             player.log.write(`Can't bump players after respawnAt.`);
+            return;
         }
-        else if (this.isProtected(player, dest)) {
+        if (this.isProtected(player, dest)) {
             player.log.write(`Player ${other.textHandle} is protected.`);
+            return;
         }
-        else {
-            if (!other.dontScore) {
-                player.addScore(this.killScore);
-                player.incrementKills();
-                other.incrementDeaths();
-            }
-            this.server.game.respawn(other);
-            player.log.write(`You just bumped off ${other.textHandle}!`);
-            other.log.write(`You were bumped off by ${player.textHandle}!`);
-            player.idle = 0;
+        if (!other.dontScore) {
+            player.addScore(this.killScore);
+            player.incrementKills();
+            other.incrementDeaths();
         }
+        this.server.game.respawn(other);
+        player.log.write(`You just bumped off ${other.textHandle}!`);
+        other.log.write(`You were bumped off by ${player.textHandle}!`);
+        player.idle = 0;
     }
 
-    turnRight(player) {
-        player.dir = (player.dir + 1) % 4;
+    bumpMob(player, dest) {
+        let mob = this.mobs[this.cell(dest).mobId];
+        if (player.dontScore) {
+            player.log.write(`Can't bump automata after respawnAt.`);
+            return;
+        }
+        player.addScore(this.killMobScore);
+        this.cell(dest).clearMob();
+        delete this.mobs[mob.id];
+        player.log.write(`You just bumped off ${mob.textHandle}!`);
     }
 
-    turnLeft(player) {
-        player.dir = (player.dir + 3) % 4;
-    }
+    turnRight(player) { player.dir = (player.dir + 1) % 4; }
+    turnLeft(player) { player.dir = (player.dir + 3) % 4; }
 
     canMove(player, dir) {
         const realDir = (player.dir + dir) % 4;
@@ -183,6 +198,7 @@ export default class Level {
         return {
             name: this.name,
             map: this.map,
+            mobs: this.mobs.map(m => m.getState()),
         };
     }
 }

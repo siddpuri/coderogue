@@ -115,11 +115,14 @@
         <tr>
             <td><code>isWorthPoints(pos)</code></td>
             <td>
-                <p>Returns whether a player at that position is worth points if bumped off.</p>
+                <p>Returns how many points you would get for bumping off the player at that position.</p>
                 <p>
-                    This always returns false if there is no player at that position, or if the player is protected.
-                    Aside from that, it returns false if the player recently called <code>respawnAt()</code>. Using
+                    This returns 0 if there is no player at that position, or if the player is protected,
+                    or if the player recently called <code>respawnAt()</code>. Using
                     this function can protect you from wasting your time hunting respawned players.
+                </p>
+                <p>
+                    On level 2, this returns 100 for positions with automata, and 200 for positions with players.
                 </p>
             </td>
         </tr>

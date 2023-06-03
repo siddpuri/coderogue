@@ -4,6 +4,7 @@ const backgroundColor = '#f0f0f0';
 const foregroundColor = '#101010';
 const highlightColor = '#ffff00';
 const currentPlayerColor = '#ff0000';
+const mobColor = '#00c000';
 const font = '10pt sans-serif';
 const characterWidth = 8;
 const characterHeight = 10;
@@ -32,47 +33,58 @@ export default class AsciiMap {
         this.ctx.fillStyle = foregroundColor;
     }
 
-    render(map, players) {
-        this.map = map;
+    render(level, players) {
+        this.level = level;
         this.players = players;
         this.clearCanvas();
+        let map = level.map;
         for (let row = 0; row < map.length; row++) {
             for (let col = 0; col < map[row].length; col++) {
                 let cell = map[row][col];
                 let char = cell.type;
-                let highlighted = false;
-                let currentPlayer = false;
+                let isHighlighted = false;
+                let isCurrentPlayer = false;
+                let isMob = false;
                 if (Object.hasOwn(cell, 'playerId')) {
                     let dir = players[cell.playerId].dir;
                     char = '^>v<'[dir];
-                    highlighted = cell.playerId == this.client.display.highlightedPlayer;
-                    currentPlayer = cell.playerId == this.client.credentials.playerId;
+                    isHighlighted = cell.playerId == this.client.display.highlightedPlayer;
+                    isCurrentPlayer = cell.playerId == this.client.credentials.playerId;
                 }
-                if (char) this.setText(row, col, char, highlighted, currentPlayer);
+                if (Object.hasOwn(cell, 'mobId')) {
+                    let dir = level.mobs[cell.mobId].dir;
+                    char = '^>v<'[dir];
+                    isMob = true;
+                }
+                if (char) this.setText(row, col, char, isHighlighted, isCurrentPlayer, isMob);
             }
         }
     }
 
-    setText(row, col, text, highlighted, currentPlayer) {
+    setText(row, col, text, isHighlighted, isCurrentPlayer, isMob) {
         row = (row + 1) * characterHeight;
         col *= characterWidth;
-        if (highlighted) {
+        if (isHighlighted) {
             this.ctx.fillStyle = highlightColor;
             this.ctx.fillRect(col, row - characterHeight, characterWidth, characterHeight);
             this.ctx.fillStyle = foregroundColor;
         }
-        if (currentPlayer) {
+        if (isCurrentPlayer) {
             this.ctx.fillStyle = currentPlayerColor;
+        }
+        if (isMob) {
+            this.ctx.fillStyle = mobColor;
         }
         this.ctx.fillText(text, col, row);
         this.ctx.fillStyle = foregroundColor;
     }
 
     getPlayerAt(x, y) {
-        if (!this.map) return;
+        if (!this.level) return;
+        let map = this.level.map;
         let [col, row] = this.getPosAt(x, y);
-        if (!this.map[row] || !this.map[row][col]) return;
-        return this.map[row][col].playerId;
+        if (!map[row] || !map[row][col]) return;
+        return map[row][col].playerId;
     }
 
     getPosAt(x, y) {
