@@ -68,7 +68,10 @@ class Mob {
     }
 
     doMobAction() {
-        if (Math.random() < 0.9) this.moveForward();
+        let dest = this.level.movePos(this.pos, this.dir);
+        if (this.level.cell(dest).hasPlayer) this.moveForward();
+        else if (!this.level.cell(dest).canEnter) this.turnRight();
+        else if (Math.random() < 0.9) this.moveForward();
         else if (Math.random() < 0.5) this.turnLeft();
         else this.turnRight();
     }
