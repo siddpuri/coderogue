@@ -2,6 +2,7 @@ import ButtonHooks from './button_hooks.js';
 import Credentials from './credentials.js';
 import Display from './display.js';
 import Updater from './updater.js';
+import MonacoEditor from './monaco_editor.js';
 
 window.onload = () => new Client().start();
 
@@ -16,6 +17,7 @@ class Client {
     }
 
     async start() {
+        await MonacoEditor.start({ theme: 'vs-light' });
         await this.updater.start();
         await this.buttonHooks.start();
         await this.credentials.start();

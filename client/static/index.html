@@ -85,14 +85,14 @@
 
                 <!-- Nav tabs in bottom pane -->
                 <nav class="nav nav-tabs mt-3 mb-3">
-                    <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
-                    <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
-                    <a class="nav-item nav-link" id="player-tab" data-bs-toggle="tab" data-bs-target="#player" role="tab">Player</a>
-                    <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>
-                    <a class="nav-item nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="tab">Api</a>
-                    <a class="nav-item nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="tab">Levels</a>
-                    <a class="nav-item nav-link" id="keybindings-tab" data-bs-toggle="tab" data-bs-target="#keybindings" role="tab">Shortcuts</a>
-                    <a class="nav-item nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" role="tab">Account</a>
+                    <a class="nav-item nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="button">Code</a>
+                    <a class="nav-item nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="button">Log</a>
+                    <a class="nav-item nav-link" id="player-tab" data-bs-toggle="tab" data-bs-target="#player" role="button">Player</a>
+                    <a class="nav-item nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="button">General</a>
+                    <a class="nav-item nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="button">Api</a>
+                    <a class="nav-item nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="button">Levels</a>
+                    <a class="nav-item nav-link" id="keybindings-tab" data-bs-toggle="tab" data-bs-target="#keybindings" role="button">Shortcuts</a>
+                    <a class="nav-item nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" role="button">Account</a>
                 </nav>
 
                 <div class="tab-content">
@@ -101,7 +101,7 @@
                     <div class="tab-pane active" id="code" role="tabpanel">
                         <div class="row">
                             <div class="col">
-                                <textarea class="form-control font-monospace" id="code-text" rows="100"></textarea>
+                                <div id="monaco-editor"></div>
                             </div>
                             <div class="col-2">
                                 <div class="d-grid gap-2">
@@ -231,8 +231,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
-        <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
     </body>
 </html>

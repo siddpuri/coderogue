@@ -1,3 +1,5 @@
+import MonacoEditor from './monaco_editor.js';
+
 export default class ButtonHooks {
     constructor(client) {
         this.client = client;
@@ -66,15 +68,7 @@ export default class ButtonHooks {
     }
 
     async reformat() {
-        let code = this.client.display.getCode();
-        let cursor = this.client.display.getCodeCursor();
-        let result = prettier.formatWithCursor(code, {
-            cursorOffset: cursor,
-            parser: 'babel',
-            plugins: prettierPlugins,
-        });
-        this.client.display.setCode(result.formatted);
-        this.client.display.setCodeCursor(result.cursorOffset);
+        MonacoEditor.instance().getAction("editor.action.formatDocument").run();
     }
 
     async submit() {
