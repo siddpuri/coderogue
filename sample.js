@@ -145,6 +145,6 @@ function dumpTable(dir) {
 if (shouldDump) dumpTable(dir0);
 if (shouldTime) {
     let endTime = new Date();
-    let timeTaken = endTime - startTime;
+    let timeTaken = endTime.getTime() - startTime.getTime();
     console.log(`Executed in ${timeTaken / 1000} seconds.`);
-  }
+}
