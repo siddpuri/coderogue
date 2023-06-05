@@ -1,5 +1,6 @@
-// Uncomment the next line to see syntax highlighting.
-export default class Preamble { static get code() { return `
+export default class Preamble {
+    static get code() {
+        let preamble = `
 
 var _map = null;
 
@@ -13,4 +14,7 @@ function whatsAt(pos) {
     return String.fromCharCode(code?? 35);
 }
 
-`; }}
+        `;
+        return preamble.split('\n').join(' ');
+    }
+}
