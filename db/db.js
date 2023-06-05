@@ -1,4 +1,4 @@
-import mysql from 'mysql2';
+import mysql from 'mysql';
 import util from 'util';
 
 const dbParameters = {
