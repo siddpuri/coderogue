@@ -8,6 +8,7 @@ export default class Updater {
         this.timer = setInterval(() => this.tick(), 1000);
         await this.loadCode();
         await this.loadHtml('general', 'general-text');
+        await this.loadHtml('news', 'news-text');
         await this.loadHtml('api', 'api-text');
         await this.loadHtml('levels', 'levels-text');
         await this.loadHtml('keybindings', 'keybindings-text');

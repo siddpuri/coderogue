@@ -3,7 +3,12 @@ import Util from '../shared/util.js';
 import BlockLevel from './block_level.js';
 
 export default class HunterLevel extends BlockLevel {
-    get name() { return 'There Can Be Only One'; }
+    constructor(server) {
+        super(server);
+        this.mobTarget = null;
+    }
+
+    get name() { return 'Ever in your favor'; }
     get spawnTargetPos() { return [this.width / 2, this.height / 2]; }
     get exitPos() { return this.spawnTargetPos; }
     get killScore() { return 200; }
@@ -20,7 +25,8 @@ export default class HunterLevel extends BlockLevel {
     doLevelAction() {
         super.doLevelAction();
         this.givePoints();
-        this.spawnMob();
+        if (Math.random() < 0.1) this.spawnMob();
+        this.decideMobTarget();
         for (let mob of this.mobs) {
             if (mob) mob.doMobAction();
         }
@@ -35,8 +41,7 @@ export default class HunterLevel extends BlockLevel {
     }
 
     spawnMob() {
-        if (Math.random() >= 0.1) return;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             if (!this.mobs[i]) {
                 this.mobs[i] = new Mob(this, i);
                 break;
@@ -44,7 +49,13 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-
+    decideMobTarget() {
+        let players = this.server.game.players.filter(p => p && p.level == this);
+        if (!players.includes(this.mobTarget)) this.mobTarget = null;
+        if (players.length > 0 && Math.random() < 0.1) {
+            this.mobTarget = Util.randomElement(players);
+        }
+    }
 }
 
 class Mob {
@@ -68,10 +79,62 @@ class Mob {
     }
 
     doMobAction() {
-        let dest = this.level.movePos(this.pos, this.dir);
-        if (this.level.cell(dest).hasPlayer) this.moveForward();
-        else if (!this.level.cell(dest).canEnter) this.turnRight();
-        else if (Math.random() < 0.9) this.moveForward();
+        if (this.bumpPlayer()) return;
+        if (this.evadePlayer()) return;
+        if (this.facePlayer()) return;
+        if (this.level.mobTarget && Math.random() < 0.5) {
+            this.moveTowards(this.level.mobTarget.pos);
+        }
+        else this.moveRandomly();
+    }
+
+    bumpPlayer() {
+        let canBump = this.isPlayerInDir(0);
+        if (canBump) this.moveForward();
+        return canBump;
+    }
+
+    evadePlayer() {
+        if (!this.canMove(0)) return false;
+        let shouldEvade = false;
+        for (let dir = 1; dir < 4; dir++) {
+            shouldEvade |= this.isPlayerInDirFacingMe(dir);
+        }
+        if (shouldEvade) this.moveForward();
+        return shouldEvade;
+    }
+
+    facePlayer() {
+        for (let dir = 1; dir < 4; dir++) {
+            if (this.isPlayerInDir(dir)) {
+                dir == 3? this.turnLeft() : this.turnRight();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    moveTowards(pos) {
+        if (this.isGoodDirection(pos, 0)) this.moveForward();
+        else if (this.isGoodDirection(pos, 1)) this.turnRight();
+        else if (this.isGoodDirection(pos, 3)) this.turnLeft();
+        else if (this.isGoodDirection(pos, 2)) this.turnRight();
+        else this.moveRandomly();
+    }
+
+    isGoodDirection(pos, dir) {
+        if (!this.canMove(dir)) return false;
+        let realDir = (this.dir + dir) % 4;
+        return (
+            realDir == 0 && pos[1] < this.pos[1] ||
+            realDir == 1 && pos[0] > this.pos[0] ||
+            realDir == 2 && pos[1] > this.pos[1] ||
+            realDir == 3 && pos[0] < this.pos[0]
+        );
+    }
+
+    moveRandomly() {
+        if (this.canMove(0) && Math.random() < 0.9) this.moveForward();
         else if (Math.random() < 0.5) this.turnLeft();
         else this.turnRight();
     }
@@ -89,8 +152,28 @@ class Mob {
         }
     }
 
-    turnLeft() { this.dir = (this.dir + 1) % 4; }
-    turnRight() { this.dir = (this.dir + 3) % 4; }
+    turnLeft() { this.dir = (this.dir + 3) % 4; }
+    turnRight() { this.dir = (this.dir + 1) % 4; }
+
+    canMove(dir) {
+        let realDir = (this.dir + dir) % 4;
+        let dest = this.level.movePos(this.pos, realDir);
+        return this.level.cell(dest).canEnter;
+    }
+
+    isPlayerInDir(dir) {
+        let realDir = (this.dir + dir) % 4;
+        let dest = this.level.movePos(this.pos, realDir);
+        return this.level.cell(dest).hasPlayer;
+    }
+
+    isPlayerInDirFacingMe(dir) {
+        let realDir = (this.dir + dir) % 4;
+        let dest = this.level.movePos(this.pos, realDir);
+        if (!this.level.cell(dest).hasPlayer) return false;
+        let other = this.level.server.game.players[this.level.cell(dest).playerId];
+        return other.dir == (realDir + 2) % 4;
+    }
 
     getState() {
         return {
