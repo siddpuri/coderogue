@@ -88,12 +88,6 @@ export default class ButtonHooks {
             (event.shiftKey? 'S-' : '') +
             event.key;
         switch (key) {
-            case 'Tab':
-                if (event.target.id == 'code-text') {
-                    event.preventDefault();
-                    document.execCommand('insertText', true, '  ');
-                }
-                break;
             case 'C-s':
                 event.preventDefault();
                 await this.submit();

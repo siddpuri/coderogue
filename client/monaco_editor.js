@@ -10,7 +10,7 @@ export default class MonacoEditor {
         }
     }
 
-    static async start(config = {}) {
+    static async start(client, overrideDefaultKeybindings = true, monacoEditorConfig = {}) {
         const libSource = await (await fetch('coderogue.d.ts')).text();
         return new Promise(resolve => {
             require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' } });
@@ -31,17 +31,53 @@ export default class MonacoEditor {
                 monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
                 monaco.editor.createModel(libSource, "javascript", monaco.Uri.parse(libUri));
 
-                MonacoEditor._instance = monaco.editor.create(document.getElementById('monaco-editor'), {
+                const container = document.getElementById('monaco-editor-container');
+                MonacoEditor._instance = monaco.editor.create(container, {
                     automaticLayout: true,
                     language: 'javascript',
                     fontSize: 12,
                     theme: 'vs-dark',
-                    ...config
+                    fixedOverflowWidgets: true,
+                    ...monacoEditorConfig
                 });
+
+                if (overrideDefaultKeybindings) {
+                    monaco.editor.addKeybindingRules(
+                    [
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchTab(-1)),
+                        },
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketRight,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchTab(1)),
+                        },
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchLevel(1)),
+                        },
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchLevel(-1)),
+                        },
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchMap(1)),
+                        },
+                        {
+                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchMap(-1)),
+                        },
+                    ]);
+                }
+
+                MonacoEditor._instance.onDidChangeModelContent = () => {
+                    MonacoEditor._instance.layout({});
+                };
 
                 window.onresize = () => {
                     MonacoEditor._instance.layout({});
-                }
+                };
 
                 resolve();
             });
