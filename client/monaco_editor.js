@@ -71,9 +71,10 @@ export default class MonacoEditor {
                     ]);
                 }
 
-                MonacoEditor._instance.onDidChangeModelContent = () => {
+                // HACK: Force the Monaco editor to relayout after initialization
+                setTimeout(() => {
                     MonacoEditor._instance.layout({});
-                };
+                }, 2000);
 
                 window.onresize = () => {
                     MonacoEditor._instance.layout({});
