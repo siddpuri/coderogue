@@ -5,6 +5,8 @@ import Grownups from './grownups.js';
 import AsciiMap from './ascii_map.js';
 import NewMap from './new_map.js';
 
+import MonacoEditor from './monaco_editor.js';
+
 const alertLevels = [
     'alert-success',
     'alert-secondary',
@@ -187,21 +189,11 @@ export default class Display {
     }
 
     setCode(code) {
-        const codeArea = document.getElementById('code-text');
-        codeArea.value = code;
+        MonacoEditor.instance().setValue(code);
     }
 
     getCode() {
-        return document.getElementById('code-text').value;
-    }
-
-    setCodeCursor(cursor) {
-        document.getElementById('code-text').selectionStart = cursor;
-        document.getElementById('code-text').selectionEnd = cursor;
-    }
-
-    getCodeCursor() {
-        return document.getElementById('code-text').selectionStart;
+        return MonacoEditor.instance().getValue();
     }
 
     isShowing(tab) {

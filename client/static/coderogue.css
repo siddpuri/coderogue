@@ -34,6 +34,9 @@ span {
 .table tbody tr {
     height: 1.2rem;
 }
+#players tr:not(:nth-child(1)) {
+    cursor: pointer;
+}
 .highlighted {
     background-color: #e0e0e0;
 }
@@ -51,4 +54,11 @@ span {
 
 .alert {
     border-radius: 0;
+}
+
+#monaco-editor-container {
+    min-height: 400px;
+    min-width: 100%;
+    resize: auto;
+    overflow: auto;
 }
