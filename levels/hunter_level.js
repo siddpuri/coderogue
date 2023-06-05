@@ -8,7 +8,7 @@ export default class HunterLevel extends BlockLevel {
         this.mobTarget = null;
     }
 
-    get name() { return 'Ever in your favor'; }
+    get name() { return 'There can be only one'; }
     get spawnTargetPos() { return [this.width / 2, this.height / 2]; }
     get exitPos() { return this.spawnTargetPos; }
     get killScore() { return 200; }
