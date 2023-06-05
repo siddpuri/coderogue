@@ -1,7 +1,7 @@
-declare const forward = 0;
-declare const right = 1;
-declare const backward = 2;
-declare const left = 3;
+declare var forward: number;
+declare var right: number;
+declare var backward: number;
+declare var left: number;
 
 /** A global variable that you can use to save your state across ticks. Initially set to `"initial"`. */
 declare var state: any;
