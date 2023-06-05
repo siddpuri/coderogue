@@ -1,5 +1,4 @@
 import mysql from 'mysql2/promise';
-import util from 'util';
 
 const dbParameters = {
     host: '127.0.0.1',
