@@ -80,6 +80,10 @@ export default class MonacoEditor {
                     MonacoEditor._instance.layout({});
                 };
 
+                window.onpageshow = () => {
+                    MonacoEditor._instance.layout({});
+                };
+
                 resolve();
             });
         });
