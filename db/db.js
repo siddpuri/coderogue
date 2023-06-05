@@ -5,6 +5,7 @@ const dbParameters = {
     host: 'localhost',
     user: 'game',
     password: 'game',
+    database: 'game',
 };
 
 export default class DB {
@@ -43,6 +44,13 @@ export default class DB {
         return await this.query(
             'SELECT id, password, auth_token, handle FROM players WHERE email = ?',
             [email]
+        );
+    }
+
+    async setPassword(id, password) {
+        await this.query(
+            'UPDATE players SET password = ? WHERE id = ?',
+            [password, id]
         );
     }
 }
