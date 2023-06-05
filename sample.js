@@ -1,4 +1,4 @@
-var startTime = new Date();
+var startTime = +new Date();
 var shouldDump = false;
 var shouldTime = false;
 
@@ -113,7 +113,7 @@ function moveForwardMaybe() {
         return;
     }
     if (!isProtected(newPos)) {
-        for (dir of [3, 0, 1]) {
+        for (let dir of [3, 0, 1]) {
             let enemyPos = movePos(newPos, (dir0 + dir) % 4);
             let enemyDir = '^>v<'.indexOf(whatsAt(enemyPos));
             if (enemyDir >= 0) {
@@ -144,7 +144,7 @@ function dumpTable(dir) {
 
 if (shouldDump) dumpTable(dir0);
 if (shouldTime) {
-    let endTime = new Date();
-    let timeTaken = endTime.getTime() - startTime.getTime();
+    let endTime = +new Date();
+    let timeTaken = endTime - startTime;
     console.log(`Executed in ${timeTaken / 1000} seconds.`);
 }
