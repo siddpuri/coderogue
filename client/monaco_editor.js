@@ -24,7 +24,7 @@ export default class MonacoEditor {
                 monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
                     target: monaco.languages.typescript.ScriptTarget.ES2017,
                     allowNonTsExtensions: true,
-                    lib: ['es2017']
+                    lib: ['es2017'],  // Vanilla JS, no DOM stuff.
                 });
 
                 var libUri = "ts:filename/coderogue.d.ts";
@@ -37,11 +37,11 @@ export default class MonacoEditor {
                     language: 'javascript',
                     fontSize: 12,
                     theme: 'vs-dark',
-                    fixedOverflowWidgets: true,
                     ...monacoEditorConfig
                 });
 
                 if (overrideDefaultKeybindings) {
+                    // Redirect to Coderogue's default keybindings
                     monaco.editor.addKeybindingRules(
                     [
                         {
