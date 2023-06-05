@@ -1,8 +1,8 @@
-import mysql from 'mysql';
+import mysql from 'mysql2/promise';
 import util from 'util';
 
 const dbParameters = {
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'game',
     password: 'game',
     database: 'game',
@@ -11,13 +11,16 @@ const dbParameters = {
 export default class DB {
     constructor(server) {
         this.server = server;
-        const connection = mysql.createConnection(dbParameters);
-        this.query = util.promisify(connection.query).bind(connection);
     }
 
     async start() {
-        await this.query('USE game');
+        this.connection = await mysql.createConnection(dbParameters);
         this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
+    }
+
+    async query(query, parameters) {
+        let [rows] = await this.connection.execute(query, parameters);
+        return rows;
     }
 
     async loadPlayers() {
@@ -29,7 +32,7 @@ export default class DB {
             'INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)',
             [email, password, authToken]
         );
-        const [response] = await this.query('SELECT LAST_INSERT_ID()');
+        let [response] = await this.query('SELECT LAST_INSERT_ID()');
         return response['LAST_INSERT_ID()'];
     }
 
