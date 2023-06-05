@@ -11,28 +11,28 @@ export default class ButtonHooks {
         this.onClick('first-players', () => this.client.display.showPlayers(0));
         this.onClick('prev-players', () => this.client.display.showPlayers(-1));
         this.onClick('next-players', () => this.client.display.showPlayers(1));
-        this.onClick('canvas', event => this.handleMapClick(event));
+        this.onClick('canvas', this.handleMapClick.bind(this));
         this.onClick('find-handle', () => this.client.display.findHandle());
-        this.onClick('respawn1', async () => await this.respawn());
-        this.onClick('reformat', async () => await this.reformat());
-        this.onClick('submit', async () => await this.submit());
-        this.onClick('respawn2', async () => await this.respawn());
+        this.onClick('respawn1', this.respawn.bind(this));
+        this.onClick('reformat', this.reformat.bind(this));
+        this.onClick('submit', this.submit.bind(this));
+        this.onClick('respawn2', this.respawn.bind(this));
         this.onClick('freeze', () => this.client.display.toggleFreeze());
         this.onClick('show-all', () => this.client.display.showAll());
         this.onClick('show-latest', () => this.client.display.showLatest());
         this.onClick('show-filtered', () => this.client.display.showFiltered());
-        this.onClick('login', async () => await this.login());
-        this.onClick('logout', async () => await this.logout());
+        this.onClick('login', this.login.bind(this));
+        this.onClick('logout', this.logout.bind(this));
 
         let canvas = document.getElementById('canvas');
         canvas.addEventListener('mouseenter', () => this.client.display.onMouseEnter());
-        canvas.addEventListener('mousemove', event => this.handleMouseMove(event));
+        canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
         canvas.addEventListener('mouseleave', () => this.client.display.onMouseLeave());
 
+        document.addEventListener('keydown', this.handleKey.bind(this));
         document.getElementById('handle').addEventListener('keydown', event => {
             if (event.key == 'Enter') this.client.display.findHandle();
         });
-        document.addEventListener('keydown', async event => await this.handleKey(event));
     }
 
     handleMouseMove(event) {
