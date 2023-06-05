@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+import mysql from 'mysql2/promise';
 import util from 'util';
 
 const dbParameters = {
@@ -11,13 +11,15 @@ const dbParameters = {
 export default class DB {
     constructor(server) {
         this.server = server;
-        const connection = mysql.createConnection(dbParameters);
-        this.query = util.promisify(connection.query).bind(connection);
     }
 
     async start() {
-        await this.query('USE game');
+        this.connection = await mysql.createConnection(dbParameters);
         this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
+    }
+
+    async query(query, params) {
+        return await this.connection.query(query, params);
     }
 
     async loadPlayers() {
