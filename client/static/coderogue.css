@@ -58,5 +58,6 @@ span {
 
 #monaco-editor-container {
     min-height: 400px;
+    resize: vertical;
     overflow: auto;
 }

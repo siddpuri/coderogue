@@ -37,6 +37,8 @@ export default class MonacoEditor {
                     language: 'javascript',
                     fontSize: 12,
                     theme: 'vs-dark',
+                    fixedOverflowWidgets: true,
+                    scrollBeyondLastLine: false,
                     ...monacoEditorConfig
                 });
 
@@ -70,19 +72,6 @@ export default class MonacoEditor {
                         },
                     ]);
                 }
-
-                // HACK: Force the Monaco editor to relayout after initialization
-                setTimeout(() => {
-                    MonacoEditor._instance.layout({});
-                }, 2000);
-
-                window.onresize = () => {
-                    MonacoEditor._instance.layout({});
-                };
-
-                window.onpageshow = () => {
-                    MonacoEditor._instance.layout({});
-                };
 
                 resolve();
             });
