@@ -45,7 +45,7 @@ export default class Level {
 
     hasGrownupProtection(currentPlayer, pos) {
         if (!Grownups.list.includes(currentPlayer.id)) return false;
-        let playerId = this.map.getPlayer(pos);
+        let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return false;
         if (Grownups.list.includes(playerId)) return false;
         return true;
