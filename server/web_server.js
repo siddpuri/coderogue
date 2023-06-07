@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 const port = 8080;
 
@@ -13,6 +14,7 @@ export default class WebServer {
   async start() {
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
+    this.app.use(compression());
 
     this.app.use(express.static('shared'));
     this.app.use(express.static('client'));
