@@ -14,12 +14,7 @@ export default class Map {
             this.map = new Uint16Array(levelWidth * levelHeight);
             this.map.fill(0);
         } else {
-            let decodedMap = atob(serializedMap);
-            let byteArray = new Uint8Array(decodedMap.length);
-            for (let i = 0; i < decodedMap.length; i++) {
-                byteArray[i] = decodedMap.charCodeAt(i);
-            }
-            this.map = new Uint16Array(byteArray.buffer);
+            this.map = Uint16Array.from(serializedMap);
         }
     }
 
@@ -87,6 +82,6 @@ export default class Map {
     }
 
     serialize() {
-        return Buffer.from(this.map.buffer).toString('base64');
+        return Array.from(this.map);
     }
 }
