@@ -136,6 +136,8 @@ export default class Level {
     }
 
     bumpPlayer(player, dest) {
+        let otherId = this.map.getPlayerId(dest);
+        let other = this.server.game.players[otherId];
         if (player.dontScore) {
             player.log.write(`Can't bump players after respawnAt.`);
             return;
@@ -144,8 +146,6 @@ export default class Level {
             player.log.write(`Player ${other.textHandle} is protected.`);
             return;
         }
-        let otherId = this.map.getPlayerId(dest);
-        let other = this.server.game.players[otherId];
         if (!other.dontScore) {
             player.addScore(this.killScore);
             player.incrementKills();
