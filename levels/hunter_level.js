@@ -79,13 +79,17 @@ class Mob {
     }
 
     doMobAction() {
-        if (this.bumpPlayer()) return;
-        if (this.evadePlayer()) return;
-        if (this.facePlayer()) return;
-        if (this.level.mobTarget && Math.random() < 0.5) {
-            this.moveTowards(this.level.mobTarget.pos);
+        try {
+            if (this.bumpPlayer()) return;
+            if (this.evadePlayer()) return;
+            if (this.facePlayer()) return;
+            if (this.level.mobTarget && Math.random() < 0.5) {
+                this.moveTowards(this.level.mobTarget.pos);
+            }
+            else this.moveRandomly();
+        } catch (e) {
+            console.log(e);
         }
-        else this.moveRandomly();
     }
 
     bumpPlayer() {
