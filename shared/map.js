@@ -14,7 +14,7 @@ export default class Map {
             this.map = new Uint16Array(levelWidth * levelHeight);
             this.map.fill(0);
         } else {
-            this.map = serializedMap;
+            this.map = Uint16Array.from(serializedMap);
         }
     }
 
@@ -82,6 +82,6 @@ export default class Map {
     }
 
     serialize() {
-        return this.map;
+        return Array.from(this.map);
     }
 }
