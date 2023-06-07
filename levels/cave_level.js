@@ -89,8 +89,11 @@ class Cave extends JigglyBlock {
     }
 
     includedPlayers(pos, size) {
+        let map = this.level.map;
         let result = [];
-        this.forEach(pos, size, c => c.hasPlayer && result.push(c.playerId));
+        this.forEach(pos, size, p => {
+            if (map.hasPlayer(p)) result.push(map.getPlayerId(p));
+        });
         return result;
     }
 }

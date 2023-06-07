@@ -32,8 +32,9 @@ export default class BlockLevel extends Level {
 
 class Hill extends JigglyBlock {
     isValidMove(pos0, size0, pos1, size1) {
+        let map = this.level.map;
         let valid = true;
-        this.forEach(pos1, size1, p => valid &= this.level.map.canEnter(p));
+        this.forEach(pos1, size1, p => valid &= map.canEnter(p));
         return valid;
     }
 }
