@@ -56,11 +56,11 @@ export default class CanvasMap {
                 pos[0] = x;
                 let playerId = map.getPlayerId(pos);
                 let mobId = map.getMobId(pos);
-                if (map.hasWall(pos)) this.renderWall(pos);
+                if (playerId != null) this.renderPlayer(pos, playerId);
+                else if (mobId != null) this.renderMob(pos, mobId);
+                else if (map.hasWall(pos)) this.renderWall(pos);
                 else if (map.hasExit(pos)) this.renderExit(pos);
                 else if (map.hasSpawn(pos)) this.renderSpawn(pos);
-                else if (playerId != null) this.renderPlayer(pos, playerId);
-                else if (mobId != null) this.renderMob(pos, mobId);
             }
         }
     }
