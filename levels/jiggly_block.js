@@ -53,19 +53,22 @@ export default class JigglyBlock {
         );
     }
 
-    applyCells(pos, size, f) {
-        for (let c = 0; c < size[0]; c++) {
-            for (let r = 0; r < size[1]; r++) {
-                f(this.level.cell([pos[0] + c, pos[1] + r]));
+    forEach(pos, size, f) {
+        let p = [0, 0];
+        for (let x = 0; x < size[0]; x++) {
+            p[0] = pos[0] + x;
+            for (let y = 0; y < size[1]; y++) {
+                p[1] = pos[1] + y;
+                f(p);
             }
         }
     }
 
     drawWalls() {
-        this.applyCells(this.pos, this.size, c => c.setWall());
+        this.forEach(this.pos, this.size, p => this.level.map.setWall(p));
     }
 
     eraseWalls() {
-        this.applyCells(this.pos, this.size, c => c.clearWall());
+        this.forEach(this.pos, this.size, p => this.level.map.clearWall(p));
     }
 }

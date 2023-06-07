@@ -18,7 +18,7 @@ export default class HunterLevel extends BlockLevel {
     }
 
     isWorthPoints(currentPlayer, pos) {
-        if (this.cell(pos).hasMob) return this.killMobScore;
+        if (this.map.hasMob(pos)) return this.killMobScore;
         return super.isWorthPoints(currentPlayer, pos);
     }
 
@@ -65,12 +65,12 @@ class Mob {
         this.pos = this.findSpawnPos();
         this.dir = Util.randomInt(0, 3);
         this.textHandle = Util.generateAutomatonHandle();
-        this.level.cell(this.pos).setMob(this);
+        this.level.map.setMobId(this.pos, id);
     }
 
     findSpawnPos() {
         let pos;
-        while (!pos || !this.level.cell(pos).canEnter) {
+        while (!pos || !this.level.map.canEnter(pos)) {
             let x = Util.randomInt(1, this.level.width - 2);
             let y = Util.randomInt(1, this.level.height - 2);
             pos = [x, y];
@@ -141,12 +141,16 @@ class Mob {
 
     moveForward() {
         let dest = this.level.movePos(this.pos, this.dir);
-        if (this.level.cell(dest).canEnter) {
-            this.level.cell(this.pos).clearMob();
-            this.level.cell(dest).setMob(this);
+        if (this.level.map.canEnter(dest)) {
+            this.level.map.clearMob(this.pos);
+            this.level.map.setMobId(dest, this.id);
             this.pos = dest;
-        } else if (this.level.cell(dest).hasPlayer) {
-            let other = this.level.server.game.players[this.level.cell(dest).playerId];
+            return;
+        }
+        
+        let playerId = this.level.map.getPlayerId(dest);
+        if (playerId != null) {
+            let other = this.level.server.game.players[playerId];
             this.level.server.game.respawn(other);
             other.log.write(`You were bumped off by ${this.textHandle}!`);
         }
@@ -158,20 +162,21 @@ class Mob {
     canMove(dir) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
-        return this.level.cell(dest).canEnter;
+        return this.level.map.canEnter(dest);
     }
 
     isPlayerInDir(dir) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
-        return this.level.cell(dest).hasPlayer;
+        return this.level.map.hasPlayer(dest);
     }
 
     isPlayerInDirFacingMe(dir) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
-        if (!this.level.cell(dest).hasPlayer) return false;
-        let other = this.level.server.game.players[this.level.cell(dest).playerId];
+        let playerId = this.level.map.getPlayerId(dest);
+        if (playerId == null) return false;
+        let other = this.level.server.game.players[playerId];
         return other.dir == (realDir + 2) % 4;
     }
 

@@ -1,6 +1,7 @@
 import Util from './util.js';
 import Player from './player.js';
 import Grownups from './grownups.js';
+import Map from './map.js';
 
 import CanvasMap from './canvas_map.js';
 import MonacoEditor from './monaco_editor.js';
@@ -50,6 +51,9 @@ export default class Display {
             if (playerInfo) this.players[playerInfo.id] = new Player(playerInfo);
         }
         this.levels = state.levels;
+        for (let level of this.levels) {
+            level.map = new Map(level.map);
+        }
         this.render();
     }
 

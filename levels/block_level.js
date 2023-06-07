@@ -16,8 +16,8 @@ export default class BlockLevel extends Level {
     }
 
     get name() { return 'Rolling Hills'; }
-    get spawnTargetPos() { return [this.width - 10, this.height - 10]; }
-    get exitPos() { return [10, 10]; }
+    get spawnTargetPos() { return super.exitPos; }
+    get exitPos() { return super.spawnTargetPos; }
     get exitScore() { return 200; }
     get bumpScore() { return -1; }
 
@@ -33,7 +33,7 @@ export default class BlockLevel extends Level {
 class Hill extends JigglyBlock {
     isValidMove(pos0, size0, pos1, size1) {
         let valid = true;
-        this.applyCells(pos1, size1, c => valid &= c.canEnter);
+        this.forEach(pos1, size1, p => valid &= this.level.map.canEnter(p));
         return valid;
     }
 }

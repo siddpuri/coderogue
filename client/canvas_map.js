@@ -1,4 +1,5 @@
-import constants from './constants.js';
+const levelWidth = 80;
+const levelHeight = 40;
 
 const triangles = [
     [[1, 8], [7, 8], [4, 0]],
@@ -35,8 +36,8 @@ export default class CanvasMap {
     }
 
     clearCanvas() {
-        this.canvas.width = this.dx * constants.levelWidth;
-        this.canvas.height = this.dy * constants.levelHeight;
+        this.canvas.width = this.dx * levelWidth;
+        this.canvas.height = this.dy * levelHeight;
         this.ctx.font = this.font;
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -48,25 +49,23 @@ export default class CanvasMap {
         this.players = players;
         this.clearCanvas();
         let map = level.map;
-        for (let row = 0; row < map.length; row++) {
-            for (let col = 0; col < map[row].length; col++) {
-                let cell = map[row][col];
-                if (Object.hasOwn(cell, 'playerId')) {
-                    this.renderPlayer(row, col, cell.playerId);
-                }
-                if (Object.hasOwn(cell, 'mobId')) {
-                    this.renderMob(row, col, cell.mobId);
-                }
-                switch (cell.type) {
-                    case '#': this.renderWall(row, col); break;
-                    case '.': this.renderSpawn(row, col); break;
-                    case 'o': this.renderExit(row, col); break;
-                }
+        let pos = [0, 0];
+        for (let y = 0; y < levelHeight; y++) {
+            pos[1] = y;
+            for (let x = 0; x < levelWidth; x++) {
+                pos[0] = x;
+                let playerId = map.getPlayerId(pos);
+                let mobId = map.getMobId(pos);
+                if (map.hasWall(pos)) this.renderWall(pos);
+                else if (map.hasExit(pos)) this.renderExit(pos);
+                else if (map.hasSpawn(pos)) this.renderSpawn(pos);
+                else if (playerId != null) this.renderPlayer(pos, playerId);
+                else if (mobId != null) this.renderMob(pos, mobId);
             }
         }
     }
 
-    renderPlayer(row, col, playerId) {
+    renderPlayer(pos, playerId) {
         let color = this.foregroundColor;
         if (playerId == this.client.display.highlightedPlayer) {
             color = this.highlightColor;
@@ -75,23 +74,23 @@ export default class CanvasMap {
             color = this.currentPlayerColor;
         }
         let dir = this.players[playerId].dir;
-        this.renderArrow(row, col, dir, color);
+        this.renderArrow(pos, dir, color);
     }
 
-    renderMob(row, col, mobId) {
+    renderMob(pos, mobId) {
         let dir = this.level.mobs[mobId].dir;
-        this.renderArrow(row, col, dir, this.mobColor);
+        this.renderArrow(pos, dir, this.mobColor);
     }
 
-    renderArrow(row, col, dir, color) {
+    renderArrow(pos, dir, color) {
         switch (this.style) {
         case 0:
-            this.setText(row, col, '^>v<'[dir], color);
+            this.setText(pos, '^>v<'[dir], color);
             break;
         case 1:
             let triangle = triangles[dir];
-            let x = col * this.dx;
-            let y = row * this.dy;
+            let x = pos[0] * this.dx;
+            let y = pos[1] * this.dy;
             this.ctx.fillStyle = color;
             this.ctx.beginPath();
             this.ctx.moveTo(x + triangle[0][0], y + triangle[0][1]);
@@ -102,28 +101,28 @@ export default class CanvasMap {
         }
     }
 
-    renderWall(row, col) {
+    renderWall(pos) {
         switch (this.style) {
         case 0:
-            this.setText(row, col, '#');
+            this.setText(pos, '#');
             break;
         case 1:
-            let x = col * this.dx;
-            let y = row * this.dy;
+            let x = pos[0] * this.dx;
+            let y = pos[1] * this.dy;
             this.ctx.fillStyle = this.wallColor;
             this.ctx.fillRect(x, y, this.dx, this.dy);
             break;
         }
     }
 
-    renderSpawn(row, col) {
+    renderSpawn(pos) {
         switch (this.style) {
         case 0:
-            this.setText(row, col, '.');
+            this.setText(pos, '.');
             break;
         case 1:
-            let x = (col + .5) * this.dx;
-            let y = (row + .5) * this.dy;
+            let x = (pos[0] + .5) * this.dx;
+            let y = (pos[1] + .5) * this.dy;
             this.ctx.fillStyle = this.currentPlayerColor;
             this.ctx.beginPath();
             this.ctx.ellipse(x, y, 1, 1, 0, 0, 2 * Math.PI);
@@ -132,14 +131,14 @@ export default class CanvasMap {
         }
     }
 
-    renderExit(row, col) {
+    renderExit(pos) {
         switch (this.style) {
         case 0:
-            this.setText(row, col, 'o');
+            this.setText(pos, 'o');
             break;
         case 1:
-            let x = (col + .5) * this.dx;
-            let y = (row + .5) * this.dy;
+            let x = (pos[0] + .5) * this.dx;
+            let y = (pos[1] + .5) * this.dy;
             this.ctx.strokeStyle = this.currentPlayerColor;
             this.ctx.beginPath();
             this.ctx.ellipse(x, y, 5, 5, 0, 0, 2 * Math.PI);
@@ -148,13 +147,13 @@ export default class CanvasMap {
         }
     }
 
-    setText(row, col, char, color) {
+    setText(pos, char, color) {
         this.ctx.fillStyle = color?? this.foregroundColor;
         if (color == this.highlightColor) {
-            this.ctx.fillRect(col * this.dx, row * this.dy, this.dx, this.dy);
+            this.ctx.fillRect(pos[0] * this.dx, pos[1] * this.dy, this.dx, this.dy);
             this.ctx.fillStyle = this.foregroundColor;
         }
-        this.ctx.fillText(char, col * this.dx, (row + 1) * this.dy);
+        this.ctx.fillText(char, pos[0] * this.dx, (pos[1] + 1) * this.dy);
         this.ctx.fillStyle = this.foregroundColor;
     }
 
@@ -186,9 +185,9 @@ export default class CanvasMap {
     }
 
     getPlayerAtPos(pos) {
-        if (!this.level.map[pos[1]] || !this.level.map[pos[1]][pos[0]]) return null;
-        let cell = this.level.map[pos[1]][pos[0]];
-        return Object.hasOwn(cell, 'playerId') ? cell.playerId : null;
+        if (pos[0] < 0 || pos[0] >= levelWidth) return null;
+        if (pos[1] < 0 || pos[1] >= levelHeight) return null;
+        return this.level.map.getPlayerId(pos);
     }
 
     getDistance(mouseX, mouseY, playerPos) {

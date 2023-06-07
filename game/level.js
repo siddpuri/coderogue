@@ -1,8 +1,9 @@
-import constants from '../shared/constants.js';
 import Util from '../shared/util.js';
 import Grownups from '../shared/grownups.js';
+import Map from '../shared/map.js';
 
-import Cell from './cell.js';
+const levelWidth = 80;
+const levelHeight = 40;
 
 // Translate from direction (0,1,2,3) to a position offset
 const offsets = [
@@ -15,18 +16,14 @@ const offsets = [
 export default class Level {
     constructor(server) {
         this.server = server;
-        this.width = constants.levelWidth;
-        this.height = constants.levelHeight;
-        this.map =
-            Array(this.height).fill().map(() =>
-                Array(this.width).fill().map(() => new Cell()));
-        this.cell(this.exitPos).setExit();
-        this.cell(this.spawnTargetPos).setSpawn();
-        this.drawBorderWalls();
+        this.map = new Map();
         this.mobs = [];
+        this.drawMap();
     }
     
     get name() { return 'Mystery Level'; }
+    get width() { return levelWidth; }
+    get height() { return levelHeight; }
     get spawnTargetPos() { return [10, 10]; }
     get exitPos() { return [this.width - 10, this.height - 10]; }
     get exitScore() { return 100; }
@@ -38,36 +35,35 @@ export default class Level {
     isProtected(currentPlayer, pos) { return true; }
 
     isWorthPoints(currentPlayer, pos) {
-        if (
-            this.cell(pos).hasPlayer &&
-            !this.isProtected(currentPlayer, pos) &&
-            !this.server.game.players[this.cell(pos).playerId].dontScore
-        )
+        let playerId = this.map.getPlayer(pos);
+        if (playerId == null) return 0;
+        if (playerId == currentPlayer) return 0;
+        if (this.isProtected(currentPlayer, pos)) return 0;
+        if (this.server.game.players[playerId].dontScore) return 0;
         return this.killScore;
-        return 0;
     }
 
     hasGrownupProtection(currentPlayer, pos) {
-        if (Grownups.list.includes(currentPlayer.id)) {
-            if (this.cell(pos).hasPlayer) {
-                let otherId = this.cell(pos).playerId;
-                if (!Grownups.list.includes(otherId)) return true;
-            }
-        }
-        return false;
+        if (!Grownups.list.includes(currentPlayer.id)) return false;
+        let playerId = this.map.getPlayer(pos);
+        if (playerId == null) return false;
+        if (Grownups.list.includes(playerId)) return false;
+        return true;
     }
 
     doLevelAction() {}
 
-    drawBorderWalls() {
-        for (let c = 0; c < this.width; c++) {
-            this.map[0][c].setWall();
-            this.map[this.height - 1][c].setWall();
+    drawMap() {
+        for (let x = 0; x < this.width; x++) {
+            this.map.setWall([x, 0]);
+            this.map.setWall([x, this.height - 1]);
         }
-        for (let r = 0; r < this.height; r++) {
-            this.map[r][0].setWall();
-            this.map[r][this.width - 1].setWall();
+        for (let y = 0; y < this.height; y++) {
+            this.map.setWall([0, y]);
+            this.map.setWall([this.width - 1, y]);
         }
+        this.map.setExit(this.exitPos);
+        this.map.setSpawn(this.spawnTargetPos);
     }
 
     spawn(player) {
@@ -88,8 +84,9 @@ export default class Level {
             }
             let candidate = [pos[0] + dx, pos[1] + dy];
             let [x, y] = candidate;
-            if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
-            if (this.cell(candidate).canSpawn) {
+            if (x < 0 || x >= this.width) continue;
+            if (y < 0 || y >= this.height) continue;
+            if (this.map.canSpawn(candidate)) {
                 this.addPlayer(player, candidate, dir);
                 return;
             }
@@ -100,24 +97,24 @@ export default class Level {
         player.level = this;
         player.pos = pos;
         player.dir = dir;
-        this.cell(pos).setPlayer(player);
+        this.map.setPlayerId(pos, player.id);
     }
 
     removePlayer(player) {
-        this.cell(player.pos).clearPlayer();
+        this.map.clearPlayer(player.pos);
         player.level = null;
         player.pos = null;
     }
 
     moveForward(player) {
         let dest = this.movePos(player.pos, player.dir)
-        if (this.cell(dest).canEnter) {
+        if (this.map.canEnter(dest)) {
             this.movePlayer(player, dest);
         }
-        else if (this.cell(dest).hasPlayer) {
+        else if (this.map.hasPlayer(dest)) {
             this.bumpPlayer(player, dest);
         }
-        else if (this.cell(dest).hasMob) {
+        else if (this.map.hasMob(dest)) {
             this.bumpMob(player, dest);
         }
         else {
@@ -127,10 +124,10 @@ export default class Level {
     }
 
     movePlayer(player, dest) {
-        this.cell(player.pos).clearPlayer();
+        this.map.clearPlayer(player.pos);
         player.pos = dest;
-        this.cell(player.pos).setPlayer(player);
-        if (this.cell(player.pos).isExit) {
+        this.map.setPlayerId(player.pos, player.id);
+        if (this.map.hasExit(player.pos)) {
             player.log.write(`Completed level ${this.levelNumber}!`);
             player.addScore(this.exitScore);
             this.server.game.exitPlayer(player);
@@ -139,7 +136,6 @@ export default class Level {
     }
 
     bumpPlayer(player, dest) {
-        let other = this.server.game.players[this.cell(dest).playerId];
         if (player.dontScore) {
             player.log.write(`Can't bump players after respawnAt.`);
             return;
@@ -148,6 +144,8 @@ export default class Level {
             player.log.write(`Player ${other.textHandle} is protected.`);
             return;
         }
+        let otherId = this.map.getPlayerId(dest);
+        let other = this.server.game.players[otherId];
         if (!other.dontScore) {
             player.addScore(this.killScore);
             player.incrementKills();
@@ -160,14 +158,15 @@ export default class Level {
     }
 
     bumpMob(player, dest) {
-        let mob = this.mobs[this.cell(dest).mobId];
         if (player.dontScore) {
             player.log.write(`Can't bump automata after respawnAt.`);
             return;
         }
+        let mobId = this.map.getMobId(dest);
+        let mob = this.mobs[mobId];
         player.addScore(this.killMobScore);
-        this.cell(dest).clearMob();
-        delete this.mobs[mob.id];
+        this.map.clearMob(dest);
+        delete this.mobs[mobId];
         player.log.write(`You just bumped off ${mob.textHandle}!`);
     }
 
@@ -177,16 +176,7 @@ export default class Level {
     canMove(player, dir) {
         const realDir = (player.dir + dir) % 4;
         const newPos = this.movePos(player.pos, realDir);
-        return this.cell(newPos).canEnter;
-    }
-
-    cell(pos) {
-        try {
-            return this.map[pos[1]][pos[0]];
-        } catch(e) {
-            console.log('cell', pos, e);
-            return this.map[0][0];
-        }
+        return this.map.canEnter(newPos);
     }
 
     movePos(pos, dir) {
@@ -197,7 +187,7 @@ export default class Level {
     getState() {
         return {
             name: this.name,
-            map: this.map,
+            map: this.map.serialize(),
             mobs: this.mobs.map(m => m.getState()),
         };
     }

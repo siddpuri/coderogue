@@ -55,9 +55,9 @@ export default class CaveLevel extends Level {
     }
 
     redraw() {
-        for (let c = 15; c <= 65; c++) {
-            for (let r = 0; r < this.height; r++) {
-                this.cell([c, r]).setWall();
+        for (let x = 15; x <= 65; x++) {
+            for (let y = 0; y < this.height; y++) {
+                this.map.setWall([x, y]);
             }
         }
         for (let cave of this.caves) {
@@ -90,7 +90,7 @@ class Cave extends JigglyBlock {
 
     includedPlayers(pos, size) {
         let result = [];
-        this.applyCells(pos, size, c => c.hasPlayer && result.push(c.playerId));
+        this.forEach(pos, size, c => c.hasPlayer && result.push(c.playerId));
         return result;
     }
 }
@@ -140,13 +140,13 @@ class Tunnel {
         let y = this.startCave.pos[1];
         let dy = Math.sign(corner[1] - y);
         for (; y != corner[1]; y += dy) {
-            let cell = this.level.cell([x, y]);
-            if (cell.hasPlayer) result.push(cell.playerId);
+            let playerId = this.level.map.getPlayerId([x, y]);
+            if (playerId != null) result.push(playerId);
         }
         let dx = Math.sign(this.endCave.pos[0] - x);
         for (; x != this.endCave.pos[0]; x += dx) {
-            let cell = this.level.cell([x, y]);
-            if (cell.hasPlayer) result.push(cell.playerId);
+            let playerId = this.level.map.getPlayerId([x, y]);
+            if (playerId != null) result.push(playerId);
         }
         return result;
     }
@@ -167,11 +167,11 @@ class Tunnel {
         let y = this.startCave.pos[1];
         let dy = Math.sign(this.corner[1] - y);
         for (; y != this.corner[1]; y += dy) {
-            this.level.cell([x, y]).clearWall();
+            this.level.map.clearWall([x, y]);
         }
         let dx = Math.sign(this.endCave.pos[0] - x);
         for (; x != this.endCave.pos[0]; x += dx) {
-            this.level.cell([x, y]).clearWall();
+            this.level.map.clearWall([x, y]);
         }
     }
 }

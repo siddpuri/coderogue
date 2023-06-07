@@ -79,40 +79,46 @@ export default class VmEnvironment {
         checker.setParameter('level', levelNumber);
         let level = this.game.levels[levelNumber];
         if (!checker.check(level)) return;
-        if (!checker.checkPos(level, pos)) return;
+        if (!checker.checkPos(pos)) return;
         if (!checker.checkDir(dir)) return;
         this.game.respawnAt(this.player, level, pos, dir);
     }
 
     getMap() {
-        let map = new Uint8Array(80 * 40);
+        let result = new Uint8Array(80 * 40);
+        let map = this.player.level.map;
+        let pos = [0, 0];
         for (let y = 0; y < 40; y++) {
+            pos[1] = y;
             for (let x = 0; x < 80; x++) {
-                let cell = this.player.level.cell([x, y]);
-                let char = cell.type?? ' ';
-                if (Object.hasOwn(cell, 'playerId')) {
-                    let dir = this.game.players[cell.playerId].dir;
-                    char = '^>v<'[dir];
-                }
-                if (Object.hasOwn(cell, 'mobId')) {
-                    let dir = this.player.level.mobs[cell.mobId].dir;
-                    char = '^>v<'[dir];
-                }
-                map[y * 80 + x] = char.charCodeAt(0);
+                pos[0] = x;
+                let char = ' ';
+                if (map.hasWall(pos)) char = '#';
+                if (map.hasExit(pos)) char = 'o';
+                if (map.hasSpawn(pos)) char = '.';
+                let playerId = map.getPlayerId(pos);
+                if (playerId != null) char = getDirChar(this.game.players[playerId].dir);
+                let mobId = map.getMobId(pos);
+                if (mobId != null) char = getDirChar(this.player.level.mobs[mobId].dir);
+                result[y * 80 + x] = char.charCodeAt(0);
             }
         }
-        return map;
+        return result;
+    }
+
+    getDirChar(dir) {
+        return ['^', '>', 'v', '<'][dir];
     }
 
     isProtected(pos) {
         let checker = new ArgumentChecker(this.player, 'isProtected');
-        if (!checker.checkPos(this.player.level, pos)) return false;
+        if (!checker.checkPos(pos)) return false;
         return this.player.level.isProtected(this.player, pos);
     }
 
     isWorthPoints(pos) {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
-        if (!checker.checkPos(this.player.level, pos)) return false;
+        if (!checker.checkPos(pos)) return false;
         return this.player.level.isWorthPoints(this.player, pos);
     }
 }
@@ -138,16 +144,18 @@ class ArgumentChecker {
     checkDir(dir) {
         this.setParameter('dir', dir);
         if (!this.check(Number.isInteger(dir))) return false;
-        if (!this.check(dir >= 0 && dir <= 3)) return false;
+        if (!this.check(dir >= 0 && dir < 4)) return false;
         return true;
     }
 
-    checkPos(level, pos) {
+    checkPos(pos) {
         this.setParameter('pos', Util.stringify(pos));
         if (!this.check(Array.isArray(pos))) return false;
         if (!this.check(pos.length == 2)) return false;
-        if (!this.check(level.map[pos[1]])) return false;
-        if (!this.check(level.cell(pos))) return false;
+        if (!this.check(Number.isInteger(pos[0]))) return false;
+        if (!this.check(Number.isInteger(pos[1]))) return false;
+        if (!this.check(pos[0] >= 0 && pos[0] < levelWidth)) return false;
+        if (!this.check(pos[1] >= 0 && pos[1] < levelHeight)) return false;
         return true;
     }
 }
