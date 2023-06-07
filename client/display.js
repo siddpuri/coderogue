@@ -2,9 +2,7 @@ import Util from './util.js';
 import Player from './player.js';
 import Grownups from './grownups.js';
 
-import AsciiMap from './ascii_map.js';
-import NewMap from './new_map.js';
-
+import CanvasMap from './canvas_map.js';
 import MonacoEditor from './monaco_editor.js';
 
 const alertLevels = [
@@ -19,9 +17,7 @@ const numPlayersToRender = 10;
 export default class Display {
     constructor(client) {
         this.client = client;
-        this.asciiMap = new AsciiMap(client, 'canvas');
-        this.newMap = new NewMap(client, 'canvas');
-        this.map = this.asciiMap;
+        this.map = new CanvasMap(client, 'canvas');
         this.levelToRender = 0;
         this.renderPlayersFrom = 0;
         this.numPlayers = 0;
@@ -32,8 +28,7 @@ export default class Display {
     }
 
     async start() {
-        await this.asciiMap.start();
-        await this.newMap.start();
+        await this.map.start();
         this.createPlayerRows();
     }
 
@@ -164,14 +159,6 @@ export default class Display {
         this.renderPlayersFrom += step * dir;
         this.renderPlayersFrom = Math.max(this.renderPlayersFrom, 0);
         this.renderPlayersFrom = Math.min(this.renderPlayersFrom, this.numPlayers - step);
-        this.render();
-    }
-
-    switchMap(dir) {
-        switch (dir) {
-            case -1: this.map = this.asciiMap; break;
-            case 1: this.map = this.newMap; break;
-        }
         this.render();
     }
 

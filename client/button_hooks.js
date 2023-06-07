@@ -101,9 +101,9 @@ export default class ButtonHooks {
             case 'C-ArrowDown':
                 this.client.display.switchLevel(-1); break;
             case 'C-S-ArrowUp':
-                this.client.display.switchMap(1); break;
+                this.client.display.map.setStyle(1); break;
             case 'C-S-ArrowDown':
-                this.client.display.switchMap(-1); break;
+                this.client.display.map.setStyle(0); break;
         }
     }
 
