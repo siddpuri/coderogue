@@ -71,7 +71,7 @@ export default class Map {
     }
 
     #clearId(pos, bit) {
-        let mask = 1 << bit | 31 << idShift;
+        let mask = 1 << bit | ~0 << idShift;
         this.map[pos[1] * levelWidth + pos[0]] &= ~mask;
     }
 
