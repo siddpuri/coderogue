@@ -5,6 +5,7 @@ import BlockLevel from './block_level.js';
 export default class HunterLevel extends BlockLevel {
     constructor(server) {
         super(server);
+        this.map.clearExit(this.exitPos);
         this.mobTarget = null;
     }
 
