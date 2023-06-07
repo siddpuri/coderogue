@@ -41,8 +41,8 @@ export default class Map {
     canEnter(pos) {
         return (
             !this.hasWall(pos) &&
-            !this.getPlayerId(pos) &&
-            !this.getMobId(pos)
+            !this.hasPlayer(pos) &&
+            !this.hasMob(pos)
         );
     }
 
