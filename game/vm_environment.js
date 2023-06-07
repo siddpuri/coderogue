@@ -1,5 +1,8 @@
 import Util from '../shared/util.js';
 
+const levelWidth = 80;
+const levelHeight = 40;
+
 export default class VmEnvironment {
     constructor(game, player) {
         this.game = game;
@@ -97,9 +100,9 @@ export default class VmEnvironment {
                 if (map.hasExit(pos)) char = 'o';
                 if (map.hasSpawn(pos)) char = '.';
                 let playerId = map.getPlayerId(pos);
-                if (playerId != null) char = getDirChar(this.game.players[playerId].dir);
+                if (playerId != null) char = this.getDirChar(this.game.players[playerId].dir);
                 let mobId = map.getMobId(pos);
-                if (mobId != null) char = getDirChar(this.player.level.mobs[mobId].dir);
+                if (mobId != null) char = this.getDirChar(this.player.level.mobs[mobId].dir);
                 result[y * 80 + x] = char.charCodeAt(0);
             }
         }
