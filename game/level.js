@@ -35,7 +35,7 @@ export default class Level {
     isProtected(currentPlayer, pos) { return true; }
 
     isWorthPoints(currentPlayer, pos) {
-        let playerId = this.map.getPlayer(pos);
+        let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return 0;
         if (playerId == currentPlayer) return 0;
         if (this.isProtected(currentPlayer, pos)) return 0;
