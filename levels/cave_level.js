@@ -138,18 +138,16 @@ class Tunnel {
     }
 
     includedPlayers(corner) {
+        let map = this.level.map;
         let result = [];
-        let x = corner[0];
-        let y = this.startCave.pos[1];
-        let dy = Math.sign(corner[1] - y);
-        for (; y != corner[1]; y += dy) {
-            let playerId = this.level.map.getPlayerId([x, y]);
-            if (playerId != null) result.push(playerId);
+        let pos = [corner[0], this.startCave.pos[1]];
+        let dy = Math.sign(corner[1] - pos[1]);
+        for (; pos[1] != corner[1]; pos[1] += dy) {
+            if (map.hasPlayer(pos)) result.push(map.getPlayerId(pos));
         }
-        let dx = Math.sign(this.endCave.pos[0] - x);
-        for (; x != this.endCave.pos[0]; x += dx) {
-            let playerId = this.level.map.getPlayerId([x, y]);
-            if (playerId != null) result.push(playerId);
+        let dx = Math.sign(this.endCave.pos[0] - pos[0]);
+        for (; pos[0] != this.endCave.pos[0]; pos[0] += dx) {
+            if (map.hasPlayer(pos)) result.push(map.getPlayerId(pos));
         }
         return result;
     }
