@@ -1,7 +1,7 @@
 export default class Preamble {
     static get code() {
-        let preamble = `
-
+        let preamble =
+`
 var _map = null;
 
 function whatsAt(pos) {
@@ -27,8 +27,7 @@ function randomNumber(a, b) {
 function appendItem(l, x) { l.push(x); }
 function insertItem(l, i, x) { l.splice(i, 0, x); }
 function removeItem(l, i) { l.splice(i, 1); }
-
-        `;
+`;
         return preamble.split('\n').join(' ');
     }
 }
