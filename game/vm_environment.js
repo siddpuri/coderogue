@@ -36,12 +36,6 @@ export default class VmEnvironment {
             getMap:           this.getMap.bind(this),
             isProtected:      this.isProtected.bind(this),
             isWorthPoints:    this.isWorthPoints.bind(this),
-
-            // AppLab functions
-            randomNumber: (a, b)    => Math.floor(Math.random() * (b - a + 1)) + a,
-            appendItem:   (l, x)    => l.push(x),
-            insertItem:   (l, i, x) => l.splice(i, 0, x),
-            removeItem:   (l, i)    => l.splice(i, 1),
         };
     }
 
