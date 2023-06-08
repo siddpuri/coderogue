@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cd $(dirname "$0")/..
+NOTE_ENV=production node server/run.js
