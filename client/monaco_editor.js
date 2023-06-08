@@ -64,11 +64,11 @@ export default class MonacoEditor {
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchMap(1)),
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.map.setStyle(1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchMap(-1)),
+                            command: MonacoEditor._instance.addCommand(0, () => client.display.map.setStyle(0)),
                         },
                     ]);
                 }
