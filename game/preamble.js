@@ -2,14 +2,6 @@ export default class Preamble {
     static get code() {
         let preamble = `
 
-var state;
-if (state === undefined) state = 'initial';
-
-var forward = 0;
-var right = 1;
-var backward = 2;
-var left = 3;
-
 var _map = null;
 
 function whatsAt(pos) {

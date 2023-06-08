@@ -10,6 +10,7 @@ export default class VmEnvironment {
         this.sandbox = {
             // General functionality
             console: { log: this.log.bind(this) },
+            state: 'initial',
 
             // Robot movement
             _moveForward: this.moveForward.bind(this),
@@ -18,6 +19,11 @@ export default class VmEnvironment {
             canMove:      this.canMove.bind(this),
             respawn:      this.respawn.bind(this),
             _respawnAt:   this.respawnAt.bind(this),
+
+            forward:  0,
+            right:    1,
+            backward: 2,
+            left:     3,
 
             // Robot sensors
             getLevel:         () => this.player.levelNumber,
