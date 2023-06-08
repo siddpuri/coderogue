@@ -2,16 +2,30 @@ export default class Preamble {
     static get code() {
         let preamble = `
 
+var state;
+if (state === undefined) state = 'initial';
+
+var forward = 0;
+var right = 1;
+var backward = 2;
+var left = 3;
+
 var _map = null;
 
 function whatsAt(pos) {
-    if (!_map || getLevel() != _map.level) {
-        _map = getMap();
-        _map.level = getLevel();
-    }
-    let [x, y] = pos;
-    let code = _map[y * 80 + x];
+    if (!_map) _map = getMap();
+    let code = _map[pos[1] * 80 + pos[0]];
     return String.fromCharCode(code?? 35);
+}
+
+function moveForward(pos) {
+    _moveForward(pos);
+    _map = null;
+}
+
+function respawnAt(levelNumber, pos, dir) {
+    _respawnAt(levelNumber, pos, dir);
+    _map = null;
 }
 
 function randomNumber(a, b) {

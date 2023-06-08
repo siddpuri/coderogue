@@ -11,20 +11,13 @@ export default class VmEnvironment {
             // General functionality
             console: { log: this.log.bind(this) },
 
-            state: 'initial',
-
             // Robot movement
-            moveForward: this.moveForward.bind(this),
-            turnRight:   this.turnRight.bind(this),
-            turnLeft:    this.turnLeft.bind(this),
-            canMove:     this.canMove.bind(this),
-            respawn:     this.respawn.bind(this),
-            respawnAt:   this.respawnAt.bind(this),
-
-            forward:  0,
-            right:    1,
-            backward: 2,
-            left:     3,
+            _moveForward: this.moveForward.bind(this),
+            turnRight:    this.turnRight.bind(this),
+            turnLeft:     this.turnLeft.bind(this),
+            canMove:      this.canMove.bind(this),
+            respawn:      this.respawn.bind(this),
+            _respawnAt:   this.respawnAt.bind(this),
 
             // Robot sensors
             getLevel:         () => this.player.levelNumber,
