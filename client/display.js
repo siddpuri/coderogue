@@ -60,7 +60,7 @@ export default class Display {
     render() {
         if (this.highlightedPlayer) {
             let playerLevel = this.players[this.highlightedPlayer].levelNumber;
-            if (playerLevel != 'jail') this.levelToRender = playerLevel;
+            if (playerLevel != 'J') this.levelToRender = playerLevel;
         }
         let level = this.levels[this.levelToRender];
         this.renderTitle(level.name);
@@ -223,7 +223,7 @@ export default class Display {
         let totalTime = 0;
         for (let col = 0; col < 5; col++) {
             let values = [0, 0, 0, 0, 0, ''];
-            let stats = playerInfo.statsArray[col == 0? 'jail': col - 1];
+            let stats = playerInfo.statsArray[col == 0? 'J': col - 1];
             if (stats) {
                 totalTime += stats.timeSpent;
                 values[0] = this.shorten(stats.timeSpent);
@@ -269,7 +269,7 @@ export default class Display {
         let timesCompleted = statsArray[1].timesCompleted;
         if (timesCompleted < 10) return false;
         let totalTime = 0;
-        for (let i of ['jail', 0, 1]) {
+        for (let i of ['J', 0, 1]) {
             if (statsArray[i]) totalTime += statsArray[i].timeSpent;
         }
         return totalTime / timesCompleted < 300;

@@ -41,7 +41,7 @@ export default class Player {
     get textHandle() { return Util.getTextHandle(this.handle); }
 
     get levelNumber() {
-        if (!this.level) return 'jail';
+        if (!this.level) return 'J';
         return this.level.levelNumber;
     }
 
