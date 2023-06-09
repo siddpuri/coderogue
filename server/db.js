@@ -1,11 +1,6 @@
 import mysql from 'mysql2/promise';
 
-const dbParameters = {
-    host: '127.0.0.1',
-    user: 'game',
-    password: 'game',
-    database: 'game',
-};
+import Config from './config.js';
 
 export default class DB {
     constructor(server) {
@@ -13,7 +8,7 @@ export default class DB {
     }
 
     async start() {
-        this.connection = await mysql.createConnection(dbParameters);
+        this.connection = await mysql.createConnection(Config.dbConnectionOptions);
         this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
     }
 

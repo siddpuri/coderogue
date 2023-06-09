@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
-const port = 8080;
+import Config from './config.js';
 
 export default class WebServer {
   constructor(server) {
@@ -77,6 +77,7 @@ export default class WebServer {
         res.status(500).json({ error: 'Internal server error: ' + err.message });
     });
 
+    let port = Config.webServerPort;
     this.app.listen(port, () => {
         console.log(`Web server listening on port ${port}`);
     });

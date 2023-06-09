@@ -1,7 +1,7 @@
-import DB from '../db/db.js';
 import Game from '../game/game.js';
 
 import Auth from './auth.js';
+import DB from './db.js';
 import Repositories from './repositories.js';
 import WebServer from './web_server.js';
 
