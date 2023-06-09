@@ -2,6 +2,8 @@ import Util from '../shared/util.js';
 
 import BlockLevel from './block_level.js';
 
+const numMobs = 10;
+
 export default class HunterLevel extends BlockLevel {
     constructor(server) {
         super(server);
@@ -42,7 +44,7 @@ export default class HunterLevel extends BlockLevel {
     }
 
     spawnMob() {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < numMobs; i++) {
             if (!this.mobs[i]) {
                 this.mobs[i] = new Mob(this, i);
                 break;
