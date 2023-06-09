@@ -1,26 +1,35 @@
-import { execSync } from 'child_process';
+import util from 'util';
+import { exec } from 'child_process';
+const execAsync = util.promisify(exec);
 
-function run(command) {
-    return execSync(command, { encoding: 'utf8' });
+async function hostStartsWith(prefix) {
+    let result = await execAsync('hostname', { encoding: 'utf8' });
+    return result.stdout.startsWith(prefix);
 }
 
 export default class Config {
-    static get webServerPort() {
+    static async getWebServerPort() {
         let port = 8080;
-        if (run('hostname').startsWith('ip-')) port = 80;
+        if (await hostStartsWith('ip-')) port = 80;
         return port;
     }
 
-    static get dbConnectionOptions() {
+    static async getDbConnectionOptions() {
         let options = {
             host:     '127.0.0.1',
             user:     'game',
             password: 'game',
             database: 'game',
         };
-        if (run('hostname').startsWith('codespaces-')) {
+        if (await hostStartsWith('codespaces-')) {
             options.port = '/var/run/mysqld/mysqld.sock';
         }
         return options;
+    }
+
+    static async tryToStartDb() {
+        if (await hostStartsWith('codespaces-')) {
+            await execAsync('sudo service mysql start');
+        }
     }
 }

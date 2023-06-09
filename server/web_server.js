@@ -77,7 +77,7 @@ export default class WebServer {
         res.status(500).json({ error: 'Internal server error: ' + err.message });
     });
 
-    let port = Config.webServerPort;
+    let port = await Config.getWebServerPort();
     this.app.listen(port, () => {
         console.log(`Web server listening on port ${port}`);
     });

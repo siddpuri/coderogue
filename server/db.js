@@ -8,8 +8,18 @@ export default class DB {
     }
 
     async start() {
-        this.connection = await mysql.createConnection(Config.dbConnectionOptions);
+        try {
+            await this.connect();
+        } catch {
+            await Config.tryToStartDb();
+            await this.connect();
+        }
         this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
+    }
+
+    async connect() {
+        let options = await Config.getDbConnectionOptions();
+        this.connection = await mysql.createConnection(options);
     }
 
     async query(query, parameters) {
