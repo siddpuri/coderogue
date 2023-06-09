@@ -1,8 +1,7 @@
 #!/usr/bin/bash
 
-mysql -u game -pgame <<EOF
-
-    USE game;
-    SELECT email FROM players WHERE id = $1;
-
-EOF
+for i in $@; do
+    mysql --user=game --password=game --database=game \
+        --silent --skip-column-names --execute \
+        "SELECT email FROM players WHERE id = $i;"
+done
