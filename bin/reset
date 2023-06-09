@@ -20,6 +20,3 @@ CREATE TABLE players (
 );
 
 EOF
-
-#cd $(dirname "$0")/..
-#node db/create_test_user.js

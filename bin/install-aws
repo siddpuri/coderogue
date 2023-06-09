@@ -1,9 +1,10 @@
 #!/usr/bin/bash
 
 sudo dnf update -y
-sudo dnf install git nodejs mariadb105-server -y
+sudo dnf install git nodejs mariadb105-server htop -y
 sudo service mariadb start
 sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
+git clone https://github.com/siddpuri/coderogue.git
 
 sudo mysql <<EOF
 
@@ -19,3 +20,4 @@ EOF
 
 cd $(dirname "$0")/..
 bin/reset
+npm install
