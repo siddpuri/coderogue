@@ -153,7 +153,7 @@ export default class Game {
     async createPlayerAction(player) {
         const env = new VmEnvironment(this, player);
         const vm = new VM({
-            timeout: 250,
+            timeout: 200,
             sandbox: env.sandbox,
             eval: false,
             wasm: false,
