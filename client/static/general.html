@@ -44,16 +44,19 @@
 <p>
     One of the challenges you will face is that each invocation
     of your code needs to figure out all over again what it
-    should do next. For example, if you want to move forward
-    until you hit a wall, you can't just write a loop that, you
-    can only move forward one step on the current tick. But
-    on the next tick, you may want to remember that you intended
-    to keep moving forward.
+    should do next. For example, let's say you hit a wall. You'd
+    like to turn and then move along the wall until you get to
+    the end. So on the current tick, you turn right. But on the
+    next tick you've forgotton what you were doing, so you turn
+    back again to face toward the exit. The result is that your
+    bot wiggles in place without every moving forward.
 </p>
 <p>
+    Really what you'd like is some way to remember what you're
+    doing from one tick to the next.
     To make this scenario easier to handle, there is a global
-    variable <code>state</code> in the environment your code
-    runs in. This variable is initially set to the value
+    variable <code>state</code> that you can use.
+    This variable is initially set to the value
     <code>"initial"</code>. If you change this to a different
     state, such as <code>"moving"</code>, then on the next tick
     you can retrieve this value and act accordingly.
