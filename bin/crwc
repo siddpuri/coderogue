@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-DIRS="shared client server db game levels"
+DIRS="shared client server game levels"
 cd $(dirname "$0")/..
 wc $(for i in $DIRS; do find $i \( -name "*.js" \); done)
 wc $(for i in $DIRS; do find $i \( -name "*.html" -o -name "*.css" \); done)
