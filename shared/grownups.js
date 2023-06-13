@@ -5,6 +5,7 @@ export default class Grownups {
             100, // Michael zany-pink-bird
             155, // Joshua? cute-black-hamster
             160, // Philip  silly-pink-rabbit
+            196, // KHallman shy-black-dog
         ];
     }
 }
