@@ -18,9 +18,8 @@ export default class Credentials {
         let cookies = document.cookie.split('; ');
         for (let cookie of cookies) {
             let [name, value] = cookie.split('=');
-            this[name] = value;
+            this[name] = (name === 'playerId')? Number(value) : value;
         }
-        this.playerId = Number(this.playerId);
     }
 
     writeCookie(key, value) {
