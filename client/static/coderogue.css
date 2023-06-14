@@ -37,6 +37,9 @@ span {
 #players tr:not(:nth-child(1)) {
     cursor: pointer;
 }
+nav a {
+    cursor: pointer;
+}
 .highlighted {
     background-color: #e0e0e0;
 }
