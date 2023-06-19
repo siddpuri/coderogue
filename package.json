@@ -10,5 +10,8 @@
     "express": "^4.18.2",
     "mysql2": "^3.3.3",
     "vm2": "^3.9.14"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
   }
 }
