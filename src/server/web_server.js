@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
@@ -12,7 +11,7 @@ export default class WebServer {
   }
 
   async start() {
-    this.app.use(bodyParser.json());
+    this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(compression());
 
