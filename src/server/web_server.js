@@ -16,9 +16,9 @@ export default class WebServer {
     this.app.use(cookieParser());
     this.app.use(compression());
 
-    this.app.use(express.static('shared'));
-    this.app.use(express.static('client'));
-    this.app.use(express.static('client/static'));
+    this.app.use(express.static('static'));
+    this.app.use(express.static('src/shared'));
+    this.app.use(express.static('src/client'));
 
     this.app.post('/api/login', async (req, res, next) => {
         try {
