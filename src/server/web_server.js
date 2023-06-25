@@ -21,16 +21,14 @@ export default class WebServer {
 
     this.app.post('/api/login', async (req, res, next) => {
         try {
-            let response = await this.server.auth.login(req.body);
-            res.send(JSON.stringify(response));
+            res.json(await this.server.auth.login(req.body));
         } catch (err) {
             next(err);
         }
     });
 
     this.app.get('/api/state', (req, res) => {
-        let response = this.server.game.getState();
-        res.send(JSON.stringify(response));
+        res.json(this.server.game.getState());
     });
 
     this.app.post('/api/respawn', (req, res) => {
@@ -38,7 +36,7 @@ export default class WebServer {
         if (!playerId) return;
         let player = this.server.game.players[playerId];
         this.server.game.respawn(player);
-        res.send(JSON.stringify({}));
+        res.json({});
     });
 
     this.app.get('/api/code', async (req, res) => {
@@ -46,7 +44,7 @@ export default class WebServer {
             let playerId = this.validatePlayerId(req, res);
             if (!playerId) return;
             let code = await this.server.repositories.readCode(playerId);
-            res.send(JSON.stringify({ code }));
+            res.json({ code });
         } catch (err) {
             next(err);
         }
@@ -58,7 +56,7 @@ export default class WebServer {
             if (!playerId) return;
             await this.server.repositories.writeCode(playerId, req.body.code);
             this.server.game.players[playerId].onNewCode();
-            res.send(JSON.stringify({}));
+            res.json({});
         } catch (err) {
             next(err);
         }
@@ -68,7 +66,7 @@ export default class WebServer {
         let playerId = this.validatePlayerId(req, res);
         if (!playerId) return;
         let log = this.server.game.players[playerId].log.toString();
-        res.send(JSON.stringify({ log }));
+        res.json({ log });
     });
 
     this.app.use((err, req, res, next) => {
@@ -91,8 +89,8 @@ export default class WebServer {
         !this.server.game.players[playerId] ||
         this.server.game.players[playerId].authToken != authToken
     ) {
-        res.send(JSON.stringify({ error: 'Not logged in.' }));
-        return undefined;
+        res.json({ error: 'Not logged in.' });
+        return null;
     }
     return playerId;
   }
