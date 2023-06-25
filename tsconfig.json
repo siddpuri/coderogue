@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "strict": true,
+        "module": "nodenext",
+        "esModuleInterop": true,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "baseUrl": "./src",
+    },
+    "include": ["**/*.ts", "**/*.tsx"],
+}
