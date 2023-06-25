@@ -5,93 +5,100 @@ import compression from 'compression';
 import Config from './config.js';
 
 export default class WebServer {
-  constructor(server) {
-    this.server = server;
-    this.app = express();
-  }
+    constructor(server) {
+        this.server = server;
+        this.app = express();
+    }
 
-  async start() {
-    this.app.use(express.json());
-    this.app.use(cookieParser());
-    this.app.use(compression());
+    async start() {
+        let getId = this.validatePlayerId.bind(this);
+        let port = await Config.getWebServerPort();
 
-    this.app.use(express.static('static'));
-    this.app.use(express.static('src/shared'));
-    this.app.use(express.static('src/client'));
+        this.app.use(express.json());
+        this.app.use(cookieParser());
+        this.app.use(compression());
 
-    this.app.post('/api/login', async (req, res, next) => {
+        this.app.use(express.static('static'));
+        this.app.use(express.static('src/shared'));
+        this.app.use(express.static('src/client'));
+
+        this.app.get('/api/state', this.getState.bind(this));
+        this.app.get('/api/code', getId, this.getCode.bind(this));
+        this.app.get('/api/log', getId, this.getLog.bind(this));
+
+        this.app.post('/api/login', this.login.bind(this));
+        this.app.post('/api/respawn', getId, this.respawn.bind(this));
+        this.app.post('/api/code', getId, this.setCode.bind(this));
+
+        this.app.use(this.errorHandler.bind(this));
+
+        this.app.listen(port, () => {
+            console.log(`Web server listening on port ${port}`)
+        });
+    }
+
+    getState(req, res) {
+        res.json(this.server.game.getState());
+    }
+
+    async getCode(req, res, next) {
+        try {
+            let code = await this.server.repositories.readCode(req.playerId);
+            res.json({ code });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    getLog(req, res) {
+        let log = this.server.game.players[req.playerId].log.toString();
+        res.json({ log });
+    }
+
+    async login(req, res, next) {
         try {
             res.json(await this.server.auth.login(req.body));
         } catch (err) {
             next(err);
         }
-    });
+    }
 
-    this.app.get('/api/state', (req, res) => {
-        res.json(this.server.game.getState());
-    });
-
-    this.app.post('/api/respawn', (req, res) => {
-        let playerId = this.validatePlayerId(req, res);
-        if (!playerId) return;
-        let player = this.server.game.players[playerId];
+    respawn(req, res) {
+        let player = this.server.game.players[req.playerId];
         this.server.game.respawn(player);
         res.json({});
-    });
+    }
 
-    this.app.get('/api/code', async (req, res) => {
+    async setCode(req, res, next) {
         try {
-            let playerId = this.validatePlayerId(req, res);
-            if (!playerId) return;
-            let code = await this.server.repositories.readCode(playerId);
-            res.json({ code });
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    this.app.post('/api/code', async (req, res) => {
-        try {
-            let playerId = this.validatePlayerId(req, res);
-            if (!playerId) return;
-            await this.server.repositories.writeCode(playerId, req.body.code);
-            this.server.game.players[playerId].onNewCode();
+            await this.server.repositories.writeCode(req.playerId, req.body.code);
+            this.server.game.players[req.playerId].onNewCode();
             res.json({});
         } catch (err) {
             next(err);
         }
-    });
-
-    this.app.get('/api/log', (req, res) => {
-        let playerId = this.validatePlayerId(req, res);
-        if (!playerId) return;
-        let log = this.server.game.players[playerId].log.toString();
-        res.json({ log });
-    });
-
-    this.app.use((err, req, res, next) => {
-        console.log(err);
-        res.status(500).json({ error: 'Internal server error: ' + err.message });
-    });
-
-    let port = await Config.getWebServerPort();
-    this.app.listen(port, () => {
-        console.log(`Web server listening on port ${port}`);
-    });
-  }
-
-  validatePlayerId(req, res) {
-    let playerId = req.cookies.playerId;
-    let authToken = req.cookies.authToken;
-    if (
-        !playerId ||
-        !authToken ||
-        !this.server.game.players[playerId] ||
-        this.server.game.players[playerId].authToken != authToken
-    ) {
-        res.json({ error: 'Not logged in.' });
-        return null;
     }
-    return playerId;
-  }
+
+    validatePlayerId(req, res, next) {
+        let playerId = req.cookies.playerId;
+        let authToken = req.cookies.authToken;
+        if (
+            playerId &&
+            authToken &&
+            this.server.game.players[playerId] &&
+            this.server.game.players[playerId].authToken == authToken
+        ) {
+            req.playerId = playerId;
+            next();
+        }
+        else {
+            res.status(401).json({ error: 'Not logged in.' });
+        }
+    }
+
+    errorHandler(err, req, res, next) {
+        console.log(err);
+        let result = { error: `Internal server error: ${err.message}` };
+        res.status(500).json(result);
+    }
 }
