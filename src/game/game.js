@@ -65,28 +65,40 @@ export default class Game {
     }
 
     async doPlayerAction(player) {
-        if (player.jailtime) {
-            player.log.write(`In jail for ${player.jailtime} more turns.`);
-            player.jailtime--;
-            player.incrementTimeSpent();
+        if (player.isInJail) this.updateJailTime(player);
+        if (player.isInJail) return;
+        await this.ensureAction(player);
+        if (player.isInJail) return;
+        await this.takeAction(player);
+        if (player.isInJail) return;
+        this.updateIdleTime(player);
+    }
+
+    updateJailTime(player) {
+        if (--player.jailtime == 0) {
+            this.respawn(player);
             return;
         }
-        if (!player.action) {
-            try {
-                player.action = await this.createPlayerAction(player);
-            } catch (e) {
-                player.log.write('Failed to compile script!');
-                player.log.write(this.trimError(e));
-                this.punish(player);
-                return;
-            }
-        }
-        if (!player.level) {
-            this.levels[0].spawn(player);
-        }
+        player.incrementTimeSpent();
+        player.log.write(`In jail for ${player.jailtime} more turns.`);
+    }
+
+    async ensureAction(player) {
+        if (player.action) return;
         try {
-            player.incrementTimeSpent();
-            player.turns = 1;
+            player.action = await this.createPlayerAction(player);
+        } catch (e) {
+            player.log.write('Failed to compile script!');
+            player.log.write(this.trimError(e));
+            this.punish(player);
+        }
+    }
+
+    async takeAction(player) {
+        player.incrementTimeSpent();
+        player.idle++;
+        player.turns = 1;
+        try {
             await player.action();
         } catch (e) {
             if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
@@ -95,13 +107,15 @@ export default class Game {
                 player.log.write(this.trimError(e));
             }
             this.punish(player);
-            return;
         }
-        if (!player.idle) player.offenses = 0;
-        if (player.idle++ > player.level.maxIdleTime) {
+    }
+
+    updateIdleTime(player) {
+        if (player.idle == 0) player.offenses = 0;
+        if (player.idle > player.level.maxIdleTime) {
             player.log.write('Idle timeout!');
             this.punish(player);
-            player.idle = 1;
+            player.idle = 0;
         }
     }
 
