@@ -26,7 +26,8 @@ export default class VmEnvironment {
             left:     3,
 
             // Robot sensors
-            getLevel:         () => this.player.levelNumber,
+            // TODO: update for level numbering
+            getLevel:         () => this.player.levelNumber - 1,
             getPosition:      () => this.player.pos.slice(),
             getDirection:     () => this.player.dir,
             getStartPosition: () => this.player.level.spawnTargetPos.slice(),
@@ -73,7 +74,8 @@ export default class VmEnvironment {
         if (!this.player.useTurn()) return;
         let checker = new ArgumentChecker(this.player, 'respawnAt');
         checker.setParameter('level', levelNumber);
-        let level = this.game.levels[levelNumber];
+        // TODO: update for level numbering
+        let level = this.game.levels[levelNumber + 1];
         if (!checker.check(level)) return;
         if (!checker.checkPos(pos)) return;
         if (!checker.checkDir(dir)) return;

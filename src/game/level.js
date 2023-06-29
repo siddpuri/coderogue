@@ -94,8 +94,6 @@ export default class Level {
 
     removePlayer(player) {
         this.map.clearPlayer(player.pos);
-        player.level = null;
-        player.pos = null;
     }
 
     moveForward(player) {
@@ -120,7 +118,8 @@ export default class Level {
         player.pos = dest;
         this.map.setPlayerId(player.pos, player.id);
         if (this.map.hasExit(player.pos)) {
-            player.log.write(`Completed level ${this.levelNumber}!`);
+            // TODO: update for level numbering
+            player.log.write(`Completed level ${this.levelNumber - 1}!`);
             player.addScore(this.exitScore);
             this.server.game.exitPlayer(player);
         }

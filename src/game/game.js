@@ -4,6 +4,7 @@ import { VM, VMScript } from 'vm2';
 import Util from '../shared/util.js';
 import Player from '../shared/player.js';
 
+import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';
 import BlockLevel from '../levels/block_level.js';
 import CaveLevel from '../levels/cave_level.js';
@@ -20,6 +21,7 @@ export default class Game {
     constructor(server) {
         this.server = server;
         this.levels = [
+            new JailLevel(server),
             new IntroLevel(server),
             new BlockLevel(server),
             new CaveLevel(server),
@@ -120,10 +122,10 @@ export default class Game {
     }
 
     punish(player) {
-        player.level.removePlayer(player);
         player.offenses++;
         const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
         player.jailtime = Math.floor(Math.random() * maxJailtime);
+        this.moveToLevel(player, 0);
     }
 
     trimError(e) {
@@ -143,25 +145,27 @@ export default class Game {
     }
 
     respawn(player) {
-        if (player.level) player.level.removePlayer(player);
-        this.levels[0].spawn(player);
-        delete player.dontScore;
+        player.dontScore = false;
+        this.moveToLevel(player, 1);
     }
 
     respawnAt(player, level, pos, dir) {
-        player.level.removePlayer(player);
-        level.spawnAt(player, pos, dir);
         player.dontScore = true;
+        this.moveToLevel(level.levelNumber);
     }
 
     exitPlayer(player) {
         player.incrementTimesCompleted();
-        let levelNumber = player.levelNumber;
+        let newLevelNumber = player.levelNumber + 1;
+        if (newLevelNumber == this.levels.length || player.dontScore) {
+            newLevelNumber = 1;
+        }
+        this.moveToLevel(player, newLevelNumber);
+    }
+
+    moveToLevel(player, levelNumber) {
         player.level.removePlayer(player);
-        levelNumber = (levelNumber + 1) % this.levels.length;
-        if (player.dontScore) levelNumber = 0;
         this.levels[levelNumber].spawn(player);
-        delete player.dontScore;
     }
 
     async createPlayerAction(player) {
@@ -189,7 +193,7 @@ export default class Game {
         player.log = new CircularLog(1000);
         this.players[player.id] = player;
         this.playerHandles.add(player.handle);
-        this.levels[0].spawn(player);
+        this.levels[1].spawn(player);
     }
 
     createNewHandle() {

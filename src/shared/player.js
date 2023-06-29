@@ -38,12 +38,11 @@ export default class Player {
         this.turns = 0;
     }
 
-    get isInJail() { return !this.level; }
+    get isInJail() { return this.levelNumber == 0; }
 
     get textHandle() { return Util.getTextHandle(this.handle); }
 
     get levelNumber() {
-        if (!this.level) return 'J';
         return this.level.levelNumber;
     }
 

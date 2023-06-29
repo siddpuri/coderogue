@@ -19,7 +19,7 @@ export default class Display {
     constructor(client) {
         this.client = client;
         this.map = new CanvasMap(client, 'canvas');
-        this.levelToRender = 0;
+        this.levelToRender = 1;
         this.renderPlayersFrom = 0;
         this.numPlayers = 0;
         this.renderedPlayers = [];
@@ -60,7 +60,7 @@ export default class Display {
     render() {
         if (this.highlightedPlayer) {
             let playerLevel = this.players[this.highlightedPlayer].levelNumber;
-            if (playerLevel != 'J') this.levelToRender = playerLevel;
+            if (playerLevel != 0) this.levelToRender = playerLevel;
         }
         let level = this.levels[this.levelToRender];
         this.renderTitle(level.name);
@@ -152,7 +152,7 @@ export default class Display {
     switchLevel(dir) {
         delete this.highlightedPlayer;
         this.levelToRender += dir;
-        this.levelToRender = Math.max(this.levelToRender, 0);
+        this.levelToRender = Math.max(this.levelToRender, 1);
         this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
         this.render();
     }
