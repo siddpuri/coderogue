@@ -5,14 +5,6 @@ import Map from '../shared/map.js';
 const levelWidth = 80;
 const levelHeight = 40;
 
-// Translate from direction (0,1,2,3) to a position offset
-const offsets = [
-    [ 0, -1],
-    [ 1,  0],
-    [ 0,  1],
-    [-1,  0],
-];
-
 export default class Level {
     constructor(server) {
         this.server = server;
@@ -174,13 +166,14 @@ export default class Level {
     turnLeft(player) { player.dir = (player.dir + 3) % 4; }
 
     canMove(player, dir) {
-        const realDir = (player.dir + dir) % 4;
-        const newPos = this.movePos(player.pos, realDir);
+        let realDir = (player.dir + dir) % 4;
+        let newPos = this.movePos(player.pos, realDir);
         return this.map.canEnter(newPos);
     }
 
     movePos(pos, dir) {
-        const offset = offsets[dir];
+        const offsets = [[ 0, -1], [ 1,  0], [ 0,  1], [-1,  0]];
+        let offset = offsets[dir];
         return [pos[0] + offset[0], pos[1] + offset[1]];
     }
 
