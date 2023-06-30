@@ -1,15 +1,7 @@
 import Util from './util.js';
 
-// Per-level fields
-class PlayerStats {
-    constructor() {
-        this.timeSpent = 0;
-        this.timesCompleted = 0;
-        this.kills = 0;
-        this.deaths = 0;
-        this.score = 0;
-    }
-}
+const chartLength = 100;
+const numLevels = 5;
 
 export default class Player {
     constructor(info) {
@@ -23,14 +15,14 @@ export default class Player {
         this.idle = info.idle?? 0;
         this.offenses = info.offenses?? 0;
         this.jailtime = info.jailtime?? 0;
-        this.chartData = info.chartData?? [0];
+        this.chartData = info.chartData?? new Array(chartLength).fill(0);
 
-        this.statsArray = [];
-        if (info.statsArray) {
-            for (let key in info.statsArray) {
-                this.statsArray[key] = info.statsArray[key];
-            }
-        }
+        // Per-level stats
+        this.timeSpent = info.timeSpent?? new Array(numLevels).fill(0);
+        this.timesCompleted = info.timesCompleted?? new Array(numLevels).fill(0);
+        this.kills = info.kills?? new Array(numLevels).fill(0);
+        this.deaths = info.deaths?? new Array(numLevels).fill(0);
+        this.score = info.score?? new Array(numLevels).fill(0);
 
         // Fields only meaningful on the server
         this.action = null;
@@ -39,23 +31,9 @@ export default class Player {
     }
 
     get isInJail() { return this.levelNumber == 0; }
-
     get textHandle() { return Util.getTextHandle(this.handle); }
-
-    get levelNumber() {
-        return this.level.levelNumber;
-    }
-
-    get stats() {
-        if (!this.statsArray[this.levelNumber]) {
-            this.statsArray[this.levelNumber] = new PlayerStats();
-        }
-        return this.statsArray[this.levelNumber];
-    }
-
-    get score() { return this.statsArray.reduce((a, s) => a + s.score, 0); }
-    get kills() { return this.statsArray.reduce((a, s) => a + s.kills, 0); }
-    get deaths() { return this.statsArray.reduce((a, s) => a + s.deaths, 0); }
+    get levelNumber() { return this.level.levelNumber; }
+    get totalScore() { return this.score.reduce((a, b) => a + b, 0); }
 
     useTurn() {
         if (this.turns > 0) {
@@ -75,20 +53,20 @@ export default class Player {
         this.log.write('New code loaded.');
     }
 
-    incrementTimeSpent() { this.stats.timeSpent++; }
-    incrementTimesCompleted() { this.stats.timesCompleted++; }
-    incrementKills() { this.stats.kills++; }
-    incrementDeaths() { this.stats.deaths++; }
+    incrementTimeSpent() { this.timeSpent[this.levelNumber]++; }
+    incrementTimesCompleted() { this.timesCompleted[this.levelNumber]++; }
+    incrementKills() { this.kills[this.levelNumber]++; }
+    incrementDeaths() { this.deaths[this.levelNumber]++; }
 
     addScore(score) {
         if (this.dontScore) return;
-        this.stats.score += score;
+        this.score[this.levelNumber] += score;
         this.chartData[0] += score;
     }
 
     addChartInterval() {
         this.chartData.unshift(0);
-        if (this.chartData.length > 100) this.chartData.pop();
+        if (this.chartData.length > chartLength) this.chartData.pop();
     }
 
     getState() {
@@ -101,7 +79,11 @@ export default class Player {
             idle: this.idle,
             offenses: this.offenses,
             jailtime: this.jailtime,
-            statsArray: { ...this.statsArray },
+            timeSpent: this.timeSpent,
+            timesCompleted: this.timesCompleted,
+            kills: this.kills,
+            deaths: this.deaths,
+            score: this.score,
             chartData: this.chartData,
         };
     }

@@ -90,7 +90,9 @@ export default class Display {
                 let player = this.renderedPlayers[i];
                 let cols = ['rank', 'score', 'levelNumber', 'textHandle', 'kills', 'deaths'];
                 for (let j = 0; j < cols.length; j++) {
-                    row.cells[j].innerHTML = player[cols[j]];
+                    let value = player[cols[j]];
+                    if (Array.isArray(value)) value = value.reduce((a, b) => a + b, 0);
+                    row.cells[j].innerHTML = value;
                 }
                 if (player.id == this.highlightedPlayer) {
                     row.classList.add('highlighted');
@@ -112,14 +114,14 @@ export default class Display {
         if (!Grownups.list.includes(this.client.credentials.playerId)) {
             topPlayers.forEach(p => {
                 if (!Grownups.list.includes(p.id)) return;
-                p.statsArray.forEach(s => s.score = 0);
+                p.score = new Array(p.score.length).fill(0);
             });
         }
         if (this.highlightedPlayer && this.highlightedPlayer != this.client.credentials.playerId) {
             result.push(players[this.highlightedPlayer]);
         }
         this.numPlayers = topPlayers.length;
-        topPlayers.sort((a, b) => b.score - a.score);
+        topPlayers.sort((a, b) => b.totalScore - a.totalScore);
         topPlayers.forEach((p, i) => p.rank = i + 1);
         for (let i = this.renderPlayersFrom; i < topPlayers.length; i++) {
             let player = topPlayers[i];
@@ -220,25 +222,38 @@ export default class Display {
 
     renderPlayerStats(playerInfo) {
         let statsTable = document.getElementById('player-stats');
-        let totalTime = 0;
-        for (let col = 0; col < 5; col++) {
-            let values = [0, 0, 0, 0, 0, ''];
-            let stats = playerInfo.statsArray[col == 0? 'J': col - 1];
-            if (stats) {
-                totalTime += stats.timeSpent;
-                values[0] = this.shorten(stats.timeSpent);
-                values[1] = stats.timesCompleted;
-                values[2] = this.renderRatio(stats.score, stats.timeSpent);
-                values[3] = this.renderRatio(stats.timeSpent, stats.timesCompleted);
-                values[4] = this.renderRatio(totalTime, stats.timesCompleted);
-                if (col == 2 && stats.timesCompleted >= 10) {
-                    values[5] = values[4] < 300? '&#x2713': 'x';
-                }
+        this.ensureColumns(statsTable);
+        let cumulative = [playerInfo.timeSpent[0]];
+        for (let i = 1; i < playerInfo.timeSpent.length; i++) {
+            cumulative[i] = cumulative[i - 1] + playerInfo.timeSpent[i];
+        }
+        let values = [
+            playerInfo.timeSpent.map(x => this.shorten(x)),
+            playerInfo.timesCompleted,
+            playerInfo.score.map((x, i) => this.renderRatio(x, playerInfo.timeSpent[i])),
+            playerInfo.score.map((x, i) => this.renderRatio(playerInfo.timeSpent[i], x)),
+            playerInfo.score.map((x, i) => this.renderRatio(cumulative[i], x)),
+        ];
+        for (let i = 0; i < values.length; i++) {
+            let row = statsTable.rows[i + 1];
+            for (let j = 0; j < values[i].length; j++) {
+                row.cells[j + 1].innerHTML = Util.stringify(values[i][j]);
             }
-            for (let row = 0; row < values.length; row++) {
-                this.setColumn(statsTable.rows[row + 1], col + 1, values[row]);
+        }
+        if (playerInfo.timesCompleted[2] >= 10) {
+            let symbol = this.isGoalMet(playerInfo)? '&#x2713': 'x'
+            table.rows[6].cells[2].innerHTML = symbol;
+        }
+    }
+
+    ensureColumns(table) {
+        let targetLength = table.rows[0].cells.length;
+        for (let row = 1; row < table.rows.length; row++) {
+            while (row.cells.length < targetLength) {
+                let cell = row.insertCell(-1);
+                cell.classList.add('table-col');
             }
-       }
+        }
     }
 
     shorten(num) {
@@ -251,26 +266,17 @@ export default class Display {
         return this.shorten((y > 0? x / y: 0).toFixed(1));
     }
 
-    setColumn(row, col, text) {
-        while (row.cells.length <= col) {
-            let cell = row.insertCell(-1);
-            cell.classList.add('table-col');
-        }
-        row.cells[col].innerHTML = Util.stringify(text);
-    }
-
     printPassed() {
-        let passed = this.players.filter(p => p && this.isGoalMet(p.statsArray));
+        let passed = this.players.filter(p => p && this.isGoalMet(p));
         console.log(passed.map(p => p.id).join(' '));
     }
 
-    isGoalMet(statsArray) {
-        if (!statsArray[1]) return false;
-        let timesCompleted = statsArray[1].timesCompleted;
+    isGoalMet(playerInfo) {
+        let timesCompleted = playerInfo.timesCompleted[2];
         if (timesCompleted < 10) return false;
         let totalTime = 0;
-        for (let i of ['J', 0, 1]) {
-            if (statsArray[i]) totalTime += statsArray[i].timeSpent;
+        for (let l = 0; l <= 2; l++) {
+            totalTime += playerInfo.timeSpent[l];
         }
         return totalTime / timesCompleted < 300;
     }
