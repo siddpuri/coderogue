@@ -1,6 +1,6 @@
 import Util from '../shared/util.js';
 import Grownups from '#cr/grownups.js';
-import Map from '../shared/map.js';
+import LevelMap from '#cr/level_map.js';
 
 const levelWidth = 80;
 const levelHeight = 40;
@@ -8,7 +8,7 @@ const levelHeight = 40;
 export default class Level {
     constructor(server) {
         this.server = server;
-        this.map = new Map();
+        this.map = new LevelMap();
         this.mobs = [];
         this.drawMap();
     }
