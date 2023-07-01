@@ -1,19 +1,13 @@
+import Util from './util.js';
+
 const words = [
     ['happy', 'cute', 'funny', 'silly', 'shy', 'sleepy', 'sneaky', 'zany'],
     ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'black'],
     ['cat', 'dog', 'bird', 'fish', 'turtle', 'rabbit', 'hamster', 'snake'],
 ];
 
-export default class Util {
-    static randomInt(min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
-
-    static randomElement(list) {
-        return list[Math.floor(Math.random() * list.length)];
-    }
-
-    static getTextHandle(handle) {
+export default class Handles {
+    static getTextHandle(handle: number) {
         let result = [];
         for (let part of words) {
             result.push(part[handle % part.length]);
@@ -32,12 +26,5 @@ export default class Util {
             Util.randomElement(words[1]),
             'automaton',
         ].join('-');
-    }
-
-    static stringify(obj) {
-        if (Array.isArray(obj)) {
-            return `[${obj.map(e => this.stringify(e)).join(', ')}]`;
-        }
-        return String(obj);
     }
 }

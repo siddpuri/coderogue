@@ -1,4 +1,4 @@
-import Util from '../shared/util.js';
+import Util from '#cr/util.js';
 
 const levelWidth = 80;
 const levelHeight = 40;

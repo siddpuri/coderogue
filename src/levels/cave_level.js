@@ -1,4 +1,4 @@
-import Util from '../shared/util.js';
+import Util from '#cr/util.js';
 import Level from '../game/level.js';
 
 import JigglyBlock from './jiggly_block.js';

@@ -1,4 +1,4 @@
-import Util from '../shared/util.js';
+import Util from '#cr/util.js';
 import Grownups from '#cr/grownups.js';
 import LevelMap from '#cr/level_map.js';
 

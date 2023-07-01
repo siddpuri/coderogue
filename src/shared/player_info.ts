@@ -1,14 +1,47 @@
-import Util from './util.js';
+import Handles from './handles.js';
 
 const chartLength = 100;
 
-export default class PlayerInfo {
-    constructor(info) {
+interface Info {
+    id: number;
+    handle: number;
+    levelNumber?: number;
+    pos?: [number, number];
+    dir?: number;
+    idle?: number;
+    offenses?: number;
+    jailtime?: number;
+    chartData?: number[];
+    timeSpent?: number[];
+    timesCompleted?: number[];
+    kills?: number[];
+    deaths?: number[];
+    score?: number[];
+}
+
+export default class PlayerInfo implements Info {
+    id: number;
+    handle: number;
+    levelNumber: number;
+    pos: [number, number];
+    dir: number;
+    idle: number;
+    offenses: number;
+    jailtime: number;
+    chartData: number[];
+    timeSpent: number[];
+    timesCompleted: number[];
+    kills: number[];
+    deaths: number[];
+    score: number[];
+    dontScore = false;
+
+    constructor(info: Info) {
         // These may come from either the database or a serialized PlayerInfo.
         this.id = info.id;
         this.handle = info.handle;
 
-        // These come from a serialized PlayerInfo or are set to default values.
+        // These come from a serialized PlayerInfo.
         this.levelNumber = info.levelNumber?? 0;
         this.pos = info.pos?? [0, 0];
         this.dir = info.dir?? 0;
@@ -16,7 +49,7 @@ export default class PlayerInfo {
         this.offenses = info.offenses?? 0;
         this.jailtime = info.jailtime?? 0;
         this.chartData = info.chartData?? new Array(chartLength).fill(0);
-
+        
         // Per-level stats
         this.timeSpent = info.timeSpent?? [];
         this.timesCompleted = info.timesCompleted?? [];
@@ -26,7 +59,7 @@ export default class PlayerInfo {
     }
 
     get isInJail() { return this.levelNumber == 0; }
-    get textHandle() { return Util.getTextHandle(this.handle); }
+    get textHandle() { return Handles.getTextHandle(this.handle); }
     get totalScore() { return this.score.reduce((a, b) => a + b, 0); }
 
     incrementTimeSpent() { this.addAtLevel(this.timeSpent, 1); }
@@ -34,13 +67,13 @@ export default class PlayerInfo {
     incrementKills() { this.addAtLevel(this.kills, 1); }
     incrementDeaths() { this.addAtLevel(this.deaths, 1); }
 
-    addScore(score) {
+    addScore(score: number) {
         if (this.dontScore) return;
         this.addAtLevel(this.score, score);
         this.chartData[0] += score;
     }
 
-    addAtLevel(array, x) {
+    addAtLevel(array: number[], x: number) {
         while (array.length <= this.levelNumber) array.push(0);
         array[this.levelNumber] += x;
     }
@@ -50,7 +83,7 @@ export default class PlayerInfo {
         if (this.chartData.length > chartLength) this.chartData.pop();
     }
 
-    getState() {
+    getState(): Info {
         return {
             id: this.id,
             handle: this.handle,

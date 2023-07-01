@@ -1,4 +1,5 @@
-import Util from '../shared/util.js';
+import Util from '#cr/util.js';
+import Handles from '#cr/handles.js';
 
 import BlockLevel from './block_level.js';
 
@@ -67,7 +68,7 @@ class Mob {
         this.id = id;
         this.pos = this.findSpawnPos();
         this.dir = Util.randomInt(0, 3);
-        this.textHandle = Util.generateAutomatonHandle();
+        this.textHandle = Handles.generateAutomatonHandle();
         this.level.map.setMobId(this.pos, id);
     }
 

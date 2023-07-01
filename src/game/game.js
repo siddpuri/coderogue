@@ -1,7 +1,7 @@
 import util from 'util';
 import { VM, VMScript } from 'vm2';
 
-import Util from '../shared/util.js';
+import Handles from '#cr/handles.js';
 
 import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -195,7 +195,7 @@ export default class Game {
     }
 
     createNewHandle() {
-        const maxHandle = Util.getMaxHandle();
+        const maxHandle = Handles.getMaxHandle();
         if (this.playerHandles.size >= maxHandle) {
             console.log('Max handles exceeded!');
             return false;

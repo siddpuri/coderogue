@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-import Util from '../shared/util.js';
+import Handles from '#cr/handles.js';
 
 export default class Auth {
     constructor(server) {
@@ -23,7 +23,7 @@ export default class Auth {
         }
         let playerId = dbEntry.id;
         let authToken = dbEntry.auth_token;
-        let textHandle = Util.getTextHandle(dbEntry.handle);
+        let textHandle = Handles.getTextHandle(dbEntry.handle);
         return { playerId, authToken, textHandle };
     }
 

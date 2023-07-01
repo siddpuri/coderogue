@@ -8,8 +8,11 @@
         "noImplicitAny": true,
         "sourceMap": true,
         "outDir": "dist",
-        "baseUrl": "./src",
+        "baseUrl": ".",
+        "paths": {
+            "#cr/*": ["dist/*"]
+        }
     },
-    "include": ["**/*.ts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["node_modules"],
 }
