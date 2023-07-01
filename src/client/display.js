@@ -231,8 +231,8 @@ export default class Display {
             playerInfo.timeSpent.map(x => this.shorten(x)),
             playerInfo.timesCompleted,
             playerInfo.score.map((x, i) => this.renderRatio(x, playerInfo.timeSpent[i])),
-            playerInfo.score.map((x, i) => this.renderRatio(playerInfo.timeSpent[i], x)),
-            playerInfo.score.map((x, i) => this.renderRatio(cumulative[i], x)),
+            playerInfo.timesCompleted.map((x, i) => this.renderRatio(playerInfo.timeSpent[i], x)),
+            playerInfo.timesCompleted.map((x, i) => this.renderRatio(cumulative[i], x)),
         ];
         for (let i = 0; i < values.length; i++) {
             let row = statsTable.rows[i + 1];
