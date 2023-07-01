@@ -2,7 +2,6 @@ import util from 'util';
 import { VM, VMScript } from 'vm2';
 
 import Util from '../shared/util.js';
-import Player from '../shared/player.js';
 
 import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -12,7 +11,7 @@ import HunterLevel from '../levels/hunter_level.js';
 
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
-import CircularLog from './circular_log.js';
+import Player from './player.js';
 
 const jailtimes = [10, 60, 600, 3600];
 const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
@@ -114,7 +113,7 @@ export default class Game {
 
     updateIdleTime(player) {
         if (player.idle == 0) player.offenses = 0;
-        if (player.idle > player.level.maxIdleTime) {
+        if (player.idle > this.levels[player.levelNumber].maxIdleTime) {
             player.log.write('Idle timeout!');
             this.punish(player);
             player.idle = 0;
@@ -164,7 +163,7 @@ export default class Game {
     }
 
     moveToLevel(player, levelNumber) {
-        player.level.removePlayer(player);
+        this.levels[player.levelNumber].removePlayer(player);
         this.levels[levelNumber].spawn(player);
     }
 
@@ -190,7 +189,6 @@ export default class Game {
 
     addPlayer(dbEntry) {
         let player = new Player(dbEntry);
-        player.log = new CircularLog(1000);
         this.players[player.id] = player;
         this.playerHandles.add(player.handle);
         this.levels[1].spawn(player);

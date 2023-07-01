@@ -30,14 +30,16 @@ export default class VmEnvironment {
             getLevel:         () => this.player.levelNumber - 1,
             getPosition:      () => this.player.pos.slice(),
             getDirection:     () => this.player.dir,
-            getStartPosition: () => this.player.level.spawnTargetPos.slice(),
-            getExitPosition:  () => this.player.level.exitPos.slice(),
+            getStartPosition: () => this.level.spawnTargetPos.slice(),
+            getExitPosition:  () => this.level.exitPos.slice(),
 
             getMap:           this.getMap.bind(this),
             isProtected:      this.isProtected.bind(this),
             isWorthPoints:    this.isWorthPoints.bind(this),
         };
     }
+
+    get level() { return this.game.levels[this.player.levelNumber]; }
 
     log(...args) {
         let text = args.map(e => Util.stringify(e)).join(' ');
@@ -46,23 +48,23 @@ export default class VmEnvironment {
 
     moveForward() {
         if (!this.player.useTurn()) return;
-        this.player.level.moveForward(this.player);
+        this.level.moveForward(this.player);
     }
 
     turnRight() {
         if (!this.player.useTurn()) return;
-        this.player.level.turnRight(this.player);
+        this.level.turnRight(this.player);
     }
 
     turnLeft() {
         if (!this.player.useTurn()) return;
-        this.player.level.turnLeft(this.player);
+        this.level.turnLeft(this.player);
     }
 
     canMove(dir) {
         let checker = new ArgumentChecker(this.player, 'canMove');
         if (!checker.checkDir(dir)) return false;
-        return this.player.level.canMove(this.player, dir);
+        return this.level.canMove(this.player, dir);
     }
 
     respawn() {
@@ -84,7 +86,7 @@ export default class VmEnvironment {
 
     getMap() {
         let result = new Uint8Array(80 * 40);
-        let map = this.player.level.map;
+        let map = this.level.map;
         let pos = [0, 0];
         for (let y = 0; y < 40; y++) {
             pos[1] = y;
@@ -97,7 +99,7 @@ export default class VmEnvironment {
                 let playerId = map.getPlayerId(pos);
                 if (playerId != null) char = this.getDirChar(this.game.players[playerId].dir);
                 let mobId = map.getMobId(pos);
-                if (mobId != null) char = this.getDirChar(this.player.level.mobs[mobId].dir);
+                if (mobId != null) char = this.getDirChar(this.level.mobs[mobId].dir);
                 result[y * 80 + x] = char.charCodeAt(0);
             }
         }
@@ -111,13 +113,13 @@ export default class VmEnvironment {
     isProtected(pos) {
         let checker = new ArgumentChecker(this.player, 'isProtected');
         if (!checker.checkPos(pos)) return false;
-        return this.player.level.isProtected(this.player, pos);
+        return this.level.isProtected(this.player, pos);
     }
 
     isWorthPoints(pos) {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
         if (!checker.checkPos(pos)) return false;
-        return this.player.level.isWorthPoints(this.player, pos);
+        return this.level.isWorthPoints(this.player, pos);
     }
 }
 

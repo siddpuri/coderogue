@@ -1,5 +1,5 @@
 import Util from './util.js';
-import Player from './player.js';
+import PlayerInfo from './player_info.js';
 import Grownups from './grownups.js';
 import Map from './map.js';
 
@@ -48,7 +48,7 @@ export default class Display {
     setState(state) {
         this.players = [];
         for (let playerInfo of state.players) {
-            if (playerInfo) this.players[playerInfo.id] = new Player(playerInfo);
+            if (playerInfo) this.players[playerInfo.id] = new PlayerInfo(playerInfo);
         }
         this.levels = state.levels;
         for (let level of this.levels) {
@@ -216,7 +216,7 @@ export default class Display {
         let infoTable = document.getElementById('player-info');
         let rows = ['levelNumber', 'pos', 'dir', 'idle', 'offenses', 'jailtime', 'id', 'handle'];
         for (let i = 0; i < rows.length; i++) {
-            this.setColumn(infoTable.rows[i], 1, playerInfo[rows[i]]);
+            infoTable.rows[i].cells[1].innerHTML = Util.stringify(playerInfo[rows[i]]);
         }
     }
 
@@ -248,7 +248,8 @@ export default class Display {
 
     ensureColumns(table) {
         let targetLength = table.rows[0].cells.length;
-        for (let row = 1; row < table.rows.length; row++) {
+        for (let i = 1; i < table.rows.length; i++) {
+            let row = table.rows[i];
             while (row.cells.length < targetLength) {
                 let cell = row.insertCell(-1);
                 cell.classList.add('table-col');

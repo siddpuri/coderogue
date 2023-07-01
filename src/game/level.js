@@ -86,7 +86,7 @@ export default class Level {
     }
 
     addPlayer(player, pos, dir) {
-        player.level = this;
+        player.levelNumber = this.levelNumber;
         player.pos = pos;
         player.dir = dir;
         this.map.setPlayerId(pos, player.id);
