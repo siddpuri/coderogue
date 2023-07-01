@@ -19,6 +19,7 @@ export default class WebServer {
         this.app.use(compression());
 
         this.app.use(express.static('static'));
+        this.app.use(express.static('dist'));
         this.app.use(express.static('src/shared'));
         this.app.use(express.static('src/client'));
 

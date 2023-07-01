@@ -6,8 +6,12 @@
     ],
     "settings": {
         "editor.detectIndentation": false,
+        "editor.minimap.enabled": false,
         "files.autoSave": "afterDelay",
+        "files.exclude": {
+            "dist": true,
+            "node_modules": true,
+        },
         "files.insertFinalNewline": true,
-        "editor.minimap.enabled": false
     }
 }

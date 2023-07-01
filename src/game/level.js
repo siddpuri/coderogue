@@ -1,5 +1,5 @@
 import Util from '../shared/util.js';
-import Grownups from '../shared/grownups.js';
+import Grownups from '#cr/grownups.js';
 import Map from '../shared/map.js';
 
 const levelWidth = 80;
