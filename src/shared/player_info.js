@@ -1,7 +1,6 @@
 import Util from './util.js';
 
 const chartLength = 100;
-const numLevels = 5;
 
 export default class PlayerInfo {
     constructor(info) {
@@ -19,26 +18,31 @@ export default class PlayerInfo {
         this.chartData = info.chartData?? new Array(chartLength).fill(0);
 
         // Per-level stats
-        this.timeSpent = info.timeSpent?? new Array(numLevels).fill(0);
-        this.timesCompleted = info.timesCompleted?? new Array(numLevels).fill(0);
-        this.kills = info.kills?? new Array(numLevels).fill(0);
-        this.deaths = info.deaths?? new Array(numLevels).fill(0);
-        this.score = info.score?? new Array(numLevels).fill(0);
+        this.timeSpent = info.timeSpent?? [];
+        this.timesCompleted = info.timesCompleted?? [];
+        this.kills = info.kills?? [];
+        this.deaths = info.deaths?? [];
+        this.score = info.score?? [];
     }
 
     get isInJail() { return this.levelNumber == 0; }
     get textHandle() { return Util.getTextHandle(this.handle); }
     get totalScore() { return this.score.reduce((a, b) => a + b, 0); }
 
-    incrementTimeSpent() { this.timeSpent[this.levelNumber]++; }
-    incrementTimesCompleted() { this.timesCompleted[this.levelNumber]++; }
-    incrementKills() { this.kills[this.levelNumber]++; }
-    incrementDeaths() { this.deaths[this.levelNumber]++; }
+    incrementTimeSpent() { this.addAtLevel(this.timeSpent, 1); }
+    incrementTimesCompleted() { this.addAtLevel(this.timesCompleted, 1); }
+    incrementKills() { this.addAtLevel(this.kills, 1); }
+    incrementDeaths() { this.addAtLevel(this.deaths, 1); }
 
     addScore(score) {
         if (this.dontScore) return;
-        this.score[this.levelNumber] += score;
+        this.addAtLevel(this.score, score);
         this.chartData[0] += score;
+    }
+
+    addAtLevel(array, x) {
+        while (array.length <= this.levelNumber) array.push(0);
+        array[this.levelNumber] += x;
     }
 
     addChartInterval() {
