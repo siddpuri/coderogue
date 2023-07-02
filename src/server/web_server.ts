@@ -13,7 +13,7 @@ export default class WebServer {
     readonly app = express();
 
     constructor(
-        readonly server: Server
+        private readonly server: Server
     ) {}
 
     async start() {
@@ -44,11 +44,11 @@ export default class WebServer {
         });
     }
 
-    getState(req: Req, res: Res) {
+    private getState(req: Req, res: Res) {
         res.json(this.server.game.getState());
     }
 
-    async getCode(req: Req, res: Res, next: Next) {
+    private async getCode(req: Req, res: Res, next: Next) {
         try {
             let code = await this.server.repositories.readCode(req.cookies.playerId);
             res.json({ code });
@@ -57,12 +57,12 @@ export default class WebServer {
         }
     }
 
-    getLog(req: Req, res: Res) {
+    private getLog(req: Req, res: Res) {
         let log = this.server.game.players[req.cookies.playerId].log.toString();
         res.json({ log });
     }
 
-    async login(req: Req, res: Res, next: Next) {
+    private async login(req: Req, res: Res, next: Next) {
         try {
             res.json(await this.server.auth.login(req.body));
         } catch (err) {
@@ -70,13 +70,13 @@ export default class WebServer {
         }
     }
 
-    respawn(req: Req, res: Res) {
+    private respawn(req: Req, res: Res) {
         let player = this.server.game.players[req.cookies.playerId];
         this.server.game.respawn(player);
         res.json({});
     }
 
-    async setCode(req: Req, res: Res, next: Next) {
+    private async setCode(req: Req, res: Res, next: Next) {
         let playerId = req.cookies.playerId;
         try {
             await this.server.repositories.writeCode(playerId, req.body.code);
@@ -87,7 +87,7 @@ export default class WebServer {
         }
     }
 
-    checkPlayerId(req: Req, res: Res, next: Next) {
+    private checkPlayerId(req: Req, res: Res, next: Next) {
         let playerId = req.cookies.playerId;
         let authToken = req.cookies.authToken;
         if (
@@ -101,7 +101,7 @@ export default class WebServer {
         else next();
     }
 
-    errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
+    private errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
         console.log(err);
         let result = { error: `Internal server error: ${err.message}` };
         res.status(500).json(result);

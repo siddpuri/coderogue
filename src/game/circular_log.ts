@@ -1,7 +1,7 @@
 export default class CircularLog {
-    readonly buffer: string[];
-    cur = 0;
-    goneAround = false;
+    private readonly buffer: string[];
+    private cur = 0;
+    private goneAround = false;
 
     constructor(length: number) {
         this.buffer = Array(length);
@@ -17,7 +17,7 @@ export default class CircularLog {
         }
     }
 
-    applyTimeStamp(text: string) {
+    private applyTimeStamp(text: string) {
         const now = new Date();
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');

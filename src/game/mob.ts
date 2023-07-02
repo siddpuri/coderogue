@@ -18,7 +18,7 @@ export default class Mob {
         this.level.map.setMobId(this.pos, id);
     }
 
-    findSpawnPos() {
+    private findSpawnPos() {
         let pos: [number, number] | null = null;
         while (!pos || !this.level.map.canEnter(pos)) {
             let x = Util.randomInt(1, this.level.width - 2);
@@ -42,13 +42,13 @@ export default class Mob {
         }
     }
 
-    bumpPlayer() {
+    private bumpPlayer() {
         let canBump = this.isPlayerInDir(0);
         if (canBump) this.moveForward();
         return canBump;
     }
 
-    evadePlayer() {
+    private evadePlayer() {
         if (!this.canMove(0)) return false;
         let shouldEvade = false;
         for (let dir = 1; dir < 4; dir++) {
@@ -58,7 +58,7 @@ export default class Mob {
         return shouldEvade;
     }
 
-    facePlayer() {
+    private facePlayer() {
         for (let dir = 1; dir < 4; dir++) {
             if (this.isPlayerInDir(dir)) {
                 dir == 3? this.turnLeft() : this.turnRight();
@@ -68,7 +68,7 @@ export default class Mob {
         return false;
     }
 
-    moveTowards(pos: Pos) {
+    private moveTowards(pos: Pos) {
         if (this.isGoodDirection(pos, 0)) this.moveForward();
         else if (this.isGoodDirection(pos, 1)) this.turnRight();
         else if (this.isGoodDirection(pos, 3)) this.turnLeft();
@@ -76,7 +76,7 @@ export default class Mob {
         else this.moveRandomly();
     }
 
-    isGoodDirection(pos: Pos, dir: number) {
+    private isGoodDirection(pos: Pos, dir: number) {
         if (!this.canMove(dir)) return false;
         let realDir = (this.dir + dir) % 4;
         return (
@@ -87,13 +87,13 @@ export default class Mob {
         );
     }
 
-    moveRandomly() {
+    private moveRandomly() {
         if (this.canMove(0) && Math.random() < 0.9) this.moveForward();
         else if (Math.random() < 0.5) this.turnLeft();
         else this.turnRight();
     }
 
-    moveForward() {
+    private moveForward() {
         let dest = this.level.movePos(this.pos, this.dir);
         if (this.level.map.canEnter(dest)) {
             this.level.map.clearMob(this.pos);
@@ -110,22 +110,22 @@ export default class Mob {
         }
     }
 
-    turnLeft() { this.dir = (this.dir + 3) % 4; }
-    turnRight() { this.dir = (this.dir + 1) % 4; }
+    private turnLeft() { this.dir = (this.dir + 3) % 4; }
+    private turnRight() { this.dir = (this.dir + 1) % 4; }
 
-    canMove(dir: number) {
+    private canMove(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.canEnter(dest);
     }
 
-    isPlayerInDir(dir: number) {
+    private isPlayerInDir(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.hasPlayer(dest);
     }
 
-    isPlayerInDirFacingMe(dir: number) {
+    private isPlayerInDirFacingMe(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         let playerId = this.level.map.getPlayerId(dest);

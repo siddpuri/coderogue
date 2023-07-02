@@ -45,7 +45,7 @@ export default class CaveLevel extends Level {
         this.redraw();
     }
 
-    createCaveSystem() {
+    private createCaveSystem() {
         let leftAnchor = new Cave(this, [1, 20], true);
         this.caves.push(leftAnchor);
         for (let row of [5, 15, 25, 35]) {
@@ -57,13 +57,13 @@ export default class CaveLevel extends Level {
         this.connectCave(rightAnchor);
     }
 
-    connectCave(cave: Cave) {
+    private connectCave(cave: Cave) {
         let other = Util.randomElement(this.caves);
         this.caves.push(cave);
         this.tunnels.push(new Tunnel(this, other, cave));
     }
 
-    redraw() {
+    private redraw() {
         for (let x = 15; x <= 65; x++) {
             for (let y = 0; y < this.height; y++) {
                 this.map.setWall([x, y]);
@@ -79,11 +79,12 @@ export default class CaveLevel extends Level {
 }
 
 class Cave extends JigglyBlock<CaveLevel> {
-    fixedCol: boolean;
-
-    constructor(level: CaveLevel, pos: Pos, fixedCol = false) {
+    constructor(
+        level: CaveLevel,
+        pos: Pos,
+        private readonly fixedCol = false
+    ) {
         super(level, pos);
-        this.fixedCol = fixedCol;
     }
 
     get minSize() { return 4; }
@@ -99,7 +100,7 @@ class Cave extends JigglyBlock<CaveLevel> {
         );
     }
 
-    includedPlayers(pos: Pos, size: Size) {
+    private includedPlayers(pos: Pos, size: Size) {
         let map = this.level.map;
         let result: number[] = [];
         this.forEach(pos, size, (p: Pos) => {
@@ -110,22 +111,20 @@ class Cave extends JigglyBlock<CaveLevel> {
 }
 
 class Tunnel {
-    level: CaveLevel;
-    startCave: Cave;
-    endCave: Cave;
     corner: Pos;
 
-    constructor(level: CaveLevel, cave1: Cave, cave2: Cave) {
-        this.level = level;
-        if (Math.random() > 0.5) [cave1, cave2] = [cave2, cave1];
-        this.startCave = cave1;
-        this.endCave = cave2;
-        let x = cave1.pos[0] + Util.randomInt(0, cave1.size[0]);
-        let y = cave2.pos[1] + Util.randomInt(0, cave2.size[1]);
+    constructor(
+        private readonly level: CaveLevel,
+        private readonly startCave: Cave,
+        private readonly endCave: Cave
+    ) {
+        if (Math.random() > 0.5) [startCave, endCave] = [endCave, startCave];
+        let x = startCave.pos[0] + Util.randomInt(0, startCave.size[0]);
+        let y = endCave.pos[1] + Util.randomInt(0, endCave.size[1]);
         this.corner = [x, y];
     }
 
-    get jiggleChance() { return 0.1; }
+    private get jiggleChance() { return 0.1; }
 
     jiggle() {
         if (Math.random() > this.jiggleChance) return;
@@ -141,7 +140,7 @@ class Tunnel {
         this.corner = Util.randomElement(candidates);
     }
 
-    isValid(corner: Pos, originalPlayers: number[]) {
+    private isValid(corner: Pos, originalPlayers: number[]) {
         if (
             this.startCave.pos[0] > corner[0] ||
             this.startCave.pos[0] + this.startCave.size[0] <= corner[0] ||
@@ -153,7 +152,7 @@ class Tunnel {
         return true;
     }
 
-    includedPlayers(corner: Pos) {
+    private includedPlayers(corner: Pos) {
         let map = this.level.map;
         let result = [];
         let pos: Pos = [corner[0], this.startCave.pos[1]];

@@ -56,7 +56,7 @@ export default abstract class Level {
 
     doLevelAction() {}
 
-    drawMap() {
+    private drawMap() {
         for (let x = 0; x < this.width; x++) {
             this.map.setWall([x, 0]);
             this.map.setWall([x, this.height - 1]);
@@ -78,7 +78,7 @@ export default abstract class Level {
         this.spawnAround(player, pos, dir, 0);
     }
 
-    spawnAround(player: Player, pos: Pos, dir: number, radius: number) {
+    private spawnAround(player: Player, pos: Pos, dir: number, radius: number) {
         for (let r = radius; true; r++) {
             let [dx, dy] = [r, r];
             while (dx * dx + dy * dy > r * r) {
@@ -96,7 +96,7 @@ export default abstract class Level {
         }
     }
 
-    addPlayer(player: Player, pos: Pos, dir: number) {
+    private addPlayer(player: Player, pos: Pos, dir: number) {
         player.levelNumber = this.levelNumber;
         player.pos = pos;
         player.dir = dir;

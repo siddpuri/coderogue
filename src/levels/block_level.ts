@@ -8,7 +8,7 @@ type Pos = [number, number];
 type Size = [number, number];
 
 export default class BlockLevel extends Level {
-    readonly hills: Hill[] = [];
+    private readonly hills: Hill[] = [];
 
     constructor(server: Server, levelNumber: number) {
         super(server, levelNumber);

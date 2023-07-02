@@ -41,13 +41,13 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    givePoints() {
+    private givePoints() {
         for (let player of this.server.game.players) {
             if (this.isOnLevel(player)) player.addScore(3);
         }
     }
 
-    spawnMob() {
+    private spawnMob() {
         for (let i = 0; i < numMobs; i++) {
             if (!this.mobs[i]) {
                 this.mobs[i] = new Mob(this, i);
@@ -56,7 +56,7 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    decideMobTarget() {
+    private decideMobTarget() {
         let players = this.server.game.players.filter(this.isOnLevel.bind(this));
         if (this.mobTarget && !players.includes(this.mobTarget)) {
             this.mobTarget = null;
@@ -66,7 +66,7 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    isOnLevel(player: Player) {
+    private isOnLevel(player: Player) {
         return player && player.levelNumber == this.levelNumber;
     }
 }

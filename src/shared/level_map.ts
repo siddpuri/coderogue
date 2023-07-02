@@ -11,7 +11,7 @@ const idShift = 5;
 type Pos = [number, number];
 
 export default class LevelMap {
-    readonly map: Uint16Array;
+    private readonly map: Uint16Array;
 
     constructor(serializedMap = null) {
         if (!serializedMap) {

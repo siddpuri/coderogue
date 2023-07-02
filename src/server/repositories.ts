@@ -46,7 +46,7 @@ export default class Repositories {
         await fs.writeFile(filePath, code);
     }
 
-    filePath(playerId: number) {
+    private filePath(playerId: number) {
         return path.join(this.root, playerId.toString(), 'player.js');
     }
 }

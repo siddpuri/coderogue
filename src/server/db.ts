@@ -20,12 +20,12 @@ export default class DB {
         setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
     }
 
-    async connect() {
+    private async connect() {
         let options = await Config.getDbConnectionOptions();
         this.connection = await mysql.createConnection(options);
     }
 
-    async query(query: string, parameters?: (string | number)[]) {
+    private async query(query: string, parameters?: (string | number)[]) {
         let [rows] = await this.connection.execute(query, parameters);
         return rows;
     }

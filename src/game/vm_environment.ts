@@ -12,8 +12,8 @@ export default class VmEnvironment {
     readonly sandbox: {};
 
     constructor(
-        readonly game: Game,
-        readonly player: Player
+        private readonly game: Game,
+        private readonly player: Player
     ) {
         this.sandbox = {
             // General functionality
@@ -47,40 +47,40 @@ export default class VmEnvironment {
         };
     }
 
-    get level() { return this.game.levels[this.player.levelNumber]; }
+    private get level() { return this.game.levels[this.player.levelNumber]; }
 
-    log(...args: any[]) {
+    private log(...args: any[]) {
         let text = args.map(e => Util.stringify(e)).join(' ');
         this.player.log.write(text);
     }
 
-    moveForward() {
+    private moveForward() {
         if (!this.player.useTurn()) return;
         this.level.moveForward(this.player);
     }
 
-    turnRight() {
+    private turnRight() {
         if (!this.player.useTurn()) return;
         this.level.turnRight(this.player);
     }
 
-    turnLeft() {
+    private turnLeft() {
         if (!this.player.useTurn()) return;
         this.level.turnLeft(this.player);
     }
 
-    canMove(dir: number) {
+    private canMove(dir: number) {
         let checker = new ArgumentChecker(this.player, 'canMove');
         if (!checker.checkDir(dir)) return false;
         return this.level.canMove(this.player, dir);
     }
 
-    respawn() {
+    private respawn() {
         if (!this.player.useTurn()) return;
         this.game.respawn(this.player);
     }
 
-    respawnAt(levelNumber: number, pos: Pos, dir: number) {
+    private respawnAt(levelNumber: number, pos: Pos, dir: number) {
         if (!this.player.useTurn()) return;
         let checker = new ArgumentChecker(this.player, 'respawnAt');
         checker.setParameter('level', levelNumber);
@@ -92,7 +92,7 @@ export default class VmEnvironment {
         this.game.respawnAt(this.player, level, pos, dir);
     }
 
-    getMap() {
+    private getMap() {
         let result = new Uint8Array(80 * 40);
         let map = this.level.map;
         let pos: Pos = [0, 0];
@@ -114,17 +114,17 @@ export default class VmEnvironment {
         return result;
     }
 
-    getDirChar(dir: number) {
+    private getDirChar(dir: number) {
         return ['^', '>', 'v', '<'][dir];
     }
 
-    isProtected(pos: Pos) {
+    private isProtected(pos: Pos) {
         let checker = new ArgumentChecker(this.player, 'isProtected');
         if (!checker.checkPos(pos)) return false;
         return this.level.isProtected(this.player, pos);
     }
 
-    isWorthPoints(pos: Pos) {
+    private isWorthPoints(pos: Pos) {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
         if (!checker.checkPos(pos)) return false;
         return this.level.isWorthPoints(this.player, pos);
@@ -132,15 +132,13 @@ export default class VmEnvironment {
 }
 
 class ArgumentChecker {
-    player: Player;
-    functionName: string;
     parameterName?: string;
     parameterValue?: any;
 
-    constructor(player: Player, functionName: string) {
-        this.player = player;
-        this.functionName = functionName;
-    }
+    constructor(
+        private readonly player: Player,
+        private readonly functionName: string
+    ) {}
 
     setParameter(name: string, value: any) {
         this.parameterName = name;

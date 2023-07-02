@@ -9,17 +9,17 @@ export default abstract class JigglyBlock<T extends Level> {
     size: Size = [this.minSize, this.minSize];
 
     constructor(
-        readonly level: T,
+        protected readonly level: T,
         public pos: Pos
     ) {}
 
-    get minSize() { return 2; }
-    get maxSize() { return 10; }
-    get minCol() { return 20; }
-    get maxCol() { return 60; }
-    get jiggleChance() { return 0.1; }
+    protected get minSize() { return 2; }
+    protected get maxSize() { return 10; }
+    protected get minCol() { return 20; }
+    protected get maxCol() { return 60; }
+    protected get jiggleChance() { return 0.1; }
 
-    isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size) { return true; }
+    protected isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size) { return true; }
 
     jiggle() {
         if (Math.random() > this.jiggleChance) return;
@@ -46,7 +46,7 @@ export default abstract class JigglyBlock<T extends Level> {
         [this.pos, this.size] = Util.randomElement(candidates);
     }
 
-    isValid(pos: Pos, size: Size) {
+    private isValid(pos: Pos, size: Size) {
         return (
             size[0] >= this.minSize &&
             size[0] <= this.maxSize &&
@@ -59,7 +59,7 @@ export default abstract class JigglyBlock<T extends Level> {
         );
     }
 
-    forEach(pos: Pos, size: Size, f: (p: Pos) => void) {
+    protected forEach(pos: Pos, size: Size, f: (p: Pos) => void) {
         let p: Pos = [0, 0];
         for (let x = 0; x < size[0]; x++) {
             p[0] = pos[0] + x;
