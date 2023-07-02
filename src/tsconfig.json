@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "strict": true,
+        "module": "nodenext",
+        "incremental": true,
+        "esModuleInterop": true,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "rootDir": ".",
+        "outDir": "../dist",
+    },
+    "include": ["**/*.ts"],
+    "references": [{ "path": "../" }],
+}

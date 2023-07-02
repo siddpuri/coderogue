@@ -2,7 +2,7 @@ import Handles from './handles.js';
 
 const chartLength = 100;
 
-interface Info {
+export interface Info {
     id: number;
     handle: number;
     levelNumber?: number;

@@ -1,5 +1,5 @@
-import Util from '#cr/util.js';
-import Handles from '#cr/handles.js';
+import Util from '#ts/shared/util.js';
+import Handles from '#ts/shared/handles.js';
 
 import BlockLevel from './block_level.js';
 

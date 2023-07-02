@@ -1,7 +1,7 @@
-import Util from './util.js';
-import PlayerInfo from './player_info.js';
-import Grownups from './grownups.js';
-import LevelMap from './level_map.js';
+import Util from './shared/util.js';
+import PlayerInfo from './shared/player_info.js';
+import Grownups from './shared/grownups.js';
+import LevelMap from './shared/level_map.js';
 
 import CanvasMap from './canvas_map.js';
 import MonacoEditor from './monaco_editor.js';

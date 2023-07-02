@@ -1,4 +1,4 @@
-import Game from '../game/game.js';
+import Game from '#js/game/game.js';
 
 import Auth from './auth.js';
 import DB from './db.js';
@@ -6,6 +6,12 @@ import Repositories from './repositories.js';
 import WebServer from './web_server.js';
 
 export default class Server {
+    db: DB;
+    auth: Auth;
+    repositories: Repositories;
+    game: Game;
+    webServer: WebServer;
+
     constructor() {
         this.db = new DB(this);
         this.auth = new Auth(this);

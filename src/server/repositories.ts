@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs/promises';
 
+import Server from './server.js';
+
 const playerRoot =  '~/players';
 
 const defaultPlayerCode =
@@ -16,10 +18,13 @@ else {
 }`;
 
 export default class Repositories {
-    constructor(server) {
+    server: Server;
+    root: string;
+
+    constructor(server: Server) {
         this.server = server;
         this.root = playerRoot;
-        if (this.root.startsWith('~/')) {
+        if (this.root.startsWith('~/') && process.env.HOME) {
             this.root = path.join(process.env.HOME, this.root.slice(2));
         }
     }
@@ -28,7 +33,7 @@ export default class Repositories {
         await fs.mkdir(this.root, { recursive: true });
     }
 
-    async readCode(playerId) {
+    async readCode(playerId: number) {
         try {
             return await fs.readFile(this.filePath(playerId), 'utf-8');
         } catch (e) {
@@ -36,13 +41,13 @@ export default class Repositories {
         }
     }
 
-    async writeCode(playerId, code) {
+    async writeCode(playerId: number, code: string) {
         let filePath = this.filePath(playerId);
         await fs.mkdir(path.dirname(filePath), { recursive: true });
         await fs.writeFile(filePath, code);
     }
 
-    filePath(playerId) {
+    filePath(playerId: number) {
         return path.join(this.root, playerId.toString(), 'player.js');
     }
 }

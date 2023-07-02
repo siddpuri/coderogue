@@ -1,4 +1,4 @@
-import Util from '#cr/util.js';
+import Util from '#ts/shared/util.js';
 
 export default class JigglyBlock {
     constructor(level, pos) {

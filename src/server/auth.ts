@@ -1,19 +1,37 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-import Handles from '#cr/handles.js';
+import Handles from '../shared/handles.js';
+import { Info } from '../shared/player_info.js';
+
+import Server from './server.js';
+
+export type Credentials  = {
+    email: string;
+    password: string;
+};
+
+export type LoginResponse = {
+    playerId: number;
+    authToken: string;
+    textHandle: string;
+} | {
+    error: string;
+}
 
 export default class Auth {
-    constructor(server) {
+    server: Server;
+
+    constructor(server: Server) {
         this.server = server;
     }
 
-    async login(credentials) {
+    async login(credentials: Credentials): Promise<LoginResponse> {
         let [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
         if (!dbEntry) {
             await this.createAccount(credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
-            await this.server.game.addPlayer(dbEntry);
+            await this.server.game.addPlayer(dbEntry as Info);
         } else if (!dbEntry.password) {
             await this.setPassword(dbEntry.id, credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
@@ -27,7 +45,7 @@ export default class Auth {
         return { playerId, authToken, textHandle };
     }
 
-    async createAccount(credentials) {
+    async createAccount(credentials: Credentials) {
         // TODO: This will need to change in order to validate accounts.
         const email = credentials.email;
         const password = await bcrypt.hash(credentials.password, 10);
@@ -37,7 +55,7 @@ export default class Auth {
         await this.server.db.updatePlayer(playerId, 0, handle);
     }
 
-    async setPassword(id, credentials) {
+    async setPassword(id: number, credentials: Credentials) {
         let password = await bcrypt.hash(credentials.password, 10);
         await this.server.db.setPassword(id, password)
     }

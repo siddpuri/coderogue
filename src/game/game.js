@@ -1,7 +1,7 @@
 import util from 'util';
 import { VM, VMScript } from 'vm2';
 
-import Handles from '#cr/handles.js';
+import Handles from '#ts/shared/handles.js';
 
 import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';

@@ -1,4 +1,4 @@
-import PlayerInfo from '#cr/player_info.js';
+import PlayerInfo from '#ts/shared/player_info.js';
 
 import CircularLog from './circular_log.js';
 

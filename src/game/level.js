@@ -1,6 +1,6 @@
-import Util from '#cr/util.js';
-import Grownups from '#cr/grownups.js';
-import LevelMap from '#cr/level_map.js';
+import Util from '#ts/shared/util.js';
+import Grownups from '#ts/shared/grownups.js';
+import LevelMap from '#ts/shared/level_map.js';
 
 const levelWidth = 80;
 const levelHeight = 40;

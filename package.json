@@ -2,7 +2,8 @@
     "name": "coderogue",
     "type": "module",
     "imports": {
-        "#cr/*.js": "./dist/*.js"
+        "#js/*": "./src/*",
+        "#ts/*": "./dist/*"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
