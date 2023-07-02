@@ -4,13 +4,11 @@ import Config from './config.js';
 import Server from './server.js';
 
 export default class DB {
-    server: Server;
     connection!: mysql.Connection;
-    heartbeat!: NodeJS.Timeout;
 
-    constructor(server: Server) {
-        this.server = server;
-    }
+    constructor(
+        readonly server: Server
+    ) {}
 
     async start() {
         try {
@@ -19,7 +17,7 @@ export default class DB {
             await Config.tryToStartDb();
             await this.connect();
         }
-        this.heartbeat = setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
+        setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
     }
 
     async connect() {
@@ -33,7 +31,7 @@ export default class DB {
     }
 
     async loadPlayers() {
-        return await this.query('SELECT id, auth_token, handle FROM players');
+        return await this.query('SELECT id, auth_token, handle FROM players') as mysql.RowDataPacket[];
     }
 
     async addPlayer(email: string, password: string, authToken: string) {

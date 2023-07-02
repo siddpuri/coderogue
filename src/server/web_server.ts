@@ -10,13 +10,11 @@ type Res = express.Response;
 type Next = express.NextFunction;
 
 export default class WebServer {
-    server: Server;
-    app: express.Express;
+    readonly app = express();
 
-    constructor(server: Server) {
-        this.server = server;
-        this.app = express();
-    }
+    constructor(
+        readonly server: Server
+    ) {}
 
     async start() {
         let checkId = this.checkPlayerId.bind(this);

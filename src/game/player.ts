@@ -1,14 +1,18 @@
-import PlayerInfo from '#ts/shared/player_info.js';
+import PlayerInfo, { Info } from '../shared/player_info.js';
 
 import CircularLog from './circular_log.js';
 
+export type InfoPlus = Info & { auth_token: string };
+
 export default class Player extends PlayerInfo {
-    constructor(info) {
+    readonly authToken: string;
+    readonly log = new CircularLog(1000);
+    action: (() => void) | null = null;;
+    turns = 0;
+
+    constructor(info: InfoPlus) {
         super(info);
         this.authToken = info.auth_token;
-        this.action = null;
-        this.log = new CircularLog(1000);
-        this.turns = 0;
     }
 
     useTurn() {

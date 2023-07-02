@@ -18,12 +18,11 @@ else {
 }`;
 
 export default class Repositories {
-    server: Server;
-    root: string;
+    root = playerRoot;
 
-    constructor(server: Server) {
-        this.server = server;
-        this.root = playerRoot;
+    constructor(
+        readonly server: Server
+    ) {
         if (this.root.startsWith('~/') && process.env.HOME) {
             this.root = path.join(process.env.HOME, this.root.slice(2));
         }

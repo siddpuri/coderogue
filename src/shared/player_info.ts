@@ -20,8 +20,8 @@ export interface Info {
 }
 
 export default class PlayerInfo implements Info {
-    id: number;
-    handle: number;
+    readonly id: number;
+    readonly handle: number;
     levelNumber: number;
     pos: [number, number];
     dir: number;

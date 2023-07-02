@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 import Handles from '../shared/handles.js';
-import { Info } from '../shared/player_info.js';
 
 import Server from './server.js';
+import { InfoPlus } from '../game/player.js';
 
 export type Credentials  = {
     email: string;
@@ -20,18 +20,16 @@ export type LoginResponse = {
 }
 
 export default class Auth {
-    server: Server;
-
-    constructor(server: Server) {
-        this.server = server;
-    }
+    constructor(
+        readonly server: Server
+    ) {}
 
     async login(credentials: Credentials): Promise<LoginResponse> {
         let [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
         if (!dbEntry) {
             await this.createAccount(credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
-            await this.server.game.addPlayer(dbEntry as Info);
+            await this.server.game.addPlayer(dbEntry as InfoPlus);
         } else if (!dbEntry.password) {
             await this.setPassword(dbEntry.id, credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);

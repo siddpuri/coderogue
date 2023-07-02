@@ -1,79 +1,25 @@
-import Util from '#ts/shared/util.js';
-import Handles from '#ts/shared/handles.js';
+import Util from '../shared/util.js';
+import Handles from '../shared/handles.js';
 
-import BlockLevel from './block_level.js';
+import Level from './level.js';
 
-const numMobs = 10;
+type Pos = [number, number];
 
-export default class HunterLevel extends BlockLevel {
-    constructor(server) {
-        super(server);
-        this.map.clearExit(this.exitPos);
-        this.mobTarget = null;
-    }
+export default class Mob {
+    readonly textHandle = Handles.generateAutomatonHandle();
+    pos: Pos;
+    dir = Util.randomInt(0, 3);
 
-    get name() { return 'There can be only one'; }
-    get spawnTargetPos() { return [this.width / 2, this.height / 2]; }
-    get exitPos() { return this.spawnTargetPos; }
-    get killScore() { return 200; }
-
-    isProtected(currentPlayer, pos) {
-        return this.hasGrownupProtection(currentPlayer, pos);
-    }
-
-    isWorthPoints(currentPlayer, pos) {
-        if (this.map.hasMob(pos)) return this.killMobScore;
-        return super.isWorthPoints(currentPlayer, pos);
-    }
-
-    doLevelAction() {
-        super.doLevelAction();
-        this.givePoints();
-        if (Math.random() < 0.1) this.spawnMob();
-        this.decideMobTarget();
-        for (let mob of this.mobs) {
-            if (mob) mob.doMobAction();
-        }
-    }
-
-    givePoints() {
-        for (let player of this.server.game.players) {
-            if (player && player.level == this) {
-                player.addScore(3);
-            }
-        }
-    }
-
-    spawnMob() {
-        for (let i = 0; i < numMobs; i++) {
-            if (!this.mobs[i]) {
-                this.mobs[i] = new Mob(this, i);
-                break;
-            }
-        }
-    }
-
-    decideMobTarget() {
-        let players = this.server.game.players.filter(p => p && p.level == this);
-        if (!players.includes(this.mobTarget)) this.mobTarget = null;
-        if (players.length > 0 && Math.random() < 0.1) {
-            this.mobTarget = Util.randomElement(players);
-        }
-    }
-}
-
-class Mob {
-    constructor(level, id) {
-        this.level = level;
-        this.id = id;
+    constructor(
+        readonly level: Level,
+        readonly id: number
+    ) {
         this.pos = this.findSpawnPos();
-        this.dir = Util.randomInt(0, 3);
-        this.textHandle = Handles.generateAutomatonHandle();
         this.level.map.setMobId(this.pos, id);
     }
 
     findSpawnPos() {
-        let pos;
+        let pos: [number, number] | null = null;
         while (!pos || !this.level.map.canEnter(pos)) {
             let x = Util.randomInt(1, this.level.width - 2);
             let y = Util.randomInt(1, this.level.height - 2);
@@ -106,7 +52,7 @@ class Mob {
         if (!this.canMove(0)) return false;
         let shouldEvade = false;
         for (let dir = 1; dir < 4; dir++) {
-            shouldEvade |= this.isPlayerInDirFacingMe(dir);
+            shouldEvade ||= this.isPlayerInDirFacingMe(dir);
         }
         if (shouldEvade) this.moveForward();
         return shouldEvade;
@@ -122,7 +68,7 @@ class Mob {
         return false;
     }
 
-    moveTowards(pos) {
+    moveTowards(pos: Pos) {
         if (this.isGoodDirection(pos, 0)) this.moveForward();
         else if (this.isGoodDirection(pos, 1)) this.turnRight();
         else if (this.isGoodDirection(pos, 3)) this.turnLeft();
@@ -130,7 +76,7 @@ class Mob {
         else this.moveRandomly();
     }
 
-    isGoodDirection(pos, dir) {
+    isGoodDirection(pos: Pos, dir: number) {
         if (!this.canMove(dir)) return false;
         let realDir = (this.dir + dir) % 4;
         return (
@@ -167,19 +113,19 @@ class Mob {
     turnLeft() { this.dir = (this.dir + 3) % 4; }
     turnRight() { this.dir = (this.dir + 1) % 4; }
 
-    canMove(dir) {
+    canMove(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.canEnter(dest);
     }
 
-    isPlayerInDir(dir) {
+    isPlayerInDir(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.hasPlayer(dest);
     }
 
-    isPlayerInDirFacingMe(dir) {
+    isPlayerInDirFacingMe(dir: number) {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         let playerId = this.level.map.getPlayerId(dest);

@@ -1,7 +1,9 @@
 import util from 'util';
 import { VM, VMScript } from 'vm2';
 
-import Handles from '#ts/shared/handles.js';
+import Handles from '../shared/handles.js';
+
+import Server from '../server/server.js';
 
 import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -9,35 +11,38 @@ import BlockLevel from '../levels/block_level.js';
 import CaveLevel from '../levels/cave_level.js';
 import HunterLevel from '../levels/hunter_level.js';
 
+import Level from './level.js';
+import Player, { InfoPlus } from './player.js';
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
-import Player from './player.js';
 
 const jailtimes = [10, 60, 600, 3600];
 const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
 
 export default class Game {
-    constructor(server) {
-        this.server = server;
+    readonly levels: Level[];
+    players: Player[] = [];
+    playerHandles: Set<number> = new Set();
+    lastChartUpdate = Date.now();
+    busy = false;
+
+    constructor(
+        readonly server: Server
+    ) {
         this.levels = [
-            new JailLevel(server),
-            new IntroLevel(server),
-            new BlockLevel(server),
-            new CaveLevel(server),
-            new HunterLevel(server),
-        ];
-        for (let i = 0; i < this.levels.length; i++) {
-            this.levels[i].levelNumber = i;
-        }
-        this.players = [];
-        this.playerHandles = new Set();
-        this.lastChartUpdate = Date.now();
+            JailLevel,
+            IntroLevel,
+            BlockLevel,
+            CaveLevel,
+            HunterLevel,
+        ]
+        .map((levelClass, i) => new levelClass(server, i));
     }
 
     async start() {
         await this.loadPlayers();
         this.busy = false;
-        this.timer = setInterval(() => this.tick(), 1000);
+        setInterval(() => this.tick(), 1000);
     }
 
     async tick() {
@@ -65,17 +70,17 @@ export default class Game {
         }
     }
 
-    async doPlayerAction(player) {
+    async doPlayerAction(player: Player) {
         if (player.isInJail) this.updateJailTime(player);
         if (player.isInJail) return;
         await this.ensureAction(player);
         if (player.isInJail) return;
-        await this.takeAction(player);
+        this.takeAction(player);
         if (player.isInJail) return;
         this.updateIdleTime(player);
     }
 
-    updateJailTime(player) {
+    updateJailTime(player: Player) {
         if (--player.jailtime == 0) {
             this.respawn(player);
             return;
@@ -84,7 +89,7 @@ export default class Game {
         player.log.write(`In jail for ${player.jailtime} more turns.`);
     }
 
-    async ensureAction(player) {
+    async ensureAction(player: Player) {
         if (player.action) return;
         try {
             player.action = await this.createPlayerAction(player);
@@ -95,13 +100,14 @@ export default class Game {
         }
     }
 
-    async takeAction(player) {
+    takeAction(player: Player) {
         player.incrementTimeSpent();
         player.idle++;
         player.turns = 1;
         try {
-            await player.action();
-        } catch (e) {
+            let action = player.action as (() => void);
+            action();
+        } catch (e: any) {
             if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
                 player.log.write('Script execution timed out!');
             } else {
@@ -111,7 +117,7 @@ export default class Game {
         }
     }
 
-    updateIdleTime(player) {
+    updateIdleTime(player: Player) {
         if (player.idle == 0) player.offenses = 0;
         if (player.idle > this.levels[player.levelNumber].maxIdleTime) {
             player.log.write('Idle timeout!');
@@ -120,14 +126,14 @@ export default class Game {
         }
     }
 
-    punish(player) {
+    punish(player: Player) {
         player.offenses++;
         const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
         player.jailtime = Math.floor(Math.random() * maxJailtime);
         this.moveToLevel(player, 0);
     }
 
-    trimError(e) {
+    trimError(e: unknown) {
         let lines = util.inspect(e).split('\n');
         let i = lines.findIndex(l =>
             l.includes('at Script.runInContext') ||
@@ -138,22 +144,22 @@ export default class Game {
         return lines.join('\n');
     }
 
-    killPlayer(player) {
+    killPlayer(player: Player) {
         player.log.write('You have been killed!');
         this.respawn(player);
     }
 
-    respawn(player) {
+    respawn(player: Player) {
         player.dontScore = false;
         this.moveToLevel(player, 1);
     }
 
-    respawnAt(player, level, pos, dir) {
+    respawnAt(player: Player, level: Level, pos: [number, number], dir: number) {
         player.dontScore = true;
-        this.moveToLevel(level.levelNumber);
+        this.moveToLevel(player, level.levelNumber);
     }
 
-    exitPlayer(player) {
+    exitPlayer(player: Player) {
         player.incrementTimesCompleted();
         let newLevelNumber = player.levelNumber + 1;
         if (newLevelNumber == this.levels.length || player.dontScore) {
@@ -162,12 +168,12 @@ export default class Game {
         this.moveToLevel(player, newLevelNumber);
     }
 
-    moveToLevel(player, levelNumber) {
+    moveToLevel(player: Player, levelNumber: number) {
         this.levels[player.levelNumber].removePlayer(player);
         this.levels[levelNumber].spawn(player);
     }
 
-    async createPlayerAction(player) {
+    async createPlayerAction(player: Player) {
         const env = new VmEnvironment(this, player);
         const vm = new VM({
             timeout: 200,
@@ -183,12 +189,12 @@ export default class Game {
 
     async loadPlayers() {
         for (let dbEntry of await this.server.db.loadPlayers()) {
-            this.addPlayer(dbEntry);
+            this.addPlayer(dbEntry as InfoPlus);
         }
     }
 
-    addPlayer(dbEntry) {
-        let player = new Player(dbEntry);
+    addPlayer(dbEntry: InfoPlus) {
+        let player = new Player(dbEntry as InfoPlus);
         this.players[player.id] = player;
         this.playerHandles.add(player.handle);
         this.levels[1].spawn(player);
@@ -198,7 +204,7 @@ export default class Game {
         const maxHandle = Handles.getMaxHandle();
         if (this.playerHandles.size >= maxHandle) {
             console.log('Max handles exceeded!');
-            return false;
+            return 0;
         }
         while (true) {
             let handle = Math.floor(Math.random() * maxHandle);

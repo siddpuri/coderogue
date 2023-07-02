@@ -1,12 +1,20 @@
-import Util from '#ts/shared/util.js';
+import Util from '../shared/util.js';
+
+import Game from './game.js';
+import Player from './player.js';
+
+type Pos = [number, number];
 
 const levelWidth = 80;
 const levelHeight = 40;
 
 export default class VmEnvironment {
-    constructor(game, player) {
-        this.game = game;
-        this.player = player;
+    readonly sandbox: {};
+
+    constructor(
+        readonly game: Game,
+        readonly player: Player
+    ) {
         this.sandbox = {
             // General functionality
             console: { log: this.log.bind(this) },
@@ -41,7 +49,7 @@ export default class VmEnvironment {
 
     get level() { return this.game.levels[this.player.levelNumber]; }
 
-    log(...args) {
+    log(...args: any[]) {
         let text = args.map(e => Util.stringify(e)).join(' ');
         this.player.log.write(text);
     }
@@ -61,7 +69,7 @@ export default class VmEnvironment {
         this.level.turnLeft(this.player);
     }
 
-    canMove(dir) {
+    canMove(dir: number) {
         let checker = new ArgumentChecker(this.player, 'canMove');
         if (!checker.checkDir(dir)) return false;
         return this.level.canMove(this.player, dir);
@@ -72,13 +80,13 @@ export default class VmEnvironment {
         this.game.respawn(this.player);
     }
 
-    respawnAt(levelNumber, pos, dir) {
+    respawnAt(levelNumber: number, pos: Pos, dir: number) {
         if (!this.player.useTurn()) return;
         let checker = new ArgumentChecker(this.player, 'respawnAt');
         checker.setParameter('level', levelNumber);
         // TODO: update for level numbering
         let level = this.game.levels[levelNumber + 1];
-        if (!checker.check(level)) return;
+        if (!checker.check(!!level)) return;
         if (!checker.checkPos(pos)) return;
         if (!checker.checkDir(dir)) return;
         this.game.respawnAt(this.player, level, pos, dir);
@@ -87,7 +95,7 @@ export default class VmEnvironment {
     getMap() {
         let result = new Uint8Array(80 * 40);
         let map = this.level.map;
-        let pos = [0, 0];
+        let pos: Pos = [0, 0];
         for (let y = 0; y < 40; y++) {
             pos[1] = y;
             for (let x = 0; x < 80; x++) {
@@ -106,17 +114,17 @@ export default class VmEnvironment {
         return result;
     }
 
-    getDirChar(dir) {
+    getDirChar(dir: number) {
         return ['^', '>', 'v', '<'][dir];
     }
 
-    isProtected(pos) {
+    isProtected(pos: Pos) {
         let checker = new ArgumentChecker(this.player, 'isProtected');
         if (!checker.checkPos(pos)) return false;
         return this.level.isProtected(this.player, pos);
     }
 
-    isWorthPoints(pos) {
+    isWorthPoints(pos: Pos) {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
         if (!checker.checkPos(pos)) return false;
         return this.level.isWorthPoints(this.player, pos);
@@ -124,31 +132,36 @@ export default class VmEnvironment {
 }
 
 class ArgumentChecker {
-    constructor(player, functionName) {
+    player: Player;
+    functionName: string;
+    parameterName?: string;
+    parameterValue?: any;
+
+    constructor(player: Player, functionName: string) {
         this.player = player;
         this.functionName = functionName;
     }
 
-    setParameter(name, value) {
+    setParameter(name: string, value: any) {
         this.parameterName = name;
         this.parameterValue = value;
     }
 
-    check(condition) {
+    check(condition: boolean) {
         if (!condition) {
-            this.player.log.write(`Invalid argument ${this.parameterName} = ${this.parameterVallue} to ${this.functionName}`);
+            this.player.log.write(`Invalid argument ${this.parameterName} = ${this.parameterValue} to ${this.functionName}`);
         }
         return condition;
     }
 
-    checkDir(dir) {
+    checkDir(dir: number) {
         this.setParameter('dir', dir);
         if (!this.check(Number.isInteger(dir))) return false;
         if (!this.check(dir >= 0 && dir < 4)) return false;
         return true;
     }
 
-    checkPos(pos) {
+    checkPos(pos: Pos) {
         this.setParameter('pos', Util.stringify(pos));
         if (!this.check(Array.isArray(pos))) return false;
         if (!this.check(pos.length == 2)) return false;

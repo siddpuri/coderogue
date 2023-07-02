@@ -1,11 +1,17 @@
+import Server from '../server/server.js';
+
 import Level from '../game/level.js';
 
 import JigglyBlock from './jiggly_block.js';
 
+type Pos = [number, number];
+type Size = [number, number];
+
 export default class BlockLevel extends Level {
-    constructor(server) {
-        super(server);
-        this.hills = [];
+    readonly hills: Hill[] = [];
+
+    constructor(server: Server, levelNumber: number) {
+        super(server, levelNumber);
         for (let row of [5, 15, 25, 35]) {
             for (let col of [25, 40, 55]) {
                 let hill = new Hill(this, [col, row]);
@@ -30,11 +36,15 @@ export default class BlockLevel extends Level {
     }
 }
 
-class Hill extends JigglyBlock {
-    isValidMove(pos0, size0, pos1, size1) {
+class Hill extends JigglyBlock<BlockLevel> {
+    constructor(level: BlockLevel, pos: Pos) {
+        super(level, pos);
+    }
+
+    isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size) {
         let map = this.level.map;
         let valid = true;
-        this.forEach(pos1, size1, p => valid &= map.canEnter(p));
+        this.forEach(pos1, size1, (p: Pos) => valid &&= map.canEnter(p));
         return valid;
     }
 }
