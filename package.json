@@ -1,10 +1,6 @@
 {
     "name": "coderogue",
     "type": "module",
-    "imports": {
-        "#js/*": "./src/*",
-        "#ts/*": "./dist/*"
-    },
     "dependencies": {
         "bcrypt": "^5.0.1",
         "compression": "^1.7.4",
