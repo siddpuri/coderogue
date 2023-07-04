@@ -1,16 +1,9 @@
 export default class MonacoEditor {
-
-    static _instance = null;
-
-    static instance() {
-        if (!MonacoEditor._instance) {
-            throw new Error("Please call MonacoEditor.start() first!")
-        } else {
-            return MonacoEditor._instance;
-        }
+    constructor(client) {
+        this.client = client;
     }
 
-    static async start(client, overrideDefaultKeybindings = true, monacoEditorConfig = {}) {
+    async start(client, overrideDefaultKeybindings = true, monacoEditorConfig = {}) {
         const libSource = await (await fetch('coderogue.d.ts')).text();
         return new Promise(resolve => {
             require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' } });
@@ -32,7 +25,7 @@ export default class MonacoEditor {
                 monaco.editor.createModel(libSource, "javascript", monaco.Uri.parse(libUri));
 
                 const container = document.getElementById('monaco-editor-container');
-                MonacoEditor._instance = monaco.editor.create(container, {
+                this.editor = monaco.editor.create(container, {
                     automaticLayout: true,
                     language: 'javascript',
                     fontSize: 12,
@@ -48,27 +41,27 @@ export default class MonacoEditor {
                     [
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchTab(-1)),
+                            command: this.editor.addCommand(0, () => client.display.switchTab(-1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketRight,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchTab(1)),
+                            command: this.editor.addCommand(0, () => client.display.switchTab(1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchLevel(1)),
+                            command: this.editor.addCommand(0, () => client.display.switchLevel(1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.switchLevel(-1)),
+                            command: this.editor.addCommand(0, () => client.display.switchLevel(-1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.map.setStyle(1)),
+                            command: this.editor.addCommand(0, () => client.display.map.setStyle(1)),
                         },
                         {
                             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
-                            command: MonacoEditor._instance.addCommand(0, () => client.display.map.setStyle(0)),
+                            command: this.editor.addCommand(0, () => client.display.map.setStyle(0)),
                         },
                     ]);
                 }
@@ -77,4 +70,8 @@ export default class MonacoEditor {
             });
         });
     }
+
+    get code() { return this.editor.getValue(); }
+    set code(code) { this.editor.setValue(code); }
+    reformat() { this.editor.getAction("editor.action.formatDocument").run(); }
 }

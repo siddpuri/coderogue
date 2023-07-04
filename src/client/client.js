@@ -10,6 +10,7 @@ class Client {
     constructor() {
         this.baseUrl = window.location.origin;
 
+        this.editor = new MonacoEditor(this);
         this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
         this.credentials = new Credentials(this);
@@ -17,7 +18,7 @@ class Client {
     }
 
     async start() {
-        await MonacoEditor.start(this, true /* overrideDefaultKeybindings */, { theme: 'vs-light' } /* monacoEditorConfig */);
+        await this.editor.start(this, true /* overrideDefaultKeybindings */, { theme: 'vs-light' } /* monacoEditorConfig */);
         await this.updater.start();
         await this.buttonHooks.start();
         await this.credentials.start();

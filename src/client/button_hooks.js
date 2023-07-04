@@ -1,5 +1,3 @@
-import MonacoEditor from './monaco_editor.js';
-
 export default class ButtonHooks {
     constructor(client) {
         this.client = client;
@@ -68,7 +66,7 @@ export default class ButtonHooks {
     }
 
     async reformat() {
-        MonacoEditor.instance().getAction("editor.action.formatDocument").run();
+        this.client.editor.reformat();
     }
 
     async submit() {

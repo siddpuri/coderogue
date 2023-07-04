@@ -4,7 +4,6 @@ import Grownups from './shared/grownups.js';
 import LevelMap from './shared/level_map.js';
 
 import CanvasMap from './canvas_map.js';
-import MonacoEditor from './monaco_editor.js';
 
 const alertLevels = [
     'alert-success',
@@ -182,11 +181,11 @@ export default class Display {
     }
 
     setCode(code) {
-        MonacoEditor.instance().setValue(code);
+        this.client.editor.code = code;
     }
 
     getCode() {
-        return MonacoEditor.instance().getValue();
+        return this.client.editor.code;
     }
 
     isShowing(tab) {
