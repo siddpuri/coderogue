@@ -18,7 +18,7 @@ class Client {
     }
 
     async start() {
-        await this.editor.start(this, true /* overrideDefaultKeybindings */, { theme: 'vs-light' } /* monacoEditorConfig */);
+        await this.editor.start();
         await this.updater.start();
         await this.buttonHooks.start();
         await this.credentials.start();

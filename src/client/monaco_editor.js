@@ -3,7 +3,7 @@ export default class MonacoEditor {
         this.client = client;
     }
 
-    async start(client, overrideDefaultKeybindings = true, monacoEditorConfig = {}) {
+    async start() {
         const libSource = await (await fetch('coderogue.d.ts')).text();
         return new Promise(resolve => {
             require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' } });
@@ -29,42 +29,39 @@ export default class MonacoEditor {
                     automaticLayout: true,
                     language: 'javascript',
                     fontSize: 12,
-                    theme: 'vs-dark',
+                    theme: 'vs-light',
                     fixedOverflowWidgets: true,
                     scrollBeyondLastLine: false,
-                    ...monacoEditorConfig
                 });
 
-                if (overrideDefaultKeybindings) {
-                    // Redirect to Coderogue's default keybindings
-                    monaco.editor.addKeybindingRules(
-                    [
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
-                            command: this.editor.addCommand(0, () => client.display.switchTab(-1)),
-                        },
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketRight,
-                            command: this.editor.addCommand(0, () => client.display.switchTab(1)),
-                        },
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow,
-                            command: this.editor.addCommand(0, () => client.display.switchLevel(1)),
-                        },
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow,
-                            command: this.editor.addCommand(0, () => client.display.switchLevel(-1)),
-                        },
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
-                            command: this.editor.addCommand(0, () => client.display.map.setStyle(1)),
-                        },
-                        {
-                            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
-                            command: this.editor.addCommand(0, () => client.display.map.setStyle(0)),
-                        },
-                    ]);
-                }
+                // Redirect to Coderogue's default keybindings
+                monaco.editor.addKeybindingRules(
+                [
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
+                        command: this.editor.addCommand(0, () => this.client.display.switchTab(-1)),
+                    },
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketRight,
+                        command: this.editor.addCommand(0, () => this.client.display.switchTab(1)),
+                    },
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow,
+                        command: this.editor.addCommand(0, () => this.client.display.switchLevel(1)),
+                    },
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow,
+                        command: this.editor.addCommand(0, () => this.client.display.switchLevel(-1)),
+                    },
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
+                        command: this.editor.addCommand(0, () => this.client.display.map.setStyle(1)),
+                    },
+                    {
+                        keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
+                        command: this.editor.addCommand(0, () => this.client.display.map.setStyle(0)),
+                    },
+                ]);
 
                 resolve();
             });
