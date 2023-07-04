@@ -11,6 +11,6 @@
         "rootDir": ".",
         "outDir": "../dist",
     },
-    "include": ["**/*.ts"],
+    "include": ["**/*.ts", "client/monaco_editor.js", "../static/coderogue.d.ts"],
     "references": [{ "path": "../" }],
 }

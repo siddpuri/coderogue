@@ -35,6 +35,7 @@ export default class PlayerInfo implements Info {
     deaths: number[];
     score: number[];
     dontScore = false;
+    rank = 0;
 
     constructor(info: Info) {
         // These may come from either the database or a serialized PlayerInfo.
@@ -61,27 +62,6 @@ export default class PlayerInfo implements Info {
     get isInJail() { return this.levelNumber == 0; }
     get textHandle() { return Handles.getTextHandle(this.handle); }
     get totalScore() { return this.score.reduce((a, b) => a + b, 0); }
-
-    incrementTimeSpent() { this.addAtLevel(this.timeSpent, 1); }
-    incrementTimesCompleted() { this.addAtLevel(this.timesCompleted, 1); }
-    incrementKills() { this.addAtLevel(this.kills, 1); }
-    incrementDeaths() { this.addAtLevel(this.deaths, 1); }
-
-    addScore(score: number) {
-        if (this.dontScore) return;
-        this.addAtLevel(this.score, score);
-        this.chartData[0] += score;
-    }
-
-    addAtLevel(array: number[], x: number) {
-        while (array.length <= this.levelNumber) array.push(0);
-        array[this.levelNumber] += x;
-    }
-
-    addChartInterval() {
-        this.chartData.unshift(0);
-        if (this.chartData.length > chartLength) this.chartData.pop();
-    }
 
     getState(): Info {
         return {

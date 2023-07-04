@@ -1,3 +1,11 @@
+import { LevelData } from '../shared/protocol.js';
+import PlayerInfo from '../shared/player_info.js';
+import LevelMap from '../shared/level_map.js';
+
+import Client from './client.js';
+
+type Pos = [number, number];
+
 const levelWidth = 80;
 const levelHeight = 40;
 
@@ -9,11 +17,18 @@ const triangles = [
 ];
 
 export default class CanvasMap {
-    constructor(client, id) {
-        this.client = client;
-        this.canvas = document.getElementById(id);
-        this.ctx = this.canvas.getContext('2d');
-        this.style = 0;
+    private readonly canvas: HTMLCanvasElement;
+    private readonly ctx: CanvasRenderingContext2D;
+    private style = 0;
+    private level!: LevelData;
+    private map!: LevelMap;
+    private players!: PlayerInfo[];
+
+    constructor(
+        private readonly client: Client
+    ) {
+        this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     }
 
     get backgroundColor()    { return '#f0f0f0'; }
@@ -30,9 +45,11 @@ export default class CanvasMap {
         this.clearCanvas();       
     }
 
-    setStyle(style) {
+    setStyle(style: number) {
         this.style = style;
-        this.render(this.level, this.players);
+        if (this.level && this.players) {
+            this.render(this.level, this.players);
+        }
     }
 
     clearCanvas() {
@@ -44,28 +61,28 @@ export default class CanvasMap {
         this.ctx.fillStyle = this.foregroundColor;
     }
 
-    render(level, players) {
+    render(level: LevelData, players: PlayerInfo[]) {
         this.level = level;
+        this.map = new LevelMap(level.map);
         this.players = players;
         this.clearCanvas();
-        let map = level.map;
-        let pos = [0, 0];
+        let pos: Pos = [0, 0];
         for (let y = 0; y < levelHeight; y++) {
             pos[1] = y;
             for (let x = 0; x < levelWidth; x++) {
                 pos[0] = x;
-                let playerId = map.getPlayerId(pos);
-                let mobId = map.getMobId(pos);
+                let playerId = this.map.getPlayerId(pos);
+                let mobId = this.map.getMobId(pos);
                 if (playerId != null) this.renderPlayer(pos, playerId);
                 else if (mobId != null) this.renderMob(pos, mobId);
-                else if (map.hasWall(pos)) this.renderWall(pos);
-                else if (map.hasExit(pos)) this.renderExit(pos);
-                else if (map.hasSpawn(pos)) this.renderSpawn(pos);
+                else if (this.map.hasWall(pos)) this.renderWall(pos);
+                else if (this.map.hasExit(pos)) this.renderExit(pos);
+                else if (this.map.hasSpawn(pos)) this.renderSpawn(pos);
             }
         }
     }
 
-    renderPlayer(pos, playerId) {
+    renderPlayer(pos: Pos, playerId: number) {
         let color = this.foregroundColor;
         if (playerId == this.client.display.highlightedPlayer) {
             color = this.highlightColor;
@@ -77,12 +94,12 @@ export default class CanvasMap {
         this.renderArrow(pos, dir, color);
     }
 
-    renderMob(pos, mobId) {
+    renderMob(pos: Pos, mobId: number) {
         let dir = this.level.mobs[mobId].dir;
         this.renderArrow(pos, dir, this.mobColor);
     }
 
-    renderArrow(pos, dir, color) {
+    renderArrow(pos: Pos, dir: number, color: string) {
         switch (this.style) {
         case 0:
             this.setText(pos, '^>v<'[dir], color);
@@ -101,7 +118,7 @@ export default class CanvasMap {
         }
     }
 
-    renderWall(pos) {
+    renderWall(pos: Pos) {
         switch (this.style) {
         case 0:
             this.setText(pos, '#');
@@ -115,7 +132,7 @@ export default class CanvasMap {
         }
     }
 
-    renderSpawn(pos) {
+    renderSpawn(pos: Pos) {
         switch (this.style) {
         case 0:
             this.setText(pos, '.');
@@ -131,7 +148,7 @@ export default class CanvasMap {
         }
     }
 
-    renderExit(pos) {
+    renderExit(pos: Pos) {
         switch (this.style) {
         case 0:
             this.setText(pos, 'o');
@@ -147,8 +164,8 @@ export default class CanvasMap {
         }
     }
 
-    setText(pos, char, color) {
-        this.ctx.fillStyle = color?? this.foregroundColor;
+    setText(pos: Pos, char: string, color: string = this.foregroundColor) {
+        this.ctx.fillStyle = color;
         if (color == this.highlightColor) {
             this.ctx.fillRect(pos[0] * this.dx, pos[1] * this.dy, this.dx, this.dy);
             this.ctx.fillStyle = this.foregroundColor;
@@ -157,8 +174,8 @@ export default class CanvasMap {
         this.ctx.fillStyle = this.foregroundColor;
     }
 
-    getPlayerAt(mouseX, mouseY) {
-        if (!this.level) return;
+    getPlayerAt(mouseX: number, mouseY: number) {
+        if (!this.level) return null;
         let [x0, y0] = this.getPosAt(mouseX, mouseY);
         let closestPlayerId = null;
         let closestDistance = Infinity;
@@ -177,20 +194,20 @@ export default class CanvasMap {
         return closestPlayerId;
     }
 
-    getPosAt(mouseX, mouseY) {
+    getPosAt(mouseX: number, mouseY: number) {
         return [
             Math.floor(mouseX / this.dx),
             Math.floor(mouseY / this.dy)
         ];
     }
 
-    getPlayerAtPos(pos) {
+    getPlayerAtPos(pos: Pos) {
         if (pos[0] < 0 || pos[0] >= levelWidth) return null;
         if (pos[1] < 0 || pos[1] >= levelHeight) return null;
-        return this.level.map.getPlayerId(pos);
+        return this.map.getPlayerId(pos);
     }
 
-    getDistance(mouseX, mouseY, playerPos) {
+    getDistance(mouseX: number, mouseY: number, playerPos: Pos) {
         return Math.sqrt(
             Math.pow(mouseX - playerPos[0] * this.dx, 2) +
             Math.pow(mouseY - playerPos[1] * this.dy, 2)

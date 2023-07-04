@@ -108,7 +108,7 @@ export default class Game {
     }
 
     private updateJailTime(player: Player) {
-        if (--player.jailtime == 0) {
+        if (player.jailtime == 0) {
             this.respawn(player);
             return;
         }

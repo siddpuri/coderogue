@@ -1,7 +1,11 @@
+import { LoginResponse, CodeResponse, ErrorResponse } from '../shared/protocol.js';
+
+import Client from './client.js';
+
 export default class ButtonHooks {
-    constructor(client) {
-        this.client = client;
-    }
+    constructor(
+        private readonly client: Client
+    ) {}
 
     async start() {
         this.onClick('prev-level', () => this.client.display.switchLevel(-1));
@@ -22,65 +26,74 @@ export default class ButtonHooks {
         this.onClick('login', this.login.bind(this));
         this.onClick('logout', this.logout.bind(this));
 
-        let canvas = document.getElementById('canvas');
+        let canvas = this.element('canvas');
         canvas.addEventListener('mouseenter', () => this.client.display.onMouseEnter());
         canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
         canvas.addEventListener('mouseleave', () => this.client.display.onMouseLeave());
 
         document.addEventListener('keydown', this.handleKey.bind(this));
-        document.getElementById('handle').addEventListener('keydown', event => {
+        this.element('handle').addEventListener('keydown', event => {
             if (event.key == 'Enter') this.client.display.findHandle();
         });
     }
 
-    handleMouseMove(event) {
+    private element(id: string) {
+        return document.getElementById(id) as HTMLElement;
+    }
+
+    private getText(id: string) {
+        let textField = this.element(id) as HTMLInputElement;
+        return textField.value;
+    }
+
+    private handleMouseMove(event: MouseEvent) {
         this.client.display.onMouseMove(event.offsetX, event.offsetY);
     }
 
-    handleMapClick(event) {
+    private handleMapClick(event: MouseEvent) {
         this.client.display.highlightTile(event.offsetX, event.offsetY);
     }
 
-    async login() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        let result = await this.client.updater.postJson('login', { email, password });
-        if (result.error) {
-            this.say(result.error, 3);
+    private async login() {
+        const email = this.getText('email');
+        const password = this.getText('password');
+        let result: LoginResponse | ErrorResponse = await this.client.updater.postJson('login', { email, password });
+        if ((result as ErrorResponse).error) {
+            this.say((result as ErrorResponse).error, 3);
         } else {
-            this.client.credentials.login(result);
+            this.client.credentials.onLogin(result as LoginResponse);
             this.say('You have been logged in.', 0);
         }
     }
 
-    async logout() {
-        await this.client.credentials.logout();
+    private async logout() {
+        await this.client.credentials.onLogout();
         this.say('You have been logged out.', 1);
     }
 
-    async respawn() {
+    private async respawn() {
         let result = await this.client.updater.postJson('respawn', {});
         if (result.error) {
             this.say(result.error, 3);
         }
     }
 
-    async reformat() {
+    private async reformat() {
         this.client.editor.reformat();
     }
 
-    async submit() {
+    private async submit() {
         let code = this.client.display.getCode();
-        let result = this.client.updater.postJson('code', { code });
-        if (result.error) {
-            this.say(result.error, 3);
+        let result: CodeResponse | ErrorResponse = await this.client.updater.postJson('code', { code });
+        if ((result as ErrorResponse).error) {
+            this.say((result as ErrorResponse).error, 3);
         }
         else {
             this.say('Code submitted!', 0);
         }
     }
 
-    async handleKey(event) {
+    private async handleKey(event: KeyboardEvent) {
         let key =
             (event.ctrlKey? 'C-' : '') +
             (event.shiftKey? 'S-' : '') +
@@ -105,11 +118,11 @@ export default class ButtonHooks {
         }
     }
 
-    onClick(id, f) {
-        document.getElementById(id).addEventListener('click', f, false);
+    private onClick(id: string, f: (event: MouseEvent) => void) {
+        this.element(id).addEventListener('click', f, false);
     }
 
-    say(message, level) {
+    say(message: string, level: number) {
         this.client.display.say(message, level);
     }
 }

@@ -1,35 +1,23 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
+import { LoginRequest, LoginResponse, ErrorResponse } from '../shared/protocol.js';
 import Handles from '../shared/handles.js';
 
 import Server from './server.js';
 import { InfoPlus } from '../game/player.js';
-
-export type Credentials  = {
-    email: string;
-    password: string;
-};
-
-export type LoginResponse = {
-    playerId: number;
-    authToken: string;
-    textHandle: string;
-} | {
-    error: string;
-}
 
 export default class Auth {
     constructor(
         readonly server: Server
     ) {}
 
-    async login(credentials: Credentials): Promise<LoginResponse> {
+    async login(credentials: LoginRequest): Promise<LoginResponse | ErrorResponse> {
         let [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
         if (!dbEntry) {
             await this.createAccount(credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
-            await this.server.game.addPlayer(dbEntry as InfoPlus);
+            this.server.game.addPlayer(dbEntry as InfoPlus);
         } else if (!dbEntry.password) {
             await this.setPassword(dbEntry.id, credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
@@ -43,7 +31,7 @@ export default class Auth {
         return { playerId, authToken, textHandle };
     }
 
-    async createAccount(credentials: Credentials) {
+    async createAccount(credentials: LoginRequest) {
         // TODO: This will need to change in order to validate accounts.
         const email = credentials.email;
         const password = await bcrypt.hash(credentials.password, 10);
@@ -53,7 +41,7 @@ export default class Auth {
         await this.server.db.updatePlayer(playerId, 0, handle);
     }
 
-    async setPassword(id: number, credentials: Credentials) {
+    async setPassword(id: number, credentials: LoginRequest) {
         let password = await bcrypt.hash(credentials.password, 10);
         await this.server.db.setPassword(id, password)
     }

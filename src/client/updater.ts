@@ -1,11 +1,17 @@
+import { LoginRequest, LoginResponse, ErrorResponse } from '../shared/protocol.js';
+
+import Client from './client.js';
+
 export default class Updater {
-    constructor(client) {
-        this.client = client;
+    private busy = false;
+
+    constructor(
+        private readonly client: Client
+    ) {
+        setInterval(() => this.tick(), 1000);
     }
 
     async start() {
-        this.busy = false;
-        this.timer = setInterval(() => this.tick(), 1000);
         await this.loadCode();
         await this.loadHtml('general', 'general-text');
         await this.loadHtml('news', 'news-text');
@@ -13,6 +19,10 @@ export default class Updater {
         await this.loadHtml('levels', 'levels-text');
         await this.loadHtml('keybindings', 'keybindings-text');
         await this.loadHtml('account', 'account');
+    }
+
+    private element(id: string) {
+        return document.getElementById(id) as HTMLElement;
     }
 
     async tick() {
@@ -35,10 +45,10 @@ export default class Updater {
         }
     }
 
-    async login(credentials) {
-        let result = await this.postJson('login', credentials);
-        if (result.error) return false;
-        this.client.credentials.login(result);
+    async login(loginData: LoginRequest) {
+        let result: LoginResponse | ErrorResponse = await this.postJson('login', loginData);
+        if ((result as ErrorResponse).error) return false;
+        this.client.credentials.onLogin(result as LoginResponse);
     }
 
     async loadCode() {
@@ -53,14 +63,14 @@ export default class Updater {
     async loadLog() {
         let log = 'Log in to see your log.';
         if (this.client.credentials.isLoggedIn) {
-            if (this.client.display.freezeLog) return;
+            if (this.client.display.logIsFrozen) return;
             let result = await this.getJson('log');
             if (!result.error) log = result.log;
         }
         this.client.display.setLog(log);
     }
 
-    async getJson(name) {
+    async getJson(name: string) {
         let response = await fetch(`${this.client.baseUrl}/api/${name}`);
         let result = await response.json();
         if (result.error) {
@@ -69,7 +79,7 @@ export default class Updater {
         return result;
     }
 
-    async postJson(name, args) {
+    async postJson(name: string, args: Object) {
         let response = await fetch(
             `${this.client.baseUrl}/api/${name}`,
             {
@@ -85,9 +95,9 @@ export default class Updater {
         return result;
     }
 
-    async loadHtml(name, id) {
+    async loadHtml(name: string, id: string) {
         let response = await fetch(`${this.client.baseUrl}/${name}.html`);
         let html = await response.text();
-        document.getElementById(id).innerHTML = html;
+        this.element(id).innerHTML = html;
     }
 }

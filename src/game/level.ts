@@ -47,10 +47,10 @@ export default abstract class Level {
     }
 
     hasGrownupProtection(currentPlayer: Player, pos: Pos) {
-        if (!Grownups.list.includes(currentPlayer.id)) return false;
+        if (!Grownups.includes(currentPlayer.id)) return false;
         let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return false;
-        if (Grownups.list.includes(playerId)) return false;
+        if (Grownups.includes(playerId)) return false;
         return true;
     }
 
@@ -139,7 +139,6 @@ export default abstract class Level {
 
     bumpPlayer(player: Player, dest: Pos) {
         let otherId = this.map.getPlayerId(dest) as number;
-        console.assert(otherId, 'No player at dest');
         let other = this.server.game.players[otherId];
         if (player.dontScore) {
             player.log.write(`Can't bump players after respawnAt.`);
@@ -166,7 +165,6 @@ export default abstract class Level {
             return;
         }
         let mobId = this.map.getMobId(dest) as number;
-        console.assert(mobId, 'No mob at dest');
         let mob = this.mobs[mobId];
         player.addScore(this.killMobScore);
         this.map.clearMob(dest);

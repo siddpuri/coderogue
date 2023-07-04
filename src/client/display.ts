@@ -1,9 +1,17 @@
-import Util from './shared/util.js';
-import PlayerInfo from './shared/player_info.js';
-import Grownups from './shared/grownups.js';
-import LevelMap from './shared/level_map.js';
+import Util from '../shared/util.js';
+import { StateResponse, LevelData } from '../shared/protocol.js';
+import PlayerInfo from '../shared/player_info.js';
+import Grownups from '../shared/grownups.js';
 
+import Client from './client.js';
 import CanvasMap from './canvas_map.js';
+
+declare class Chart {
+    constructor(canvas: any, config: any);
+    static defaults: any;
+    data: any;
+    update(): void;
+}
 
 const alertLevels = [
     'alert-success',
@@ -13,27 +21,55 @@ const alertLevels = [
 ];
 
 const numPlayersToRender = 10;
+const chartLength = 100;
 
 export default class Display {
-    constructor(client) {
-        this.client = client;
-        this.map = new CanvasMap(client, 'canvas');
-        this.levelToRender = 1;
-        this.renderPlayersFrom = 0;
-        this.numPlayers = 0;
-        this.renderedPlayers = [];
-        this.messageNumber = 0;
-        this.freezeLog = false;
-        this.messagesToShow = 'all';
+    private levelToRender = 1;
+    private renderPlayersFrom = 0;
+    private numPlayers = 0;
+    private renderedPlayers: PlayerInfo[] = [];
+    private messageNumber = 0;
+    private messagesToShow = 'all';
+    map: CanvasMap;
+    highlightedPlayer: number | null = null;
+    logIsFrozen = false;
+    private players: PlayerInfo[] = [];
+    private levels: LevelData[] = [];
+    private chart!: Chart;
+
+    constructor(
+        private readonly client: Client
+    ) {
+        this.map = new CanvasMap(client);
     }
 
     async start() {
         await this.map.start();
         this.createPlayerRows();
+        this.createPlayerTabColumns();
+        this.createPlayerTabChart();
+    }
+
+    private element(id: string) {
+        return document.getElementById(id) as HTMLElement;
+    }
+
+    private getText(id: string) {
+        let textField = this.element(id) as HTMLInputElement;
+        return textField.value;
+    }
+
+    private setText(id:string, text: string) {
+        let textField = this.element(id) as HTMLInputElement;
+        textField.value = text;
+    }
+
+    private classList(id: string) {
+        return this.element(id).classList;
     }
 
     createPlayerRows() {
-        let playerTable = document.getElementById('players');
+        let playerTable = this.element('players') as HTMLTableElement;
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = playerTable.insertRow();
             row.classList.add('invisible');
@@ -44,15 +80,51 @@ export default class Display {
         }
     }
 
-    setState(state) {
+    createPlayerTabColumns() {
+        let table = this.element('player-stats') as HTMLTableElement;
+        let targetLength = table.rows[0].cells.length;
+        for (let i = 1; i < table.rows.length; i++) {
+            let row = table.rows[i];
+            while (row.cells.length < targetLength) {
+                let cell = row.insertCell(-1);
+                cell.classList.add('table-col');
+            }
+        }
+    }
+
+    createPlayerTabChart() {
+        let labels = ['cur'];
+        for (let i = 1; i < chartLength; i++) {
+            labels.push(`cur - ${i * 5}`);
+        }
+        Chart.defaults.color = 'black';
+        this.chart = new Chart(this.element('player-chart'), {
+            type: 'line',
+            options: {
+                scales: { y: { beginAtZero: true, suggestedMax: 2000 }},
+                animation: false,
+            },
+            data: {
+                datasets: [{
+                    label: 'Score in five-minute intervals',
+                    borderColor: '#808080',
+                    backgroundColor: '#e0e0e0',
+                    borderWidth: 1,
+                    pointStyle: false,
+                    fill: true,
+                    labels: labels,
+                    data: new Array(chartLength).fill(0),
+                }],
+            },
+        });
+    }
+
+    setState(state: StateResponse) {
         this.players = [];
-        for (let playerInfo of state.players) {
-            if (playerInfo) this.players[playerInfo.id] = new PlayerInfo(playerInfo);
+        for (let playerData of state.players) {
+            if (playerData) this.players[playerData.id] = new PlayerInfo(playerData);
         }
         this.levels = state.levels;
-        for (let level of this.levels) {
-            level.map = new LevelMap(level.map);
-        }
         this.render();
     }
 
@@ -70,29 +142,29 @@ export default class Display {
         }
     }
 
-    renderTitle(name) {
-        let span = document.getElementById('level');
-        span.removeChild(span.firstChild);
-        span.appendChild(document.createTextNode(this.levelToRender));
-        span = document.getElementById('level-name');
-        span.removeChild(span.firstChild);
+    renderTitle(name: string) {
+        let span = this.element('level');
+        span.removeChild(span.firstChild as Node);
+        span.appendChild(document.createTextNode(this.levelToRender.toString()));
+        span = this.element('level-name');
+        span.removeChild(span.firstChild as Node);
         span.appendChild(document.createTextNode(name));
     }
 
-    renderPlayers(players) {
+    renderPlayers(players: PlayerInfo[]) {
         this.renderedPlayers = this.findPlayersToRender(players);
-        let playerTable = document.getElementById('players');
+        let playerTable = this.element('players') as HTMLTableElement;
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = playerTable.rows[i + 1];
             if (i < this.renderedPlayers.length) {
                 row.classList.remove('invisible');
                 let player = this.renderedPlayers[i];
-                let cols = ['rank', 'score', 'levelNumber', 'textHandle', 'kills', 'deaths'];
-                for (let j = 0; j < cols.length; j++) {
-                    let value = player[cols[j]];
-                    if (Array.isArray(value)) value = value.reduce((a, b) => a + b, 0);
-                    row.cells[j].innerHTML = value;
-                }
+                row.cells[0].innerHTML = player.rank.toString();
+                row.cells[1].innerHTML = player.totalScore.toString();
+                row.cells[2].innerHTML = player.levelNumber.toString();
+                row.cells[3].innerHTML = player.textHandle;
+                row.cells[4].innerHTML = player.kills.reduce((a, b) => a + b, 0).toString();
+                row.cells[5].innerHTML = player.deaths.reduce((a, b) => a + b, 0).toString();
                 if (player.id == this.highlightedPlayer) {
                     row.classList.add('highlighted');
                 } else {
@@ -104,15 +176,15 @@ export default class Display {
         }
     }
 
-    findPlayersToRender(players) {
+    findPlayersToRender(players: PlayerInfo[]) {
         let result = [];
         let topPlayers = players.filter(p => p);
         if (this.client.credentials.playerId) {
             result.push(players[this.client.credentials.playerId]);
         }
-        if (!Grownups.list.includes(this.client.credentials.playerId)) {
+        if (!Grownups.includes(this.client.credentials.playerId)) {
             topPlayers.forEach(p => {
-                if (!Grownups.list.includes(p.id)) return;
+                if (!Grownups.includes(p.id)) return;
                 p.score = new Array(p.score.length).fill(0);
             });
         }
@@ -132,33 +204,33 @@ export default class Display {
         return result;
     }
 
-    highlightPlayer(index) {
+    highlightPlayer(index: number) {
         this.toggleHighlight(this.renderedPlayers[index].id);
     }
 
-    highlightTile(x, y) {
+    highlightTile(x: number, y: number) {
         this.toggleHighlight(this.map.getPlayerAt(x, y));
     }
 
-    toggleHighlight(playerId) {
+    toggleHighlight(playerId: number | null) {
         if (!playerId) return;
         if (playerId == this.highlightedPlayer) {
-            delete this.highlightedPlayer;
+            this.highlightedPlayer = null;
         } else {
             this.highlightedPlayer = playerId;
         }
         this.render();
     }
 
-    switchLevel(dir) {
-        delete this.highlightedPlayer;
+    switchLevel(dir: number) {
+        this.highlightedPlayer = null;
         this.levelToRender += dir;
         this.levelToRender = Math.max(this.levelToRender, 1);
         this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
         this.render();
     }
 
-    showPlayers(dir) {
+    showPlayers(dir: number) {
         let step = numPlayersToRender - 2;
         if (dir == 0) this.renderPlayersFrom = 0;
         this.renderPlayersFrom += step * dir;
@@ -168,8 +240,8 @@ export default class Display {
     }
 
     findHandle() {
-        if (!players) return;
-        let handle = document.getElementById('handle').value;
+        if (!this.players) return;
+        let handle = this.getText('handle');
         let player = this.players.find(p => p && p.textHandle == handle);
         if (player) {
             this.highlightedPlayer = player.id;
@@ -180,7 +252,7 @@ export default class Display {
         }
     }
 
-    setCode(code) {
+    setCode(code: string) {
         this.client.editor.code = code;
     }
 
@@ -188,18 +260,17 @@ export default class Display {
         return this.client.editor.code;
     }
 
-    isShowing(tab) {
-        return document.getElementById(tab).classList.contains('active');
+    isShowing(tab: string) {
+        return this.classList(tab).contains('active');
     }
 
-    setLog(log) {
-        const logArea = document.getElementById('log-text');
-        logArea.value = this.filterLog(log);
+    setLog(log: string) {
+        this.setText('log-text', log);
     }
 
     toggleFreeze() {
-        let button = document.getElementById('freeze').classList.toggle('active');
-        this.freezeLog = !this.freezeLog;
+        let button = this.classList('freeze').toggle('active');
+        this.logIsFrozen = !this.logIsFrozen;
     }
 
     renderPlayerTab() {
@@ -211,17 +282,23 @@ export default class Display {
         this.renderPlayerChart(playerInfo);
     }
 
-    renderPlayerInfo(playerInfo) {
-        let infoTable = document.getElementById('player-info');
-        let rows = ['levelNumber', 'pos', 'dir', 'idle', 'offenses', 'jailtime', 'id', 'handle'];
-        for (let i = 0; i < rows.length; i++) {
-            infoTable.rows[i].cells[1].innerHTML = Util.stringify(playerInfo[rows[i]]);
-        }
+    renderPlayerInfo(playerInfo: PlayerInfo) {
+        let infoTable = this.element('player-info') as HTMLTableElement;
+        [
+            playerInfo.levelNumber.toString(),
+            Util.stringify(playerInfo.pos),
+            playerInfo.dir.toString(),
+            playerInfo.idle.toString(),
+            playerInfo.offenses.toString(),
+            playerInfo.jailtime.toString(),
+            playerInfo.id.toString(),
+            playerInfo.handle.toString(),
+        ]
+        .forEach((x, i) => infoTable.rows[i].cells[1].innerHTML = x);
     }
 
-    renderPlayerStats(playerInfo) {
-        let statsTable = document.getElementById('player-stats');
-        this.ensureColumns(statsTable);
+    renderPlayerStats(playerInfo: PlayerInfo) {
+        let statsTable = this.element('player-stats') as HTMLTableElement;
         let cumulative = [playerInfo.timeSpent[0]];
         for (let i = 1; i < playerInfo.timeSpent.length; i++) {
             cumulative[i] = cumulative[i - 1] + playerInfo.timeSpent[i];
@@ -241,29 +318,19 @@ export default class Display {
         }
         if (playerInfo.timesCompleted[2] >= 10) {
             let symbol = this.isGoalMet(playerInfo)? '&#x2713': 'x'
-            table.rows[6].cells[2].innerHTML = symbol;
+            statsTable.rows[6].cells[2].innerHTML = symbol;
         }
     }
 
-    ensureColumns(table) {
-        let targetLength = table.rows[0].cells.length;
-        for (let i = 1; i < table.rows.length; i++) {
-            let row = table.rows[i];
-            while (row.cells.length < targetLength) {
-                let cell = row.insertCell(-1);
-                cell.classList.add('table-col');
-            }
-        }
-    }
-
-    shorten(num) {
+    shorten(num: number) {
         if (num < 1000) return num;
         if (num < 1000000) return (num / 1000).toFixed(1) + 'k';
         return (num / 1000000).toFixed(1) + 'm';
     }
 
-    renderRatio(x, y) {
-        return this.shorten((y > 0? x / y: 0).toFixed(1));
+    renderRatio(x: number, y: number) {
+        let value = (y > 0? x / y: 0).toFixed(1)
+        return this.shorten(Number(value));
     }
 
     printPassed() {
@@ -271,7 +338,7 @@ export default class Display {
         console.log(passed.map(p => p.id).join(' '));
     }
 
-    isGoalMet(playerInfo) {
+    isGoalMet(playerInfo: PlayerInfo) {
         let timesCompleted = playerInfo.timesCompleted[2];
         if (timesCompleted < 10) return false;
         let totalTime = 0;
@@ -281,69 +348,40 @@ export default class Display {
         return totalTime / timesCompleted < 300;
     }
 
-    renderPlayerChart(playerInfo) {
-        let labels = ['cur'];
-        for (let i = 1; i < playerInfo.chartData.length; i++) {
-            labels.push(`cur - ${i * 5}`);
-        }
-
-        if (!this.chart) {
-            Chart.defaults.color = 'black';
-            this.chart = new Chart(document.getElementById('player-chart'), {
-                type: 'line',
-                options: {
-                    scales: { y: { beginAtZero: true, suggestedMax: 2000 }},
-                    animation: false,
-                },
-                data: {
-                    datasets: [{
-                        label: 'Score in five-minute intervals',
-                        borderColor: '#808080',
-                        backgroundColor: '#e0e0e0',
-                        borderWidth: 1,
-                        pointStyle: false,
-                        fill: true,
-                        labels: labels,
-                        data: playerInfo.chartData,
-                    }],
-                },
-            });
-        } else {
-            this.chart.data.datasets[0].data = playerInfo.chartData;
-            this.chart.data.labels = labels;
-            this.chart.update();
-        }
+    renderPlayerChart(playerInfo: PlayerInfo) {
+        this.chart.data.datasets[0].data = playerInfo.chartData;
+        this.chart.update();
     }
 
     showAll() {
-        document.getElementById('show-all').classList.add('active');
-        document.getElementById('show-latest').classList.remove('active');
-        document.getElementById('show-filtered').classList.remove('active');
+        this.classList('show-all').add('active');
+        this.classList('show-latest').remove('active');
+        this.classList('show-filtered').remove('active');
         this.messagesToShow = 'all';
     }
 
     showLatest() {
-        document.getElementById('show-all').classList.remove('active');
-        document.getElementById('show-latest').classList.add('active');
-        document.getElementById('show-filtered').classList.remove('active');
+        this.classList('show-all').remove('active');
+        this.classList('show-latest').add('active');
+        this.classList('show-filtered').remove('active');
         this.messagesToShow = 'latest';
     }
 
     showFiltered() {
-        document.getElementById('show-all').classList.remove('active');
-        document.getElementById('show-latest').classList.remove('active');
-        document.getElementById('show-filtered').classList.add('active');
+        this.classList('show-all').remove('active');
+        this.classList('show-latest').remove('active');
+        this.classList('show-filtered').add('active');
         this.messagesToShow = 'filtered';
     }
 
-    filterLog(log) {
+    filterLog(log: string) {
         let lines = log.split('\n');
         let filter = '';
         if (this.messagesToShow == 'latest' && lines.length > 0) {
             filter = lines[lines.length - 1].slice(0, 8);
         }
         if (this.messagesToShow == 'filtered') {
-            filter = document.getElementById('filter-text').value;
+            filter = this.getText('filter-text');
         }
         lines = lines.filter(line => line.includes(filter));
         lines.reverse();
@@ -351,32 +389,32 @@ export default class Display {
     }
 
     onMouseEnter() {
-        document.getElementById('coords').classList.add('show');
+        this.classList('coords').add('show');
     }
 
-    onMouseMove(x, y) {
+    onMouseMove(x: number, y: number) {
         let [col, row] = this.map.getPosAt(x, y);
-        document.getElementById('x-coord').innerHTML = col;
-        document.getElementById('y-coord').innerHTML = row;
+        this.setText('x-coord', col.toString());
+        this.setText('y-coord', row.toString());
     }
 
     onMouseLeave() {
-        document.getElementById('coords').classList.remove('show');
+        this.classList('coords').remove('show');
     }
 
     showLoggedIn() {
-        document.getElementById('login-form').classList.add('d-none');
-        document.getElementById('logout-form').classList.remove('d-none');
-        document.getElementById('user-handle').innerHTML = this.client.credentials.textHandle;
+        this.classList('login-form').add('d-none');
+        this.classList('logout-form').remove('d-none');
+        this.setText('user-handle', this.client.credentials.textHandle as string);
     }
 
     showLoggedOut() {
-        document.getElementById('login-form').classList.remove('d-none');
-        document.getElementById('logout-form').classList.add('d-none');
+        this.classList('login-form').remove('d-none');
+        this.classList('logout-form').add('d-none');
     }
 
-    switchTab(dir) {
-        let navLinks = document.getElementsByClassName('nav-link');
+    switchTab(dir: number) {
+        let navLinks = document.getElementsByClassName('nav-link') as HTMLCollectionOf<HTMLAnchorElement>;
         let activeIndex = 0;
         for (let i = 0; i < navLinks.length; i++) {
             if (navLinks[i].classList.contains('active')) {
@@ -387,9 +425,9 @@ export default class Display {
         navLinks[newIndex].click();
     }
 
-    say(message, level) {
+    say(message: string, level: number) {
         const n = ++this.messageNumber;
-        const div = document.getElementById('message');
+        const div = this.element('message');
         div.innerHTML = message;
         for (let level of alertLevels) {
             div.classList.remove(level);

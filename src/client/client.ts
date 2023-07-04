@@ -6,23 +6,28 @@ import MonacoEditor from './monaco_editor.js';
 
 window.onload = () => new Client().start();
 
-class Client {
-    constructor() {
-        this.baseUrl = window.location.origin;
+export default class Client {
+    readonly baseUrl = window.location.origin;
+    readonly credentials: Credentials;
+    readonly display: Display;
+    readonly editor: MonacoEditor;
+    readonly updater: Updater;
+    readonly buttonHooks: ButtonHooks;
 
+    constructor() {
+        this.credentials = new Credentials(this);
+        this.display = new Display(this);
         this.editor = new MonacoEditor(this);
         this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
-        this.credentials = new Credentials(this);
-        this.display = new Display(this);
     }
 
     async start() {
+        await this.display.start();
+        await this.credentials.start();
         await this.editor.start();
         await this.updater.start();
         await this.buttonHooks.start();
-        await this.credentials.start();
-        await this.display.start();
 
         if (this.credentials.isLoggedIn) {
             this.onLogin();
