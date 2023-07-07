@@ -43,32 +43,32 @@ export default class Display {
         this.map = new CanvasMap(client);
     }
 
-    async start() {
+    async start(): Promise<void> {
         await this.map.start();
         this.createPlayerRows();
         this.createPlayerTabColumns();
         this.createPlayerTabChart();
     }
 
-    private element(id: string) {
+    private element(id: string): HTMLElement {
         return document.getElementById(id) as HTMLElement;
     }
 
-    private getText(id: string) {
+    private getText(id: string): string {
         let textField = this.element(id) as HTMLInputElement;
         return textField.value;
     }
 
-    private setText(id:string, text: string) {
+    private setText(id:string, text: string): void {
         let textField = this.element(id) as HTMLInputElement;
         textField.value = text;
     }
 
-    private classList(id: string) {
+    private classList(id: string): DOMTokenList {
         return this.element(id).classList;
     }
 
-    createPlayerRows() {
+    createPlayerRows(): void {
         let playerTable = this.element('players') as HTMLTableElement;
         for (let i = 0; i < numPlayersToRender; i++) {
             let row = playerTable.insertRow();
@@ -80,7 +80,7 @@ export default class Display {
         }
     }
 
-    createPlayerTabColumns() {
+    createPlayerTabColumns(): void {
         let table = this.element('player-stats') as HTMLTableElement;
         let targetLength = table.rows[0].cells.length;
         for (let i = 1; i < table.rows.length; i++) {
@@ -92,7 +92,7 @@ export default class Display {
         }
     }
 
-    createPlayerTabChart() {
+    createPlayerTabChart(): void {
         let labels = ['cur'];
         for (let i = 1; i < chartLength; i++) {
             labels.push(`cur - ${i * 5}`);
@@ -119,7 +119,7 @@ export default class Display {
         });
     }
 
-    setState(state: StateResponse) {
+    setState(state: StateResponse): void {
         this.players = [];
         for (let playerData of state.players) {
             if (playerData) this.players[playerData.id] = new PlayerInfo(playerData);
@@ -128,7 +128,7 @@ export default class Display {
         this.render();
     }
 
-    render() {
+    render(): void {
         if (this.highlightedPlayer) {
             let playerLevel = this.players[this.highlightedPlayer].levelNumber;
             if (playerLevel != 0) this.levelToRender = playerLevel;
@@ -142,7 +142,7 @@ export default class Display {
         }
     }
 
-    renderTitle(name: string) {
+    renderTitle(name: string): void {
         let span = this.element('level');
         span.removeChild(span.firstChild as Node);
         span.appendChild(document.createTextNode(this.levelToRender.toString()));
@@ -151,7 +151,7 @@ export default class Display {
         span.appendChild(document.createTextNode(name));
     }
 
-    renderPlayers(players: PlayerInfo[]) {
+    renderPlayers(players: PlayerInfo[]): void {
         this.renderedPlayers = this.findPlayersToRender(players);
         let playerTable = this.element('players') as HTMLTableElement;
         for (let i = 0; i < numPlayersToRender; i++) {
@@ -176,7 +176,7 @@ export default class Display {
         }
     }
 
-    findPlayersToRender(players: PlayerInfo[]) {
+    findPlayersToRender(players: PlayerInfo[]): PlayerInfo[] {
         let result = [];
         let topPlayers = players.filter(p => p);
         if (this.client.credentials.playerId) {
@@ -204,15 +204,15 @@ export default class Display {
         return result;
     }
 
-    highlightPlayer(index: number) {
+    highlightPlayer(index: number): void {
         this.toggleHighlight(this.renderedPlayers[index].id);
     }
 
-    highlightTile(x: number, y: number) {
+    highlightTile(x: number, y: number): void {
         this.toggleHighlight(this.map.getPlayerAt(x, y));
     }
 
-    toggleHighlight(playerId: number | null) {
+    toggleHighlight(playerId: number | null): void {
         if (!playerId) return;
         if (playerId == this.highlightedPlayer) {
             this.highlightedPlayer = null;
@@ -222,7 +222,7 @@ export default class Display {
         this.render();
     }
 
-    switchLevel(dir: number) {
+    switchLevel(dir: number): void {
         this.highlightedPlayer = null;
         this.levelToRender += dir;
         this.levelToRender = Math.max(this.levelToRender, 1);
@@ -230,7 +230,7 @@ export default class Display {
         this.render();
     }
 
-    showPlayers(dir: number) {
+    showPlayers(dir: number): void {
         let step = numPlayersToRender - 2;
         if (dir == 0) this.renderPlayersFrom = 0;
         this.renderPlayersFrom += step * dir;
@@ -239,7 +239,7 @@ export default class Display {
         this.render();
     }
 
-    findHandle() {
+    findHandle(): void {
         if (!this.players) return;
         let handle = this.getText('handle');
         let player = this.players.find(p => p && p.textHandle == handle);
@@ -252,28 +252,28 @@ export default class Display {
         }
     }
 
-    setCode(code: string) {
+    setCode(code: string): void {
         this.client.editor.code = code;
     }
 
-    getCode() {
+    getCode(): string {
         return this.client.editor.code;
     }
 
-    isShowing(tab: string) {
+    isShowing(tab: string): boolean {
         return this.classList(tab).contains('active');
     }
 
-    setLog(log: string) {
+    setLog(log: string): void {
         this.setText('log-text', log);
     }
 
-    toggleFreeze() {
+    toggleFreeze(): void {
         let button = this.classList('freeze').toggle('active');
         this.logIsFrozen = !this.logIsFrozen;
     }
 
-    renderPlayerTab() {
+    renderPlayerTab(): void {
         let playerIdToRender = this.highlightedPlayer?? this.client.credentials.playerId;
         if (!playerIdToRender) return;
         let playerInfo = this.players[playerIdToRender];
@@ -282,7 +282,7 @@ export default class Display {
         this.renderPlayerChart(playerInfo);
     }
 
-    renderPlayerInfo(playerInfo: PlayerInfo) {
+    renderPlayerInfo(playerInfo: PlayerInfo): void {
         let infoTable = this.element('player-info') as HTMLTableElement;
         [
             playerInfo.levelNumber.toString(),
@@ -297,7 +297,7 @@ export default class Display {
         .forEach((x, i) => infoTable.rows[i].cells[1].innerHTML = x);
     }
 
-    renderPlayerStats(playerInfo: PlayerInfo) {
+    renderPlayerStats(playerInfo: PlayerInfo): void {
         let statsTable = this.element('player-stats') as HTMLTableElement;
         let cumulative = [playerInfo.timeSpent[0]];
         for (let i = 1; i < playerInfo.timeSpent.length; i++) {
@@ -322,23 +322,23 @@ export default class Display {
         }
     }
 
-    shorten(num: number) {
-        if (num < 1000) return num;
+    shorten(num: number): string {
+        if (num < 1000) return num.toString();
         if (num < 1000000) return (num / 1000).toFixed(1) + 'k';
         return (num / 1000000).toFixed(1) + 'm';
     }
 
-    renderRatio(x: number, y: number) {
+    renderRatio(x: number, y: number): string {
         let value = (y > 0? x / y: 0).toFixed(1)
         return this.shorten(Number(value));
     }
 
-    printPassed() {
+    printPassed(): void {
         let passed = this.players.filter(p => p && this.isGoalMet(p));
         console.log(passed.map(p => p.id).join(' '));
     }
 
-    isGoalMet(playerInfo: PlayerInfo) {
+    isGoalMet(playerInfo: PlayerInfo): boolean {
         let timesCompleted = playerInfo.timesCompleted[2];
         if (timesCompleted < 10) return false;
         let totalTime = 0;
@@ -348,33 +348,33 @@ export default class Display {
         return totalTime / timesCompleted < 300;
     }
 
-    renderPlayerChart(playerInfo: PlayerInfo) {
+    renderPlayerChart(playerInfo: PlayerInfo): void {
         this.chart.data.datasets[0].data = playerInfo.chartData;
         this.chart.update();
     }
 
-    showAll() {
+    showAll(): void {
         this.classList('show-all').add('active');
         this.classList('show-latest').remove('active');
         this.classList('show-filtered').remove('active');
         this.messagesToShow = 'all';
     }
 
-    showLatest() {
+    showLatest(): void {
         this.classList('show-all').remove('active');
         this.classList('show-latest').add('active');
         this.classList('show-filtered').remove('active');
         this.messagesToShow = 'latest';
     }
 
-    showFiltered() {
+    showFiltered(): void {
         this.classList('show-all').remove('active');
         this.classList('show-latest').remove('active');
         this.classList('show-filtered').add('active');
         this.messagesToShow = 'filtered';
     }
 
-    filterLog(log: string) {
+    filterLog(log: string): string {
         let lines = log.split('\n');
         let filter = '';
         if (this.messagesToShow == 'latest' && lines.length > 0) {
@@ -388,32 +388,32 @@ export default class Display {
         return lines.join('\n');
     }
 
-    onMouseEnter() {
+    onMouseEnter(): void {
         this.classList('coords').add('show');
     }
 
-    onMouseMove(x: number, y: number) {
+    onMouseMove(x: number, y: number): void {
         let [col, row] = this.map.getPosAt(x, y);
         this.setText('x-coord', col.toString());
         this.setText('y-coord', row.toString());
     }
 
-    onMouseLeave() {
+    onMouseLeave(): void {
         this.classList('coords').remove('show');
     }
 
-    showLoggedIn() {
+    showLoggedIn(): void {
         this.classList('login-form').add('d-none');
         this.classList('logout-form').remove('d-none');
         this.setText('user-handle', this.client.credentials.textHandle as string);
     }
 
-    showLoggedOut() {
+    showLoggedOut(): void {
         this.classList('login-form').remove('d-none');
         this.classList('logout-form').add('d-none');
     }
 
-    switchTab(dir: number) {
+    switchTab(dir: number): void {
         let navLinks = document.getElementsByClassName('nav-link') as HTMLCollectionOf<HTMLAnchorElement>;
         let activeIndex = 0;
         for (let i = 0; i < navLinks.length; i++) {
@@ -425,7 +425,7 @@ export default class Display {
         navLinks[newIndex].click();
     }
 
-    say(message: string, level: number) {
+    say(message: string, level: number): void {
         const n = ++this.messageNumber;
         const div = this.element('message');
         div.innerHTML = message;

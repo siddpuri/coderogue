@@ -1,17 +1,27 @@
-import { LoginRequest, LoginResponse, ErrorResponse } from '../shared/protocol.js';
+import {
+    LoginRequest,
+    LoginResponse,
+    CodeResponse,
+    LogResponse,
+    StateResponse,
+}
+from '../shared/protocol.js';
 
 import Client from './client.js';
+import Fetcher from './fetcher.js';
 
 export default class Updater {
+    private fetcher: Fetcher;
     private busy = false;
 
     constructor(
         private readonly client: Client
     ) {
+        this.fetcher = new Fetcher(client);
         setInterval(() => this.tick(), 1000);
     }
 
-    async start() {
+    async start(): Promise<void> {
         await this.loadCode();
         await this.loadHtml('general', 'general-text');
         await this.loadHtml('news', 'news-text');
@@ -21,11 +31,11 @@ export default class Updater {
         await this.loadHtml('account', 'account');
     }
 
-    private element(id: string) {
+    private element(id: string): HTMLElement {
         return document.getElementById(id) as HTMLElement;
     }
 
-    async tick() {
+    async tick(): Promise<void> {
         if (this.busy) {
             console.log('Missed a tick.');
             return;
@@ -38,66 +48,40 @@ export default class Updater {
         }
     }
 
-    async doTickActions() {
-        this.client.display.setState(await this.getJson('state'));
+    async doTickActions(): Promise<void> {
+        let result = await this.fetcher.getJson<StateResponse>('state')
+        if (result) this.client.display.setState(result);
         if (this.client.display.isShowing('log-tab')) {
             await this.loadLog();
         }
     }
 
-    async login(loginData: LoginRequest) {
-        let result: LoginResponse | ErrorResponse = await this.postJson('login', loginData);
-        if ((result as ErrorResponse).error) return false;
-        this.client.credentials.onLogin(result as LoginResponse);
+    async login(loginData: LoginRequest): Promise<void> {
+        let result = await this.fetcher.postJson<LoginResponse>('login', loginData);
+        if (result) this.client.credentials.onLogin(result);
     }
 
-    async loadCode() {
+    async loadCode(): Promise<void> {
         let code = 'Log in to see your code.'
         if (this.client.credentials.isLoggedIn) {
-            let result = await this.getJson('code');
-            if (!result.error) code = result.code;
+            let result = await this.fetcher.getJson<CodeResponse>('code');
+            if (result) code = result.code;
         }
         this.client.display.setCode(code);
     }
 
-    async loadLog() {
+    async loadLog(): Promise<void> {
         let log = 'Log in to see your log.';
         if (this.client.credentials.isLoggedIn) {
             if (this.client.display.logIsFrozen) return;
-            let result = await this.getJson('log');
-            if (!result.error) log = result.log;
+            let result = await this.fetcher.getJson<LogResponse>('log');
+            if (result) log = result.log;
         }
         this.client.display.setLog(log);
     }
 
-    async getJson(name: string) {
-        let response = await fetch(`${this.client.baseUrl}/api/${name}`);
-        let result = await response.json();
-        if (result.error) {
-            this.client.display.say(result.error, 3);
-        }
-        return result;
-    }
-
-    async postJson(name: string, args: Object) {
-        let response = await fetch(
-            `${this.client.baseUrl}/api/${name}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(args),
-            }
-        );
-        let result = await response.json();
-        if (result.error) {
-            this.client.display.say(result.error, 3);
-        }
-        return result;
-    }
-
-    async loadHtml(name: string, id: string) {
-        let response = await fetch(`${this.client.baseUrl}/${name}.html`);
-        let html = await response.text();
-        this.element(id).innerHTML = html;
+    async loadHtml(name: string, id: string): Promise<void> {
+        let result = await this.fetcher.getText(name + '.html');
+        this.element(id).innerHTML = result;
     }
 }

@@ -12,15 +12,16 @@ export default class Credentials {
     constructor(
         private readonly client: Client
     ) {}
-    async start() {
+
+    async start(): Promise<void> {
         this.readCookie();
     }
 
-    get isLoggedIn() {
+    get isLoggedIn(): boolean {
         return this.playerId !== null;
     }
 
-    readCookie() {
+    readCookie(): void {
         let cookies = document.cookie.split('; ');
         for (let cookie of cookies) {
             let [name, value] = cookie.split('=');
@@ -32,15 +33,15 @@ export default class Credentials {
         }
     }
 
-    writeCookie(key: string, value: string | number) {
+    writeCookie(key: string, value: string | number): void {
         document.cookie = `${key}=${value}${expire_never}`;
     }
 
-    deleteCookie(key: string) {
+    deleteCookie(key: string): void {
         document.cookie = `${key}=;${expire_now}`
     }
 
-    async onLogin(serverResponse: LoginResponse) {
+    async onLogin(serverResponse: LoginResponse): Promise<void> {
         this.playerId = serverResponse.playerId;
         this.authToken = serverResponse.authToken;
         this.textHandle = serverResponse.textHandle;
@@ -48,10 +49,9 @@ export default class Credentials {
         this.writeCookie('authToken', serverResponse.authToken);
         this.writeCookie('textHandle', serverResponse.textHandle);
         this.client.onLogin();
-        return true;
     }
 
-    async onLogout() {
+    async onLogout(): Promise<void> {
         this.authToken = null;
         this.playerId = null;
         this.textHandle = null;

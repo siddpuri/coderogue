@@ -22,7 +22,7 @@ export default class Client {
         this.buttonHooks = new ButtonHooks(this);
     }
 
-    async start() {
+    async start(): Promise<void> {
         await this.display.start();
         await this.credentials.start();
         await this.editor.start();
@@ -34,12 +34,12 @@ export default class Client {
         }
     }
 
-    onLogin() {
+    onLogin(): void {
         this.display.showLoggedIn();
         this.updater.loadCode();
     }
 
-    onLogout() {
+    onLogout(): void {
         this.display.showLoggedOut();
         this.updater.loadCode();
     }

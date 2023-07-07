@@ -8,6 +8,8 @@ declare class monaco {
     static KeyCode: any;
 }
 
+declare var require: any;
+
 export default class MonacoEditor {
     libSource!: string;
     editor!: any;
@@ -16,17 +18,15 @@ export default class MonacoEditor {
         private readonly client: Client
     ) {}
 
-    async start() {
+    async start(): Promise<void> {
         this.libSource = await (await fetch('coderogue.d.ts')).text();
         return new Promise(resolve => {
-            // @ts-ignore
             require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' } });
-            // @ts-ignore
             require(['vs/editor/editor.main'], () => this.onLoad(resolve));
         });
     }
     
-    onLoad(resolve: () => void) {
+    onLoad(resolve: () => void): void {
         monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
             noSemanticValidation: false,
             noSuggestionDiagnostics: true,
@@ -88,8 +88,7 @@ export default class MonacoEditor {
     get code() { return this.editor.getValue(); }
     set code(code) { this.editor.setValue(code); }
 
-    reformat() {
-        // @ts-ignore
+    reformat(): void {
         this.editor.getAction("editor.action.formatDocument").run();
     }
 }

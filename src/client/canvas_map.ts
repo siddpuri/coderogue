@@ -41,18 +41,18 @@ export default class CanvasMap {
     get dx()                 { return 8; }
     get dy()                 { return [10, 8][this.style]; }
 
-    async start() {
+    async start(): Promise<void> {
         this.clearCanvas();       
     }
 
-    setStyle(style: number) {
+    setStyle(style: number): void {
         this.style = style;
         if (this.level && this.players) {
             this.render(this.level, this.players);
         }
     }
 
-    clearCanvas() {
+    clearCanvas(): void {
         this.canvas.width = this.dx * levelWidth;
         this.canvas.height = this.dy * levelHeight;
         this.ctx.font = this.font;
@@ -61,7 +61,7 @@ export default class CanvasMap {
         this.ctx.fillStyle = this.foregroundColor;
     }
 
-    render(level: LevelData, players: PlayerInfo[]) {
+    render(level: LevelData, players: PlayerInfo[]): void {
         this.level = level;
         this.map = new LevelMap(level.map);
         this.players = players;
@@ -82,7 +82,7 @@ export default class CanvasMap {
         }
     }
 
-    renderPlayer(pos: Pos, playerId: number) {
+    renderPlayer(pos: Pos, playerId: number): void {
         let color = this.foregroundColor;
         if (playerId == this.client.display.highlightedPlayer) {
             color = this.highlightColor;
@@ -94,12 +94,12 @@ export default class CanvasMap {
         this.renderArrow(pos, dir, color);
     }
 
-    renderMob(pos: Pos, mobId: number) {
+    renderMob(pos: Pos, mobId: number): void {
         let dir = this.level.mobs[mobId].dir;
         this.renderArrow(pos, dir, this.mobColor);
     }
 
-    renderArrow(pos: Pos, dir: number, color: string) {
+    renderArrow(pos: Pos, dir: number, color: string): void {
         switch (this.style) {
         case 0:
             this.setText(pos, '^>v<'[dir], color);
@@ -118,7 +118,7 @@ export default class CanvasMap {
         }
     }
 
-    renderWall(pos: Pos) {
+    renderWall(pos: Pos): void {
         switch (this.style) {
         case 0:
             this.setText(pos, '#');
@@ -132,7 +132,7 @@ export default class CanvasMap {
         }
     }
 
-    renderSpawn(pos: Pos) {
+    renderSpawn(pos: Pos): void {
         switch (this.style) {
         case 0:
             this.setText(pos, '.');
@@ -148,7 +148,7 @@ export default class CanvasMap {
         }
     }
 
-    renderExit(pos: Pos) {
+    renderExit(pos: Pos): void {
         switch (this.style) {
         case 0:
             this.setText(pos, 'o');
@@ -164,7 +164,7 @@ export default class CanvasMap {
         }
     }
 
-    setText(pos: Pos, char: string, color: string = this.foregroundColor) {
+    setText(pos: Pos, char: string, color: string = this.foregroundColor): void {
         this.ctx.fillStyle = color;
         if (color == this.highlightColor) {
             this.ctx.fillRect(pos[0] * this.dx, pos[1] * this.dy, this.dx, this.dy);
@@ -174,7 +174,7 @@ export default class CanvasMap {
         this.ctx.fillStyle = this.foregroundColor;
     }
 
-    getPlayerAt(mouseX: number, mouseY: number) {
+    getPlayerAt(mouseX: number, mouseY: number): number | null {
         if (!this.level) return null;
         let [x0, y0] = this.getPosAt(mouseX, mouseY);
         let closestPlayerId = null;
@@ -194,20 +194,20 @@ export default class CanvasMap {
         return closestPlayerId;
     }
 
-    getPosAt(mouseX: number, mouseY: number) {
+    getPosAt(mouseX: number, mouseY: number): Pos {
         return [
             Math.floor(mouseX / this.dx),
             Math.floor(mouseY / this.dy)
         ];
     }
 
-    getPlayerAtPos(pos: Pos) {
+    getPlayerAtPos(pos: Pos): number | null {
         if (pos[0] < 0 || pos[0] >= levelWidth) return null;
         if (pos[1] < 0 || pos[1] >= levelHeight) return null;
         return this.map.getPlayerId(pos);
     }
 
-    getDistance(mouseX: number, mouseY: number, playerPos: Pos) {
+    getDistance(mouseX: number, mouseY: number, playerPos: Pos): number {
         return Math.sqrt(
             Math.pow(mouseX - playerPos[0] * this.dx, 2) +
             Math.pow(mouseY - playerPos[1] * this.dy, 2)

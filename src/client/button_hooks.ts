@@ -1,13 +1,18 @@
-import { LoginResponse, CodeResponse, ErrorResponse } from '../shared/protocol.js';
+import { LoginResponse } from '../shared/protocol.js';
 
 import Client from './client.js';
+import Fetcher from './fetcher.js';
 
 export default class ButtonHooks {
+    private fetcher: Fetcher;
+
     constructor(
         private readonly client: Client
-    ) {}
+    ) {
+        this.fetcher = new Fetcher(client);
+    }
 
-    async start() {
+    async start(): Promise<void> {
         this.onClick('prev-level', () => this.client.display.switchLevel(-1));
         this.onClick('next-level', () => this.client.display.switchLevel(1));
         this.onClick('first-players', () => this.client.display.showPlayers(0));
@@ -37,63 +42,53 @@ export default class ButtonHooks {
         });
     }
 
-    private element(id: string) {
+    private element(id: string): HTMLElement {
         return document.getElementById(id) as HTMLElement;
     }
 
-    private getText(id: string) {
+    private getText(id: string): string {
         let textField = this.element(id) as HTMLInputElement;
         return textField.value;
     }
 
-    private handleMouseMove(event: MouseEvent) {
+    private handleMouseMove(event: MouseEvent): void {
         this.client.display.onMouseMove(event.offsetX, event.offsetY);
     }
 
-    private handleMapClick(event: MouseEvent) {
+    private handleMapClick(event: MouseEvent): void {
         this.client.display.highlightTile(event.offsetX, event.offsetY);
     }
 
-    private async login() {
+    private async login(): Promise<void> {
         const email = this.getText('email');
         const password = this.getText('password');
-        let result: LoginResponse | ErrorResponse = await this.client.updater.postJson('login', { email, password });
-        if ((result as ErrorResponse).error) {
-            this.say((result as ErrorResponse).error, 3);
-        } else {
-            this.client.credentials.onLogin(result as LoginResponse);
-            this.say('You have been logged in.', 0);
+        let result = await this.fetcher.postJson<LoginResponse>('login', { email, password });
+        if (result) {
+            this.client.credentials.onLogin(result);
+            this.client.display.say('You have been logged in.', 0);
         }
     }
 
-    private async logout() {
+    private async logout(): Promise<void> {
         await this.client.credentials.onLogout();
-        this.say('You have been logged out.', 1);
+        this.client.display.say('You have been logged out.', 1);
     }
 
-    private async respawn() {
-        let result = await this.client.updater.postJson('respawn', {});
-        if (result.error) {
-            this.say(result.error, 3);
-        }
+    private async respawn(): Promise<void> {
+        let result = await this.fetcher.postJson('respawn');
     }
 
-    private async reformat() {
+    private async reformat(): Promise<void> {
         this.client.editor.reformat();
     }
 
-    private async submit() {
+    private async submit(): Promise<void> {
         let code = this.client.display.getCode();
-        let result: CodeResponse | ErrorResponse = await this.client.updater.postJson('code', { code });
-        if ((result as ErrorResponse).error) {
-            this.say((result as ErrorResponse).error, 3);
-        }
-        else {
-            this.say('Code submitted!', 0);
-        }
+        let result = await this.fetcher.postJson('code', { code });
+        if (result) this.client.display.say('Code submitted!', 0);
     }
 
-    private async handleKey(event: KeyboardEvent) {
+    private async handleKey(event: KeyboardEvent): Promise<void> {
         let key =
             (event.ctrlKey? 'C-' : '') +
             (event.shiftKey? 'S-' : '') +
@@ -118,11 +113,7 @@ export default class ButtonHooks {
         }
     }
 
-    private onClick(id: string, f: (event: MouseEvent) => void) {
+    private onClick(id: string, f: (event: MouseEvent) => void): void {
         this.element(id).addEventListener('click', f, false);
-    }
-
-    say(message: string, level: number) {
-        this.client.display.say(message, level);
     }
 }
