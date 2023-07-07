@@ -118,9 +118,12 @@ class Tunnel {
         private readonly startCave: Cave,
         private readonly endCave: Cave
     ) {
-        if (Math.random() > 0.5) [startCave, endCave] = [endCave, startCave];
-        let x = startCave.pos[0] + Util.randomInt(0, startCave.size[0]);
-        let y = endCave.pos[1] + Util.randomInt(0, endCave.size[1]);
+        if (Math.random() > 0.5) {
+            this.startCave = endCave;
+            this.endCave = startCave;
+        }
+        let x = this.startCave.pos[0] + Util.randomInt(0, this.startCave.size[0]);
+        let y = this.endCave.pos[1] + Util.randomInt(0, this.endCave.size[1]);
         this.corner = [x, y];
     }
 
