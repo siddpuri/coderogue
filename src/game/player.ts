@@ -17,28 +17,28 @@ export default class Player extends PlayerInfo {
         this.authToken = info.auth_token;
     }
 
-    incrementTimeSpent() { this.addAtLevel(this.timeSpent, 1); }
-    incrementTimesCompleted() { this.addAtLevel(this.timesCompleted, 1); }
-    incrementKills() { this.addAtLevel(this.kills, 1); }
-    incrementDeaths() { this.addAtLevel(this.deaths, 1); }
+    incrementTimeSpent(): void { this.addAtLevel(this.timeSpent, 1); }
+    incrementTimesCompleted(): void { this.addAtLevel(this.timesCompleted, 1); }
+    incrementKills(): void { this.addAtLevel(this.kills, 1); }
+    incrementDeaths(): void { this.addAtLevel(this.deaths, 1); }
 
-    addScore(score: number) {
+    addScore(score: number): void {
         if (this.dontScore) return;
         this.addAtLevel(this.score, score);
         this.chartData[0] += score;
     }
 
-    addAtLevel(array: number[], x: number) {
+    addAtLevel(array: number[], x: number): void {
         while (array.length <= this.levelNumber) array.push(0);
         array[this.levelNumber] += x;
     }
 
-    addChartInterval() {
+    addChartInterval(): void {
         this.chartData.unshift(0);
         if (this.chartData.length > chartLength) this.chartData.pop();
     }
 
-    useTurn() {
+    useTurn(): boolean {
         if (this.turns > 0) {
             this.turns--;
             return true;
@@ -48,7 +48,7 @@ export default class Player extends PlayerInfo {
         }
     }
 
-    onNewCode() {
+    onNewCode(): void {
         this.action = null;
         this.idle = 0;
         this.offenses = 0;

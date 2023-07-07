@@ -1,6 +1,7 @@
 import Util from '../shared/util.js';
 import Grownups from '../shared/grownups.js';
 import LevelMap from '../shared/level_map.js';
+import { LevelData } from '../shared/protocol.js';
 
 import Server from '../server/server.js';
 
@@ -35,9 +36,9 @@ export default abstract class Level {
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
-    isProtected(currentPlayer: Player, pos: Pos) { return true; }
+    isProtected(currentPlayer: Player, pos: Pos): boolean { return true; }
 
-    isWorthPoints(currentPlayer: Player, pos: Pos) {
+    isWorthPoints(currentPlayer: Player, pos: Pos): number {
         let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return 0;
         if (playerId == currentPlayer.id) return 0;
@@ -46,7 +47,7 @@ export default abstract class Level {
         return this.killScore;
     }
 
-    hasGrownupProtection(currentPlayer: Player, pos: Pos) {
+    hasGrownupProtection(currentPlayer: Player, pos: Pos): boolean {
         if (!Grownups.includes(currentPlayer.id)) return false;
         let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return false;
@@ -54,9 +55,9 @@ export default abstract class Level {
         return true;
     }
 
-    doLevelAction() {}
+    doLevelAction(): void {}
 
-    private drawMap() {
+    private drawMap(): void {
         for (let x = 0; x < this.width; x++) {
             this.map.setWall([x, 0]);
             this.map.setWall([x, this.height - 1]);
@@ -69,16 +70,16 @@ export default abstract class Level {
         this.map.setSpawn(this.spawnTargetPos);
     }
 
-    spawn(player: Player) {
+    spawn(player: Player): void {
         let dir = Util.randomInt(0, 3);
         this.spawnAround(player, this.spawnTargetPos, dir, 10);
     }
 
-    spawnAt(player: Player, pos: Pos, dir: number) {
+    spawnAt(player: Player, pos: Pos, dir: number): void {
         this.spawnAround(player, pos, dir, 0);
     }
 
-    private spawnAround(player: Player, pos: Pos, dir: number, radius: number) {
+    private spawnAround(player: Player, pos: Pos, dir: number, radius: number): void {
         for (let r = radius; true; r++) {
             let [dx, dy] = [r, r];
             while (dx * dx + dy * dy > r * r) {
@@ -96,18 +97,18 @@ export default abstract class Level {
         }
     }
 
-    private addPlayer(player: Player, pos: Pos, dir: number) {
+    private addPlayer(player: Player, pos: Pos, dir: number): void {
         player.levelNumber = this.levelNumber;
         player.pos = pos;
         player.dir = dir;
         this.map.setPlayerId(pos, player.id);
     }
 
-    removePlayer(player: Player) {
+    removePlayer(player: Player): void {
         this.map.clearPlayer(player.pos);
     }
 
-    moveForward(player: Player) {
+    moveForward(player: Player): void {
         let dest = this.movePos(player.pos, player.dir)
         if (this.map.canEnter(dest)) {
             this.movePlayer(player, dest);
@@ -124,7 +125,7 @@ export default abstract class Level {
         }
     }
 
-    movePlayer(player: Player, dest: Pos) {
+    movePlayer(player: Player, dest: Pos): void {
         this.map.clearPlayer(player.pos);
         player.pos = dest;
         this.map.setPlayerId(player.pos, player.id);
@@ -137,7 +138,7 @@ export default abstract class Level {
         player.idle = 0;
     }
 
-    bumpPlayer(player: Player, dest: Pos) {
+    bumpPlayer(player: Player, dest: Pos): void {
         let otherId = this.map.getPlayerId(dest) as number;
         let other = this.server.game.players[otherId];
         if (player.dontScore) {
@@ -159,7 +160,7 @@ export default abstract class Level {
         player.idle = 0;
     }
 
-    bumpMob(player: Player, dest: Pos) {
+    bumpMob(player: Player, dest: Pos): void {
         if (player.dontScore) {
             player.log.write(`Can't bump automata after respawnAt.`);
             return;
@@ -172,10 +173,10 @@ export default abstract class Level {
         player.log.write(`You just bumped off ${mob.textHandle}!`);
     }
 
-    turnRight(player: Player) { player.dir = (player.dir + 1) % 4; }
-    turnLeft(player: Player) { player.dir = (player.dir + 3) % 4; }
+    turnRight(player: Player): void { player.dir = (player.dir + 1) % 4; }
+    turnLeft(player: Player): void { player.dir = (player.dir + 3) % 4; }
 
-    canMove(player: Player, dir: number) {
+    canMove(player: Player, dir: number): boolean {
         let realDir = (player.dir + dir) % 4;
         let newPos = this.movePos(player.pos, realDir);
         return this.map.canEnter(newPos);
@@ -187,7 +188,7 @@ export default abstract class Level {
         return [pos[0] + offset[0], pos[1] + offset[1]];
     }
 
-    getState() {
+    getState(): LevelData {
         return {
             name: this.name,
             map: this.map.serialize(),

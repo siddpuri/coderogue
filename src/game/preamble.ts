@@ -1,5 +1,5 @@
 export default class Preamble {
-    static get code() {
+    static get code(): string {
         let preamble = `
             var _map = null;
 

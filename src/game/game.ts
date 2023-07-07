@@ -2,6 +2,7 @@ import util from 'util';
 import { VM, VMScript } from 'vm2';
 
 import Handles from '../shared/handles.js';
+import { StateResponse, PlayerData } from '../shared/protocol.js';
 
 import Server from '../server/server.js';
 
@@ -15,6 +16,8 @@ import Level from './level.js';
 import Player, { InfoPlus } from './player.js';
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
+
+type Pos = [number, number];
 
 const jailtimes = [10, 60, 600, 3600];
 const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
@@ -39,19 +42,19 @@ export default class Game {
         .map((levelClass, i) => new levelClass(server, i));
     }
 
-    async start() {
+    async start(): Promise<void> {
         await this.loadPlayers();
         this.busy = false;
         setInterval(() => this.tick(), 1000);
     }
 
-    private async loadPlayers() {
+    private async loadPlayers(): Promise<void> {
         for (let dbEntry of await this.server.db.loadPlayers()) {
             this.addPlayer(dbEntry as InfoPlus);
         }
     }
 
-    createNewHandle() {
+    createNewHandle(): number {
         const maxHandle = Handles.getMaxHandle();
         if (this.playerHandles.size >= maxHandle) {
             console.log('Max handles exceeded!');
@@ -65,14 +68,14 @@ export default class Game {
         }
     }
 
-    addPlayer(dbEntry: InfoPlus) {
+    addPlayer(dbEntry: InfoPlus): void {
         let player = new Player(dbEntry as InfoPlus);
         this.players[player.id] = player;
         this.playerHandles.add(player.handle);
         this.levels[1].spawn(player);
     }
 
-    private async tick() {
+    private async tick(): Promise<void> {
         if (this.busy) {
             console.log('Missed a tick.');
             return;
@@ -82,7 +85,7 @@ export default class Game {
         this.busy = false;
     }
 
-    private async doTickActions() {
+    private async doTickActions(): Promise<void> {
         if (Date.now() - this.lastChartUpdate > chartUpdateInterval) {
             for (let player of this.players) {
                 if (player) player.addChartInterval();
@@ -97,7 +100,7 @@ export default class Game {
         }
     }
 
-    private async doPlayerAction(player: Player) {
+    private async doPlayerAction(player: Player): Promise<void> {
         if (player.isInJail) this.updateJailTime(player);
         if (player.isInJail) return;
         await this.ensureAction(player);
@@ -107,7 +110,7 @@ export default class Game {
         this.updateIdleTime(player);
     }
 
-    private updateJailTime(player: Player) {
+    private updateJailTime(player: Player): void {
         if (player.jailtime == 0) {
             this.respawn(player);
             return;
@@ -116,7 +119,7 @@ export default class Game {
         player.log.write(`In jail for ${player.jailtime} more turns.`);
     }
 
-    private async ensureAction(player: Player) {
+    private async ensureAction(player: Player): Promise<void> {
         if (player.action) return;
         try {
             player.action = await this.createPlayerAction(player);
@@ -127,7 +130,7 @@ export default class Game {
         }
     }
 
-    private async createPlayerAction(player: Player) {
+    private async createPlayerAction(player: Player): Promise<() => void> {
         const env = new VmEnvironment(this, player);
         const vm = new VM({
             timeout: 200,
@@ -141,7 +144,7 @@ export default class Game {
         return () => vm.run(script);
     }
 
-    private takeAction(player: Player) {
+    private takeAction(player: Player): void {
         player.incrementTimeSpent();
         player.idle++;
         player.turns = 1;
@@ -158,7 +161,7 @@ export default class Game {
         }
     }
 
-    private trimError(e: unknown) {
+    private trimError(e: unknown): string {
         let lines = util.inspect(e).split('\n');
         let i = lines.findIndex(l =>
             l.includes('at Script.runInContext') ||
@@ -169,14 +172,14 @@ export default class Game {
         return lines.join('\n');
     }
 
-    private punish(player: Player) {
+    private punish(player: Player): void {
         player.offenses++;
         const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
         player.jailtime = Math.floor(Math.random() * maxJailtime);
         this.moveToLevel(player, 0);
     }
 
-    private updateIdleTime(player: Player) {
+    private updateIdleTime(player: Player): void {
         if (player.idle == 0) player.offenses = 0;
         if (player.idle > this.levels[player.levelNumber].maxIdleTime) {
             player.log.write('Idle timeout!');
@@ -185,17 +188,17 @@ export default class Game {
         }
     }
 
-    respawn(player: Player) {
+    respawn(player: Player): void {
         player.dontScore = false;
         this.moveToLevel(player, 1);
     }
 
-    respawnAt(player: Player, level: Level, pos: [number, number], dir: number) {
+    respawnAt(player: Player, level: Level, pos: Pos, dir: number): void {
         player.dontScore = true;
         this.moveToLevel(player, level.levelNumber);
     }
 
-    exitPlayer(player: Player) {
+    exitPlayer(player: Player): void {
         player.incrementTimesCompleted();
         let newLevelNumber = player.levelNumber + 1;
         if (newLevelNumber == this.levels.length || player.dontScore) {
@@ -204,14 +207,14 @@ export default class Game {
         this.moveToLevel(player, newLevelNumber);
     }
 
-    moveToLevel(player: Player, levelNumber: number) {
+    moveToLevel(player: Player, levelNumber: number): void {
         this.levels[player.levelNumber].removePlayer(player);
         this.levels[levelNumber].spawn(player);
     }
 
-    getState() {
+    getState(): StateResponse {
         return {
-            players: this.players.map(player => player ? player.getState() : null),
+            players: this.players.map(player => player? player.getState() as PlayerData : undefined),
             levels: this.levels.map(level => level.getState()),
         };
     }

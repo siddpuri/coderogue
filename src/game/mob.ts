@@ -1,5 +1,6 @@
 import Util from '../shared/util.js';
 import Handles from '../shared/handles.js';
+import { MobData } from '../shared/protocol.js';
 
 import Level from './level.js';
 
@@ -18,8 +19,8 @@ export default class Mob {
         this.level.map.setMobId(this.pos, id);
     }
 
-    private findSpawnPos() {
-        let pos: [number, number] | null = null;
+    private findSpawnPos(): Pos {
+        let pos: Pos | null = null;
         while (!pos || !this.level.map.canEnter(pos)) {
             let x = Util.randomInt(1, this.level.width - 2);
             let y = Util.randomInt(1, this.level.height - 2);
@@ -28,7 +29,7 @@ export default class Mob {
         return pos;
     }
 
-    doMobAction() {
+    doMobAction(): void {
         try {
             if (this.bumpPlayer()) return;
             if (this.evadePlayer()) return;
@@ -42,13 +43,13 @@ export default class Mob {
         }
     }
 
-    private bumpPlayer() {
+    private bumpPlayer(): boolean {
         let canBump = this.isPlayerInDir(0);
         if (canBump) this.moveForward();
         return canBump;
     }
 
-    private evadePlayer() {
+    private evadePlayer(): boolean {
         if (!this.canMove(0)) return false;
         let shouldEvade = false;
         for (let dir = 1; dir < 4; dir++) {
@@ -58,7 +59,7 @@ export default class Mob {
         return shouldEvade;
     }
 
-    private facePlayer() {
+    private facePlayer(): boolean {
         for (let dir = 1; dir < 4; dir++) {
             if (this.isPlayerInDir(dir)) {
                 dir == 3? this.turnLeft() : this.turnRight();
@@ -68,7 +69,7 @@ export default class Mob {
         return false;
     }
 
-    private moveTowards(pos: Pos) {
+    private moveTowards(pos: Pos): void {
         if (this.isGoodDirection(pos, 0)) this.moveForward();
         else if (this.isGoodDirection(pos, 1)) this.turnRight();
         else if (this.isGoodDirection(pos, 3)) this.turnLeft();
@@ -76,7 +77,7 @@ export default class Mob {
         else this.moveRandomly();
     }
 
-    private isGoodDirection(pos: Pos, dir: number) {
+    private isGoodDirection(pos: Pos, dir: number): boolean {
         if (!this.canMove(dir)) return false;
         let realDir = (this.dir + dir) % 4;
         return (
@@ -87,13 +88,13 @@ export default class Mob {
         );
     }
 
-    private moveRandomly() {
+    private moveRandomly(): void {
         if (this.canMove(0) && Math.random() < 0.9) this.moveForward();
         else if (Math.random() < 0.5) this.turnLeft();
         else this.turnRight();
     }
 
-    private moveForward() {
+    private moveForward(): void {
         let dest = this.level.movePos(this.pos, this.dir);
         if (this.level.map.canEnter(dest)) {
             this.level.map.clearMob(this.pos);
@@ -110,22 +111,22 @@ export default class Mob {
         }
     }
 
-    private turnLeft() { this.dir = (this.dir + 3) % 4; }
-    private turnRight() { this.dir = (this.dir + 1) % 4; }
+    private turnLeft(): void { this.dir = (this.dir + 3) % 4; }
+    private turnRight(): void { this.dir = (this.dir + 1) % 4; }
 
-    private canMove(dir: number) {
+    private canMove(dir: number): boolean {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.canEnter(dest);
     }
 
-    private isPlayerInDir(dir: number) {
+    private isPlayerInDir(dir: number): boolean {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         return this.level.map.hasPlayer(dest);
     }
 
-    private isPlayerInDirFacingMe(dir: number) {
+    private isPlayerInDirFacingMe(dir: number): boolean {
         let realDir = (this.dir + dir) % 4;
         let dest = this.level.movePos(this.pos, realDir);
         let playerId = this.level.map.getPlayerId(dest);
@@ -134,7 +135,7 @@ export default class Mob {
         return other.dir == (realDir + 2) % 4;
     }
 
-    getState() {
+    getState(): MobData {
         return {
             dir: this.dir,
             textHandle: this.textHandle,

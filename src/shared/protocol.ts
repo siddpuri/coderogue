@@ -18,7 +18,7 @@ export type LogResponse = {
 }
 
 export type StateResponse = {
-    players: PlayerData[];
+    players: (PlayerData | undefined)[];
     levels: LevelData[];
 }
 
@@ -41,7 +41,7 @@ export type PlayerData = {
 
 export type LevelData = {
     name: string;
-    map: Uint16Array;
+    map: number[];
     mobs: MobData[];
 }
 

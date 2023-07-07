@@ -13,7 +13,7 @@ type Pos = [number, number];
 export default class LevelMap {
     private readonly map: Uint16Array;
 
-    constructor(serializedMap: Uint16Array | null = null) {
+    constructor(serializedMap: number[] | null = null) {
         if (!serializedMap) {
             this.map = new Uint16Array(levelWidth * levelHeight);
             this.map.fill(0);

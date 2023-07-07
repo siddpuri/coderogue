@@ -49,38 +49,38 @@ export default class VmEnvironment {
 
     private get level() { return this.game.levels[this.player.levelNumber]; }
 
-    private log(...args: any[]) {
+    private log(...args: any[]): void {
         let text = args.map(e => Util.stringify(e)).join(' ');
         this.player.log.write(text);
     }
 
-    private moveForward() {
+    private moveForward(): void {
         if (!this.player.useTurn()) return;
         this.level.moveForward(this.player);
     }
 
-    private turnRight() {
+    private turnRight(): void {
         if (!this.player.useTurn()) return;
         this.level.turnRight(this.player);
     }
 
-    private turnLeft() {
+    private turnLeft(): void {
         if (!this.player.useTurn()) return;
         this.level.turnLeft(this.player);
     }
 
-    private canMove(dir: number) {
+    private canMove(dir: number): boolean {
         let checker = new ArgumentChecker(this.player, 'canMove');
         if (!checker.checkDir(dir)) return false;
         return this.level.canMove(this.player, dir);
     }
 
-    private respawn() {
+    private respawn(): void {
         if (!this.player.useTurn()) return;
         this.game.respawn(this.player);
     }
 
-    private respawnAt(levelNumber: number, pos: Pos, dir: number) {
+    private respawnAt(levelNumber: number, pos: Pos, dir: number): void {
         if (!this.player.useTurn()) return;
         let checker = new ArgumentChecker(this.player, 'respawnAt');
         checker.setParameter('level', levelNumber);
@@ -92,7 +92,7 @@ export default class VmEnvironment {
         this.game.respawnAt(this.player, level, pos, dir);
     }
 
-    private getMap() {
+    private getMap(): Uint8Array {
         let result = new Uint8Array(80 * 40);
         let map = this.level.map;
         let pos: Pos = [0, 0];
@@ -114,19 +114,19 @@ export default class VmEnvironment {
         return result;
     }
 
-    private getDirChar(dir: number) {
+    private getDirChar(dir: number): string {
         return ['^', '>', 'v', '<'][dir];
     }
 
-    private isProtected(pos: Pos) {
+    private isProtected(pos: Pos): boolean {
         let checker = new ArgumentChecker(this.player, 'isProtected');
         if (!checker.checkPos(pos)) return false;
         return this.level.isProtected(this.player, pos);
     }
 
-    private isWorthPoints(pos: Pos) {
+    private isWorthPoints(pos: Pos): number {
         let checker = new ArgumentChecker(this.player, 'isWorthPoints');
-        if (!checker.checkPos(pos)) return false;
+        if (!checker.checkPos(pos)) return 0;
         return this.level.isWorthPoints(this.player, pos);
     }
 }
@@ -140,26 +140,26 @@ class ArgumentChecker {
         private readonly functionName: string
     ) {}
 
-    setParameter(name: string, value: any) {
+    setParameter(name: string, value: any): void {
         this.parameterName = name;
         this.parameterValue = value;
     }
 
-    check(condition: boolean) {
+    check(condition: boolean): boolean {
         if (!condition) {
             this.player.log.write(`Invalid argument ${this.parameterName} = ${this.parameterValue} to ${this.functionName}`);
         }
         return condition;
     }
 
-    checkDir(dir: number) {
+    checkDir(dir: number): boolean {
         this.setParameter('dir', dir);
         if (!this.check(Number.isInteger(dir))) return false;
         if (!this.check(dir >= 0 && dir < 4)) return false;
         return true;
     }
 
-    checkPos(pos: Pos) {
+    checkPos(pos: Pos): boolean {
         this.setParameter('pos', Util.stringify(pos));
         if (!this.check(Array.isArray(pos))) return false;
         if (!this.check(pos.length == 2)) return false;

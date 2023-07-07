@@ -7,7 +7,7 @@ export default class CircularLog {
         this.buffer = Array(length);
     }
 
-    write(text: string) {
+    write(text: string): void {
         text = this.applyTimeStamp(text);
         this.buffer[this.cur] = text;
         this.cur++;
@@ -17,7 +17,7 @@ export default class CircularLog {
         }
     }
 
-    private applyTimeStamp(text: string) {
+    private applyTimeStamp(text: string): string {
         const now = new Date();
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');
@@ -25,7 +25,7 @@ export default class CircularLog {
         return text.split('\n').map(line => stamp + line).join('\n');
     }
 
-    toString() {
+    toString(): string {
         let parts = [];
         if (this.goneAround) {
             parts.push(this.buffer.slice(this.cur, this.buffer.length));
