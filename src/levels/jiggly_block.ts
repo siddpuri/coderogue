@@ -19,9 +19,11 @@ export default abstract class JigglyBlock<T extends Level> {
     protected get maxCol() { return 60; }
     protected get jiggleChance() { return 0.1; }
 
-    protected isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size) { return true; }
+    protected isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size): boolean {
+        return true;
+    }
 
-    jiggle() {
+    jiggle(): void {
         if (Math.random() > this.jiggleChance) return;
         let pos = this.pos;
         let size = this.size;
@@ -46,7 +48,7 @@ export default abstract class JigglyBlock<T extends Level> {
         [this.pos, this.size] = Util.randomElement(candidates);
     }
 
-    private isValid(pos: Pos, size: Size) {
+    private isValid(pos: Pos, size: Size): boolean {
         return (
             size[0] >= this.minSize &&
             size[0] <= this.maxSize &&
@@ -59,7 +61,7 @@ export default abstract class JigglyBlock<T extends Level> {
         );
     }
 
-    protected forEach(pos: Pos, size: Size, f: (p: Pos) => void) {
+    protected forEach(pos: Pos, size: Size, f: (p: Pos) => void): void {
         let p: Pos = [0, 0];
         for (let x = 0; x < size[0]; x++) {
             p[0] = pos[0] + x;
@@ -70,11 +72,11 @@ export default abstract class JigglyBlock<T extends Level> {
         }
     }
 
-    drawWalls() {
+    drawWalls(): void {
         this.forEach(this.pos, this.size, p => this.level.map.setWall(p));
     }
 
-    eraseWalls() {
+    eraseWalls(): void {
         this.forEach(this.pos, this.size, p => this.level.map.clearWall(p));
     }
 }

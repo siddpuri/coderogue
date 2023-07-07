@@ -31,7 +31,7 @@ export default class Auth {
         return { playerId, authToken, textHandle };
     }
 
-    async createAccount(credentials: LoginRequest) {
+    async createAccount(credentials: LoginRequest): Promise<void> {
         // TODO: This will need to change in order to validate accounts.
         const email = credentials.email;
         const password = await bcrypt.hash(credentials.password, 10);
@@ -41,7 +41,7 @@ export default class Auth {
         await this.server.db.updatePlayer(playerId, 0, handle);
     }
 
-    async setPassword(id: number, credentials: LoginRequest) {
+    async setPassword(id: number, credentials: LoginRequest): Promise<void> {
         let password = await bcrypt.hash(credentials.password, 10);
         await this.server.db.setPassword(id, password)
     }

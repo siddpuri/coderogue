@@ -27,7 +27,7 @@ export default class BlockLevel extends Level {
     get exitScore() { return 200; }
     get bumpScore() { return -1; }
 
-    doLevelAction() {
+    doLevelAction(): void {
         for (let hill of this.hills) {
             hill.eraseWalls();
             hill.jiggle();
@@ -41,7 +41,7 @@ class Hill extends JigglyBlock<BlockLevel> {
         super(level, pos);
     }
 
-    isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size) {
+    isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size): boolean {
         let map = this.level.map;
         let valid = true;
         this.forEach(pos1, size1, (p: Pos) => valid &&= map.canEnter(p));

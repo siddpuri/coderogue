@@ -12,7 +12,7 @@ export default class Server {
     readonly game = new Game(this);
     readonly webServer = new WebServer(this);
 
-    async start() {
+    async start(): Promise<void> {
         await this.db.start();
         await this.repositories.start();
         await this.game.start();

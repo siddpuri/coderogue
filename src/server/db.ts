@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql, { RowDataPacket } from 'mysql2/promise';
 
 import Config from './config.js';
 import Server from './server.js';
@@ -10,7 +10,7 @@ export default class DB {
         readonly server: Server
     ) {}
 
-    async start() {
+    async start(): Promise<void> {
         try {
             await this.connect();
         } catch {
@@ -20,44 +20,44 @@ export default class DB {
         setInterval(() => this.query('SELECT 1'), 60 * 60 * 1000);
     }
 
-    private async connect() {
+    private async connect(): Promise<void> {
         let options = await Config.getDbConnectionOptions();
         this.connection = await mysql.createConnection(options);
     }
 
-    private async query(query: string, parameters?: (string | number)[]) {
-        let [rows] = await this.connection.execute(query, parameters);
-        return rows;
+    private async query(query: string, parameters?: (string | number)[]): Promise<RowDataPacket[]> {
+        let response = await this.connection.execute(query, parameters) as RowDataPacket[][];
+        return response[0];
     }
 
-    async loadPlayers() {
-        return await this.query('SELECT id, auth_token, handle FROM players') as mysql.RowDataPacket[];
+    async loadPlayers(): Promise<RowDataPacket[]> {
+        return await this.query('SELECT id, auth_token, handle FROM players');
     }
 
-    async addPlayer(email: string, password: string, authToken: string) {
+    async addPlayer(email: string, password: string, authToken: string): Promise<number> {
         await this.query(
             'INSERT INTO players (email, password, auth_token) VALUES (?, ?, ?)',
             [email, password, authToken]
         );
-        let [response] = await this.query('SELECT LAST_INSERT_ID()') as mysql.RowDataPacket[];
+        let [response] = await this.query('SELECT LAST_INSERT_ID()');
         return response['LAST_INSERT_ID()'];
     }
 
-    async updatePlayer(playerId: number, period: number, handle: number) {
+    async updatePlayer(playerId: number, period: number, handle: number): Promise<void> {
         await this.query(
             'UPDATE players SET period = ?, handle = ? WHERE id = ?',
             [period, handle, playerId]
         );
     }
 
-    async getPlayerByEmail(email: string) {
+    async getPlayerByEmail(email: string): Promise<RowDataPacket[]> {
         return await this.query(
             'SELECT id, password, auth_token, handle FROM players WHERE email = ?',
             [email]
-        ) as mysql.RowDataPacket[];
+        );
     }
 
-    async setPassword(id: number, password: string) {
+    async setPassword(id: number, password: string): Promise<void> {
         await this.query(
             'UPDATE players SET password = ? WHERE id = ?',
             [password, id]

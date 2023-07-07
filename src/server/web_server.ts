@@ -16,7 +16,7 @@ export default class WebServer {
         private readonly server: Server
     ) {}
 
-    async start() {
+    async start(): Promise<void> {
         let checkId = this.checkPlayerId.bind(this);
         let port = await Config.getWebServerPort();
 

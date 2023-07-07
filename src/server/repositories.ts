@@ -28,11 +28,11 @@ export default class Repositories {
         }
     }
 
-    async start() {
+    async start(): Promise<void> {
         await fs.mkdir(this.root, { recursive: true });
     }
 
-    async readCode(playerId: number) {
+    async readCode(playerId: number): Promise<string> {
         try {
             return await fs.readFile(this.filePath(playerId), 'utf-8');
         } catch (e) {
@@ -40,13 +40,13 @@ export default class Repositories {
         }
     }
 
-    async writeCode(playerId: number, code: string) {
+    async writeCode(playerId: number, code: string): Promise<void> {
         let filePath = this.filePath(playerId);
         await fs.mkdir(path.dirname(filePath), { recursive: true });
         await fs.writeFile(filePath, code);
     }
 
-    private filePath(playerId: number) {
+    private filePath(playerId: number): string {
         return path.join(this.root, playerId.toString(), 'player.js');
     }
 }

@@ -22,16 +22,16 @@ export default class HunterLevel extends BlockLevel {
     get exitPos() { return this.spawnTargetPos; }
     get killScore() { return 200; }
 
-    isProtected(currentPlayer: Player, pos: Pos) {
+    isProtected(currentPlayer: Player, pos: Pos): boolean {
         return this.hasGrownupProtection(currentPlayer, pos);
     }
 
-    isWorthPoints(currentPlayer: Player, pos: Pos) {
+    isWorthPoints(currentPlayer: Player, pos: Pos): number {
         if (this.map.hasMob(pos)) return this.killMobScore;
         return super.isWorthPoints(currentPlayer, pos);
     }
 
-    doLevelAction() {
+    doLevelAction(): void {
         super.doLevelAction();
         this.givePoints();
         if (Math.random() < 0.1) this.spawnMob();
@@ -41,13 +41,13 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    private givePoints() {
+    private givePoints(): void {
         for (let player of this.server.game.players) {
             if (this.isOnLevel(player)) player.addScore(3);
         }
     }
 
-    private spawnMob() {
+    private spawnMob(): void {
         for (let i = 0; i < numMobs; i++) {
             if (!this.mobs[i]) {
                 this.mobs[i] = new Mob(this, i);
@@ -56,7 +56,7 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    private decideMobTarget() {
+    private decideMobTarget(): void {
         let players = this.server.game.players.filter(this.isOnLevel.bind(this));
         if (this.mobTarget && !players.includes(this.mobTarget)) {
             this.mobTarget = null;
@@ -66,7 +66,7 @@ export default class HunterLevel extends BlockLevel {
         }
     }
 
-    private isOnLevel(player: Player) {
+    private isOnLevel(player: Player): boolean {
         return player && player.levelNumber == this.levelNumber;
     }
 }
