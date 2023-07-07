@@ -8,7 +8,7 @@ const grownups = [
 ];
 
 export default class Grownups {
-    static includes(id: number | null) {
-        return id && grownups.includes(id);
+    static includes(id: number | null): boolean {
+        return !!id && grownups.includes(id);
     }
 }

@@ -1,9 +1,9 @@
 export default class Util {
-    static randomInt(min: number, max: number) {
+    static randomInt(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    static randomElement<T>(list: Array<T>) {
+    static randomElement<T>(list: Array<T>): T {
         return list[Math.floor(Math.random() * list.length)];
     }
 

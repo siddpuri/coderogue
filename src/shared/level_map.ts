@@ -22,27 +22,27 @@ export default class LevelMap {
         }
     }
 
-    setWall(pos: Pos) { this.set(pos, wallBit); }
-    setExit(pos: Pos) { this.set(pos, exitBit); }
-    setSpawn(pos: Pos) { this.set(pos, spawnBit); }
-    setPlayerId(pos: Pos, id: number) { this.setId(pos, playerBit, id); }
-    setMobId(pos: Pos, id: number) { this.setId(pos, mobBit, id); }
+    setWall(pos: Pos): void { this.set(pos, wallBit); }
+    setExit(pos: Pos): void { this.set(pos, exitBit); }
+    setSpawn(pos: Pos): void { this.set(pos, spawnBit); }
+    setPlayerId(pos: Pos, id: number): void { this.setId(pos, playerBit, id); }
+    setMobId(pos: Pos, id: number): void { this.setId(pos, mobBit, id); }
 
-    clearWall(pos: Pos) { this.clear(pos, wallBit); }
-    clearExit(pos: Pos) { this.clear(pos, exitBit); }
-    clearSpawn(pos: Pos) { this.clear(pos, spawnBit); }
-    clearPlayer(pos: Pos) { this.clearId(pos, playerBit); }
-    clearMob(pos: Pos) { this.clearId(pos, mobBit); }
+    clearWall(pos: Pos): void { this.clear(pos, wallBit); }
+    clearExit(pos: Pos): void { this.clear(pos, exitBit); }
+    clearSpawn(pos: Pos): void { this.clear(pos, spawnBit); }
+    clearPlayer(pos: Pos): void { this.clearId(pos, playerBit); }
+    clearMob(pos: Pos): void { this.clearId(pos, mobBit); }
 
-    hasWall(pos: Pos) { return this.get(pos, wallBit); }
-    hasExit(pos: Pos) { return this.get(pos, exitBit); }
-    hasSpawn(pos: Pos) { return this.get(pos, spawnBit); }
-    hasPlayer(pos: Pos) { return this.get(pos, playerBit); }
-    getPlayerId(pos: Pos) { return this.getId(pos, playerBit); }
-    hasMob(pos: Pos) { return this.get(pos, mobBit); }
-    getMobId(pos: Pos) { return this.getId(pos, mobBit); }
+    hasWall(pos: Pos): boolean { return this.get(pos, wallBit); }
+    hasExit(pos: Pos): boolean { return this.get(pos, exitBit); }
+    hasSpawn(pos: Pos): boolean { return this.get(pos, spawnBit); }
+    hasPlayer(pos: Pos): boolean { return this.get(pos, playerBit); }
+    getPlayerId(pos: Pos): number | null { return this.getId(pos, playerBit); }
+    hasMob(pos: Pos): boolean { return this.get(pos, mobBit); }
+    getMobId(pos: Pos): number | null { return this.getId(pos, mobBit); }
 
-    canEnter(pos: Pos) {
+    canEnter(pos: Pos): boolean {
         return (
             !this.hasWall(pos) &&
             !this.hasPlayer(pos) &&
@@ -50,42 +50,42 @@ export default class LevelMap {
         );
     }
 
-    canSpawn(pos: Pos) {
+    canSpawn(pos: Pos): boolean {
         return this.canEnter(pos) && !this.hasExit(pos);
     }
 
-    private set(pos: Pos, bit: number) {
+    private set(pos: Pos, bit: number): void {
         let mask = 1 << bit;
         this.map[pos[1] * levelWidth + pos[0]] |= mask;
     }
 
-    private clear(pos: Pos, bit: number) {
+    private clear(pos: Pos, bit: number): void {
         let mask = 1 << bit;
         this.map[pos[1] * levelWidth + pos[0]] &= ~mask;
     }
 
-    private get(pos: Pos, bit: number) {
+    private get(pos: Pos, bit: number): boolean {
         let value = this.map[pos[1] * levelWidth + pos[0]];
         return (value & 1 << bit) != 0;
     }
 
-    private setId(pos: Pos, bit: number, id: number) {
+    private setId(pos: Pos, bit: number, id: number): void {
         let mask = 1 << bit | id << idShift;
         this.map[pos[1] * levelWidth + pos[0]] |= mask;
     }
 
-    private clearId(pos: Pos, bit: number) {
+    private clearId(pos: Pos, bit: number): void {
         let mask = 1 << bit | ~0 << idShift;
         this.map[pos[1] * levelWidth + pos[0]] &= ~mask;
     }
 
-    private getId(pos: Pos, bit: number) {
+    private getId(pos: Pos, bit: number): number | null {
         let value = this.map[pos[1] * levelWidth + pos[0]];
         if (!(value & 1 << bit)) return null;
         return value >> idShift;
     }
 
-    serialize() {
+    serialize(): number[] {
         return Array.from(this.map);
     }
 }

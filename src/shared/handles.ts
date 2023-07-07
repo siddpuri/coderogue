@@ -7,7 +7,7 @@ const words = [
 ];
 
 export default class Handles {
-    static getTextHandle(handle: number) {
+    static getTextHandle(handle: number): string {
         let result = [];
         for (let part of words) {
             result.push(part[handle % part.length]);
@@ -16,11 +16,11 @@ export default class Handles {
         return result.join('-');
     }
 
-    static getMaxHandle() {
+    static getMaxHandle(): number {
         return words.reduce((a, l) => a * l.length, 1);
     }
 
-    static generateAutomatonHandle() {
+    static generateAutomatonHandle(): string {
         return [
             Util.randomElement(words[0]),
             Util.randomElement(words[1]),
