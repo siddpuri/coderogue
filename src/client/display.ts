@@ -181,7 +181,7 @@ export default class Display {
                 let player = this.renderedPlayers[i];
                 row.cells[0].innerHTML = player.rank.toString();
                 row.cells[1].innerHTML = player.totalScore.toString();
-                row.cells[2].innerHTML = player.levelNumber.toString();
+                row.cells[2].innerHTML = player.levelNumber? player.levelNumber.toString(): 'J';
                 row.cells[3].innerHTML = player.textHandle;
                 row.cells[4].innerHTML = player.kills.reduce((a, b) => a + b, 0).toString();
                 row.cells[5].innerHTML = player.deaths.reduce((a, b) => a + b, 0).toString();
