@@ -116,6 +116,7 @@ export default class Game {
             this.respawn(player);
             return;
         }
+        player.jailtime--;
         player.incrementTimeSpent();
         player.log.write(`In jail for ${player.jailtime} more turns.`);
     }
