@@ -5,6 +5,7 @@ import Handles from '../shared/handles.js';
 import { StateResponse, PlayerData } from '../shared/protocol.js';
 
 import Server from '../server/server.js';
+import { PlayerEntry } from '../server/db.js';
 
 import JailLevel from '../levels/jail_level.js';
 import IntroLevel from '../levels/intro_level.js';
@@ -13,7 +14,7 @@ import CaveLevel from '../levels/cave_level.js';
 import HunterLevel from '../levels/hunter_level.js';
 
 import Level from './level.js';
-import Player, { InfoPlus } from './player.js';
+import Player from './player.js';
 import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
 
@@ -50,7 +51,7 @@ export default class Game {
 
     private async loadPlayers(): Promise<void> {
         for (let dbEntry of await this.server.db.loadPlayers()) {
-            this.addPlayer(dbEntry as InfoPlus);
+            this.addPlayer(dbEntry);
         }
     }
 
@@ -68,10 +69,10 @@ export default class Game {
         }
     }
 
-    addPlayer(dbEntry: InfoPlus): void {
-        let player = new Player(dbEntry as InfoPlus);
+    addPlayer(dbEntry: PlayerEntry): void {
+        let player = new Player(dbEntry);
         this.players[player.id] = player;
-        this.playerHandles.add(player.handle);
+        this.playerHandles.add(dbEntry.handle);
         this.levels[1].spawn(player);
     }
 

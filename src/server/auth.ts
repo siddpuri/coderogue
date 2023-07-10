@@ -5,7 +5,6 @@ import { LoginRequest, LoginResponse, ErrorResponse } from '../shared/protocol.j
 import Handles from '../shared/handles.js';
 
 import Server from './server.js';
-import { InfoPlus } from '../game/player.js';
 
 export default class Auth {
     constructor(
@@ -17,7 +16,7 @@ export default class Auth {
         if (!dbEntry) {
             await this.createAccount(credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
-            this.server.game.addPlayer(dbEntry as InfoPlus);
+            this.server.game.addPlayer(dbEntry);
         } else if (!dbEntry.password) {
             await this.setPassword(dbEntry.id, credentials);
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);

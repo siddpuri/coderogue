@@ -1,7 +1,7 @@
 import Util from '../shared/util.js';
-import { StateResponse, LevelData } from '../shared/protocol.js';
-import PlayerInfo from '../shared/player_info.js';
+import { StateResponse, PlayerData, LevelData } from '../shared/protocol.js';
 import Grownups from '../shared/grownups.js';
+import Handles from '../shared/handles.js';
 
 import Client from './client.js';
 import CanvasMap from './canvas_map.js';
@@ -12,6 +12,12 @@ declare class Chart {
     data: any;
     update(): void;
 }
+
+type Player = PlayerData & {
+    textHandle: string,
+    totalScore: number,
+    rank: number
+};
 
 const alertLevels = [
     'alert-success',
@@ -27,13 +33,13 @@ export default class Display {
     private levelToRender = 1;
     private renderPlayersFrom = 0;
     private numPlayers = 0;
-    private renderedPlayers: PlayerInfo[] = [];
+    private renderedPlayers: Player[] = [];
     private messageNumber = 0;
     private messagesToShow = 'all';
     map: CanvasMap;
     highlightedPlayer: number | null = null;
     logIsFrozen = false;
-    private players: PlayerInfo[] = [];
+    private players: Player[] = [];
     private levels: LevelData[] = [];
     private chart!: Chart;
 
@@ -122,7 +128,13 @@ export default class Display {
     setState(state: StateResponse): void {
         this.players = [];
         for (let playerData of state.players) {
-            if (playerData) this.players[playerData.id] = new PlayerInfo(playerData);
+            if (!playerData) continue;
+            this.players[playerData.id] = {
+                ...playerData,
+                textHandle: Handles.getTextHandle(playerData.handle),
+                totalScore: playerData.score.reduce((a, b) => a + b, 0),
+                rank: 0,
+            };
         }
         this.levels = state.levels;
         this.render();
@@ -151,7 +163,7 @@ export default class Display {
         span.appendChild(document.createTextNode(name));
     }
 
-    renderPlayers(players: PlayerInfo[]): void {
+    renderPlayers(players: Player[]): void {
         this.renderedPlayers = this.findPlayersToRender(players);
         let playerTable = this.element('players') as HTMLTableElement;
         for (let i = 0; i < numPlayersToRender; i++) {
@@ -176,7 +188,7 @@ export default class Display {
         }
     }
 
-    findPlayersToRender(players: PlayerInfo[]): PlayerInfo[] {
+    findPlayersToRender(players: Player[]): Player[] {
         let result = [];
         let topPlayers = players.filter(p => p);
         if (this.client.credentials.playerId) {
@@ -276,39 +288,39 @@ export default class Display {
     renderPlayerTab(): void {
         let playerIdToRender = this.highlightedPlayer?? this.client.credentials.playerId;
         if (!playerIdToRender) return;
-        let playerInfo = this.players[playerIdToRender];
-        this.renderPlayerInfo(playerInfo);
-        this.renderPlayerStats(playerInfo);
-        this.renderPlayerChart(playerInfo);
+        let player = this.players[playerIdToRender];
+        this.renderPlayer(player);
+        this.renderPlayerStats(player);
+        this.renderPlayerChart(player);
     }
 
-    renderPlayerInfo(playerInfo: PlayerInfo): void {
+    renderPlayer(player: Player): void {
         let infoTable = this.element('player-info') as HTMLTableElement;
         [
-            playerInfo.levelNumber.toString(),
-            Util.stringify(playerInfo.pos),
-            playerInfo.dir.toString(),
-            playerInfo.idle.toString(),
-            playerInfo.offenses.toString(),
-            playerInfo.jailtime.toString(),
-            playerInfo.id.toString(),
-            playerInfo.handle.toString(),
+            player.levelNumber.toString(),
+            Util.stringify(player.pos),
+            player.dir.toString(),
+            player.idle.toString(),
+            player.offenses.toString(),
+            player.jailtime.toString(),
+            player.id.toString(),
+            player.handle.toString(),
         ]
         .forEach((x, i) => infoTable.rows[i].cells[1].innerHTML = x);
     }
 
-    renderPlayerStats(playerInfo: PlayerInfo): void {
+    renderPlayerStats(player: Player): void {
         let statsTable = this.element('player-stats') as HTMLTableElement;
-        let cumulative = [playerInfo.timeSpent[0]];
-        for (let i = 1; i < playerInfo.timeSpent.length; i++) {
-            cumulative[i] = cumulative[i - 1] + playerInfo.timeSpent[i];
+        let cumulative = [player.timeSpent[0]];
+        for (let i = 1; i < player.timeSpent.length; i++) {
+            cumulative[i] = cumulative[i - 1] + player.timeSpent[i];
         }
         let values = [
-            playerInfo.timeSpent.map(x => this.shorten(x)),
-            playerInfo.timesCompleted,
-            playerInfo.score.map((x, i) => this.renderRatio(x, playerInfo.timeSpent[i])),
-            playerInfo.timesCompleted.map((x, i) => this.renderRatio(playerInfo.timeSpent[i], x)),
-            playerInfo.timesCompleted.map((x, i) => this.renderRatio(cumulative[i], x)),
+            player.timeSpent.map(x => this.shorten(x)),
+            player.timesCompleted,
+            player.score.map((x, i) => this.renderRatio(x, player.timeSpent[i])),
+            player.timesCompleted.map((x, i) => this.renderRatio(player.timeSpent[i], x)),
+            player.timesCompleted.map((x, i) => this.renderRatio(cumulative[i], x)),
         ];
         for (let i = 0; i < values.length; i++) {
             let row = statsTable.rows[i + 1];
@@ -316,8 +328,8 @@ export default class Display {
                 row.cells[j + 1].innerHTML = Util.stringify(values[i][j]);
             }
         }
-        if (playerInfo.timesCompleted[2] >= 10) {
-            let symbol = this.isGoalMet(playerInfo)? '&#x2713': 'x'
+        if (player.timesCompleted[2] >= 10) {
+            let symbol = this.isGoalMet(player)? '&#x2713': 'x'
             statsTable.rows[6].cells[2].innerHTML = symbol;
         }
     }
@@ -338,18 +350,18 @@ export default class Display {
         console.log(passed.map(p => p.id).join(' '));
     }
 
-    isGoalMet(playerInfo: PlayerInfo): boolean {
-        let timesCompleted = playerInfo.timesCompleted[2];
+    isGoalMet(player: Player): boolean {
+        let timesCompleted = player.timesCompleted[2];
         if (timesCompleted < 10) return false;
         let totalTime = 0;
         for (let l = 0; l <= 2; l++) {
-            totalTime += playerInfo.timeSpent[l];
+            totalTime += player.timeSpent[l];
         }
         return totalTime / timesCompleted < 300;
     }
 
-    renderPlayerChart(playerInfo: PlayerInfo): void {
-        this.chart.data.datasets[0].data = playerInfo.chartData;
+    renderPlayerChart(player: Player): void {
+        this.chart.data.datasets[0].data = player.chartData;
         this.chart.update();
     }
 

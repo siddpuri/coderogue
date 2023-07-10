@@ -1,5 +1,4 @@
-import { LevelData } from '../shared/protocol.js';
-import PlayerInfo from '../shared/player_info.js';
+import { PlayerData, LevelData } from '../shared/protocol.js';
 import LevelMap from '../shared/level_map.js';
 
 import Client from './client.js';
@@ -22,7 +21,7 @@ export default class CanvasMap {
     private style = 0;
     private level!: LevelData;
     private map!: LevelMap;
-    private players!: PlayerInfo[];
+    private players!: PlayerData[];
 
     constructor(
         private readonly client: Client
@@ -61,7 +60,7 @@ export default class CanvasMap {
         this.ctx.fillStyle = this.foregroundColor;
     }
 
-    render(level: LevelData, players: PlayerInfo[]): void {
+    render(level: LevelData, players: PlayerData[]): void {
         this.level = level;
         this.map = new LevelMap(level.map);
         this.players = players;

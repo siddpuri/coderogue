@@ -3,6 +3,13 @@ import mysql, { RowDataPacket } from 'mysql2/promise';
 import Config from './config.js';
 import Server from './server.js';
 
+export type PlayerEntry = {
+    id: number;
+    password: string;
+    auth_token: string;
+    handle: number;
+}
+
 export default class DB {
     connection!: mysql.Connection;
 
@@ -30,8 +37,9 @@ export default class DB {
         return response[0];
     }
 
-    async loadPlayers(): Promise<RowDataPacket[]> {
-        return await this.query('SELECT id, auth_token, handle FROM players');
+    async loadPlayers(): Promise<PlayerEntry[]> {
+        let result = await this.query('SELECT id, password, auth_token, handle FROM players');
+        return result as PlayerEntry[];
     }
 
     async addPlayer(email: string, password: string, authToken: string): Promise<number> {
@@ -50,11 +58,12 @@ export default class DB {
         );
     }
 
-    async getPlayerByEmail(email: string): Promise<RowDataPacket[]> {
-        return await this.query(
+    async getPlayerByEmail(email: string): Promise<PlayerEntry[]> {
+        let result = await this.query(
             'SELECT id, password, auth_token, handle FROM players WHERE email = ?',
             [email]
         );
+        return result as PlayerEntry[];
     }
 
     async setPassword(id: number, password: string): Promise<void> {
