@@ -99,18 +99,21 @@ export default class Display {
     }
 
     createPlayerTabChart(): void {
-        let labels = ['cur'];
-        for (let i = 1; i < chartLength; i++) {
-            labels.push(`cur - ${i * 5}`);
-        }
         Chart.defaults.color = 'black';
         this.chart = new Chart(this.element('player-chart'), {
             type: 'line',
             options: {
-                scales: { y: { beginAtZero: true, suggestedMax: 2000 }},
+                scales: {
+                    x: { ticks: { callback: this.tickFunction.bind(this) }},
+                    y: { beginAtZero: true, suggestedMax: 2000 }
+                },
                 animation: false,
+                plugins: {
+                    legend: { display: false },
+                }
             },
             data: {
+                labels: new Array(chartLength).fill(0),
                 datasets: [{
                     label: 'Score in five-minute intervals',
                     borderColor: '#808080',
@@ -118,11 +121,16 @@ export default class Display {
                     borderWidth: 1,
                     pointStyle: false,
                     fill: true,
-                    labels: labels,
                     data: new Array(chartLength).fill(0),
                 }],
             },
         });
+    }
+
+    tickFunction(value: number, index: number, ticks: number[]): string | undefined {
+        if (index % 12 != 0) return undefined;
+        if (index == 0) return 'cur';
+        return `${index / 12}h`;
     }
 
     setState(state: StateResponse): void {
