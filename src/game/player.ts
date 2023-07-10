@@ -28,7 +28,7 @@ export default class Player {
     score: number[] = [];
 
     readonly log = new CircularLog(1000);
-    action: (() => void) | null = null;;
+    action: (() => void) | null = null;
 
     dontScore = false;
     rank = 0;

@@ -15,7 +15,7 @@ export default class Fetcher {
         return result;
     }
 
-    async postJson<T>(name: string, args: Object = {}): Promise<T | null> {
+    async postJson<T>(name: string, args: object = {}): Promise<T | null> {
         let response = await fetch(
             `${this.client.baseUrl}/api/${name}`,
             {

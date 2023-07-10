@@ -75,7 +75,7 @@ export default class ButtonHooks {
     }
 
     private async respawn(): Promise<void> {
-        let result = await this.fetcher.postJson('respawn');
+        await this.fetcher.postJson('respawn');
     }
 
     private async reformat(): Promise<void> {
@@ -94,22 +94,22 @@ export default class ButtonHooks {
             (event.shiftKey? 'S-' : '') +
             event.key;
         switch (key) {
-            case 'C-s':
-                event.preventDefault();
-                await this.submit();
-                break;
-            case 'C-[':
-                this.client.display.switchTab(-1); break;
-            case 'C-]':
-                this.client.display.switchTab(1); break;
-            case 'C-ArrowUp':
-                this.client.display.switchLevel(1); break;
-            case 'C-ArrowDown':
-                this.client.display.switchLevel(-1); break;
-            case 'C-S-ArrowUp':
-                this.client.display.map.setStyle(1); break;
-            case 'C-S-ArrowDown':
-                this.client.display.map.setStyle(0); break;
+        case 'C-s':
+            event.preventDefault();
+            await this.submit();
+            break;
+        case 'C-[':
+            this.client.display.switchTab(-1); break;
+        case 'C-]':
+            this.client.display.switchTab(1); break;
+        case 'C-ArrowUp':
+            this.client.display.switchLevel(1); break;
+        case 'C-ArrowDown':
+            this.client.display.switchLevel(-1); break;
+        case 'C-S-ArrowUp':
+            this.client.display.map.setStyle(1); break;
+        case 'C-S-ArrowDown':
+            this.client.display.map.setStyle(0); break;
         }
     }
 

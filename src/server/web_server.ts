@@ -40,7 +40,7 @@ export default class WebServer {
         this.app.use(this.errorHandler.bind(this));
 
         this.app.listen(port, () => {
-            console.log(`Web server listening on port ${port}`)
+            console.log(`Web server listening on port ${port}`);
         });
     }
 
@@ -101,7 +101,8 @@ export default class WebServer {
         else next();
     }
 
-    private errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private errorHandler(err: Error, req: Req, res: Res, next: Next) {
         console.log(err);
         let result = { error: `Internal server error: ${err.message}` };
         res.status(500).json(result);

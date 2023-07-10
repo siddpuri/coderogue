@@ -4,8 +4,7 @@ import {
     CodeResponse,
     LogResponse,
     StateResponse,
-}
-from '../shared/protocol.js';
+} from '../shared/protocol.js';
 
 import Client from './client.js';
 import Fetcher from './fetcher.js';
@@ -49,7 +48,7 @@ export default class Updater {
     }
 
     async doTickActions(): Promise<void> {
-        let result = await this.fetcher.getJson<StateResponse>('state')
+        let result = await this.fetcher.getJson<StateResponse>('state');
         if (result) this.client.display.setState(result);
         if (this.client.display.isShowing('log-tab')) {
             await this.loadLog();
@@ -62,7 +61,7 @@ export default class Updater {
     }
 
     async loadCode(): Promise<void> {
-        let code = 'Log in to see your code.'
+        let code = 'Log in to see your code.';
         if (this.client.credentials.isLoggedIn) {
             let result = await this.fetcher.getJson<CodeResponse>('code');
             if (result) code = result.code;

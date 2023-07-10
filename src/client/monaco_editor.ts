@@ -1,5 +1,6 @@
 import Client from './client.js';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare class monaco {
     static languages: any;
     static editor: any;
@@ -8,10 +9,12 @@ declare class monaco {
     static KeyCode: any;
 }
 
-declare var require: any;
+declare const require: any;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export default class MonacoEditor {
     libSource!: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     editor!: any;
 
     constructor(
@@ -39,9 +42,9 @@ export default class MonacoEditor {
             lib: ['es2017'],  // Vanilla JS, no DOM stuff.
         });
 
-        var libUri = "ts:filename/coderogue.d.ts";
+        const libUri = 'ts:filename/coderogue.d.ts';
         monaco.languages.typescript.javascriptDefaults.addExtraLib(this.libSource, libUri);
-        monaco.editor.createModel(this.libSource, "javascript", monaco.Uri.parse(libUri));
+        monaco.editor.createModel(this.libSource, 'javascript', monaco.Uri.parse(libUri));
 
         const container = document.getElementById('monaco-editor-container') as HTMLElement;
         this.editor = monaco.editor.create(container, {
@@ -54,8 +57,7 @@ export default class MonacoEditor {
         });
 
         // Redirect to Coderogue's default keybindings
-        monaco.editor.addKeybindingRules(
-        [
+        monaco.editor.addKeybindingRules([
             {
                 keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
                 command: this.editor.addCommand(0, () => this.client.display.switchTab(-1)),
@@ -89,6 +91,6 @@ export default class MonacoEditor {
     set code(code) { this.editor.setValue(code); }
 
     reformat(): void {
-        this.editor.getAction("editor.action.formatDocument").run();
+        this.editor.getAction('editor.action.formatDocument').run();
     }
 }

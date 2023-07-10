@@ -36,6 +36,7 @@ export default abstract class Level {
     get bumpScore() { return 0; }
     get maxIdleTime() { return 60; }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isProtected(currentPlayer: Player, pos: Pos): boolean { return true; }
 
     isWorthPoints(currentPlayer: Player, pos: Pos): number {
@@ -55,7 +56,7 @@ export default abstract class Level {
         return true;
     }
 
-    doLevelAction(): void {}
+    doLevelAction(): void { /* virtual */ }
 
     private drawMap(): void {
         for (let x = 0; x < this.width; x++) {
@@ -80,21 +81,19 @@ export default abstract class Level {
     }
 
     private spawnAround(player: Player, pos: Pos, dir: number, radius: number): void {
-        for (let r = radius; true; r++) {
-            let [dx, dy] = [r, r];
-            while (dx * dx + dy * dy > r * r) {
-                dx = Util.randomInt(-r, r);
-                dy = Util.randomInt(-r, r);
-            }
-            let candidate: Pos = [pos[0] + dx, pos[1] + dy];
-            let [x, y] = candidate;
-            if (x < 0 || x >= this.width) continue;
-            if (y < 0 || y >= this.height) continue;
-            if (this.map.canSpawn(candidate)) {
-                this.addPlayer(player, candidate, dir);
-                return;
-            }
+        let r = radius;
+        let p: Pos = [0, 0];
+        for (let done = false; !done;) {
+            let dx = Util.randomInt(-r, r);
+            let dy = Util.randomInt(-r, r);
+            if (dx * dx + dy * dy > r * r) continue;
+            p = [pos[0] + dx, pos[1] + dy];
+            if (p[0] < 0 || p[0] >= this.width) continue;
+            if (p[1] < 0 || p[1] >= this.height) continue;
+            done = this.map.canSpawn(p);
+            r++;
         }
+        this.addPlayer(player, p, dir);
     }
 
     private addPlayer(player: Player, pos: Pos, dir: number): void {
@@ -109,7 +108,7 @@ export default abstract class Level {
     }
 
     moveForward(player: Player): void {
-        let dest = this.movePos(player.pos, player.dir)
+        let dest = this.movePos(player.pos, player.dir);
         if (this.map.canEnter(dest)) {
             this.movePlayer(player, dest);
         }
@@ -120,7 +119,7 @@ export default abstract class Level {
             this.bumpMob(player, dest);
         }
         else {
-            player.log.write(`Bump!`);
+            player.log.write('Bump!');
             if (player.totalScore > 0) player.addScore(this.bumpScore);
         }
     }
@@ -142,7 +141,7 @@ export default abstract class Level {
         let otherId = this.map.getPlayerId(dest) as number;
         let other = this.server.game.players[otherId];
         if (player.dontScore) {
-            player.log.write(`Can't bump players after respawnAt.`);
+            player.log.write('Can\'t bump players after respawnAt.');
             return;
         }
         if (this.isProtected(player, dest)) {
@@ -162,7 +161,7 @@ export default abstract class Level {
 
     bumpMob(player: Player, dest: Pos): void {
         if (player.dontScore) {
-            player.log.write(`Can't bump automata after respawnAt.`);
+            player.log.write('Can\'t bump automata after respawnAt.');
             return;
         }
         let mobId = this.map.getMobId(dest) as number;

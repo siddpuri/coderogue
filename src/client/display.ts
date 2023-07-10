@@ -6,12 +6,14 @@ import Handles from '../shared/handles.js';
 import Client from './client.js';
 import CanvasMap from './canvas_map.js';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare class Chart {
     constructor(canvas: any, config: any);
     static defaults: any;
     data: any;
     update(): void;
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 type Player = PlayerData & {
     textHandle: string,
@@ -127,6 +129,7 @@ export default class Display {
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tickFunction(value: number, index: number, ticks: number[]): string | undefined {
         if (index % 12 != 0) return undefined;
         if (index == 0) return 'cur';
@@ -289,7 +292,7 @@ export default class Display {
     }
 
     toggleFreeze(): void {
-        let button = this.classList('freeze').toggle('active');
+        this.classList('freeze').toggle('active');
         this.logIsFrozen = !this.logIsFrozen;
     }
 
@@ -313,8 +316,7 @@ export default class Display {
             player.jailtime.toString(),
             player.id.toString(),
             player.handle.toString(),
-        ]
-        .forEach((x, i) => infoTable.rows[i].cells[1].innerHTML = x);
+        ].forEach((x, i) => infoTable.rows[i].cells[1].innerHTML = x);
     }
 
     renderPlayerStats(player: Player): void {
@@ -337,7 +339,7 @@ export default class Display {
             }
         }
         if (player.timesCompleted[2] >= 10) {
-            let symbol = this.isGoalMet(player)? '&#x2713': 'x'
+            let symbol = this.isGoalMet(player)? '&#x2713': 'x';
             statsTable.rows[6].cells[2].innerHTML = symbol;
         }
     }
@@ -349,7 +351,7 @@ export default class Display {
     }
 
     renderRatio(x: number, y: number): string {
-        let value = (y > 0? x / y: 0).toFixed(1)
+        let value = (y > 0? x / y: 0).toFixed(1);
         return this.shorten(Number(value));
     }
 

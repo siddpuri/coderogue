@@ -26,9 +26,9 @@ export default class Credentials {
         for (let cookie of cookies) {
             let [name, value] = cookie.split('=');
             switch (name) {
-                case 'playerId': this.playerId = Number(value); break;
-                case 'authToken': this.authToken = value; break;
-                case 'textHandle': this.textHandle = value; break;
+            case 'playerId': this.playerId = Number(value); break;
+            case 'authToken': this.authToken = value; break;
+            case 'textHandle': this.textHandle = value; break;
             }
         }
     }
@@ -38,7 +38,7 @@ export default class Credentials {
     }
 
     deleteCookie(key: string): void {
-        document.cookie = `${key}=;${expire_now}`
+        document.cookie = `${key}=;${expire_now}`;
     }
 
     async onLogin(serverResponse: LoginResponse): Promise<void> {

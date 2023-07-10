@@ -139,6 +139,6 @@ export default class Mob {
         return {
             dir: this.dir,
             textHandle: this.textHandle,
-        }
+        };
     }
 }

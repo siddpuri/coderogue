@@ -9,11 +9,11 @@ const levelWidth = 80;
 const levelHeight = 40;
 
 export default class VmEnvironment {
-    readonly sandbox: {};
+    readonly sandbox: object;
 
     constructor(
-        private readonly game: Game,
-        private readonly player: Player
+        readonly game: Game,
+        readonly player: Player
     ) {
         this.sandbox = {
             // General functionality
@@ -49,10 +49,12 @@ export default class VmEnvironment {
 
     private get level() { return this.game.levels[this.player.levelNumber]; }
 
-    private log(...args: any[]): void {
-        let text = args.map(e => Util.stringify(e)).join(' ');
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    private log(...args: any): void {
+        let text = args.map((e: any) => Util.stringify(e)).join(' ');
         this.player.log.write(text);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     private moveForward(): void {
         if (!this.player.useTurn()) return;
@@ -70,7 +72,7 @@ export default class VmEnvironment {
     }
 
     private canMove(dir: number): boolean {
-        let checker = new ArgumentChecker(this.player, 'canMove');
+        let checker = new ArgumentChecker(this, 'canMove');
         if (!checker.checkDir(dir)) return false;
         return this.level.canMove(this.player, dir);
     }
@@ -82,13 +84,11 @@ export default class VmEnvironment {
 
     private respawnAt(levelNumber: number, pos: Pos, dir: number): void {
         if (!this.player.useTurn()) return;
-        let checker = new ArgumentChecker(this.player, 'respawnAt');
-        checker.setParameter('level', levelNumber);
-        // TODO: update for level numbering
-        let level = this.game.levels[levelNumber + 1];
-        if (!checker.check(!!level)) return;
+        let checker = new ArgumentChecker(this, 'respawnAt');
+        if (!checker.checkLevel(levelNumber)) return;
         if (!checker.checkPos(pos)) return;
         if (!checker.checkDir(dir)) return;
+        let level = this.game.levels[levelNumber + 1];
         this.game.respawnAt(this.player, level, pos, dir);
     }
 
@@ -119,41 +119,50 @@ export default class VmEnvironment {
     }
 
     private isProtected(pos: Pos): boolean {
-        let checker = new ArgumentChecker(this.player, 'isProtected');
+        let checker = new ArgumentChecker(this, 'isProtected');
         if (!checker.checkPos(pos)) return false;
         return this.level.isProtected(this.player, pos);
     }
 
     private isWorthPoints(pos: Pos): number {
-        let checker = new ArgumentChecker(this.player, 'isWorthPoints');
+        let checker = new ArgumentChecker(this, 'isWorthPoints');
         if (!checker.checkPos(pos)) return 0;
         return this.level.isWorthPoints(this.player, pos);
     }
 }
 
 class ArgumentChecker {
-    parameterName?: string;
-    parameterValue?: any;
+    param!: string;
+    value!: string;
 
     constructor(
-        private readonly player: Player,
+        private readonly env: VmEnvironment,
         private readonly functionName: string
     ) {}
 
-    setParameter(name: string, value: any): void {
-        this.parameterName = name;
-        this.parameterValue = value;
+    setParameter(name: string, value: string): void {
+        this.param = name;
+        this.value = value;
     }
 
     check(condition: boolean): boolean {
         if (!condition) {
-            this.player.log.write(`Invalid argument ${this.parameterName} = ${this.parameterValue} to ${this.functionName}`);
+            let message = `Invalid argument for ${this.functionName}(): ${this.param} = ${this.value}`;
+            this.env.player.log.write(message);
         }
         return condition;
     }
 
+    checkLevel(levelNumber: number): boolean {
+        this.setParameter('levelNumber', levelNumber.toString());
+        if (!this.check(Number.isInteger(levelNumber))) return false;
+        // TODO: update for level numbering
+        if (!this.check(levelNumber >= 0 && levelNumber < this.env.game.levels.length - 1)) return false;
+        return true;
+    }
+
     checkDir(dir: number): boolean {
-        this.setParameter('dir', dir);
+        this.setParameter('dir', dir.toString());
         if (!this.check(Number.isInteger(dir))) return false;
         if (!this.check(dir >= 0 && dir < 4)) return false;
         return true;

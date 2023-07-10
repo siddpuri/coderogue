@@ -19,6 +19,7 @@ export default abstract class JigglyBlock<T extends Level> {
     protected get maxCol() { return 60; }
     protected get jiggleChance() { return 0.1; }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected isValidMove(pos0: Pos, size0: Size, pos1: Pos, size1: Size): boolean {
         return true;
     }

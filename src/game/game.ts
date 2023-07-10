@@ -39,8 +39,7 @@ export default class Game {
             BlockLevel,
             CaveLevel,
             HunterLevel,
-        ]
-        .map((levelClass, i) => new levelClass(server, i));
+        ].map((levelClass, i) => new levelClass(server, i));
     }
 
     async start(): Promise<void> {
@@ -61,12 +60,12 @@ export default class Game {
             console.log('Max handles exceeded!');
             return 0;
         }
-        while (true) {
+        let handle = 0;
+        for (let done = false; !done;) {
             let handle = Math.floor(Math.random() * maxHandle);
-            if (!this.playerHandles.has(handle)) {
-                return handle;
-            }
+            done = !this.playerHandles.has(handle);
         }
+        return handle;
     }
 
     addPlayer(dbEntry: PlayerEntry): void {
@@ -153,8 +152,8 @@ export default class Game {
         try {
             let action = player.action as (() => void);
             action();
-        } catch (e: any) {
-            if (e.code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
+        } catch (e) {
+            if ((e as { code: string }).code == 'ERR_SCRIPT_EXECUTION_TIMEOUT') {
                 player.log.write('Script execution timed out!');
             } else {
                 player.log.write(this.trimError(e));
@@ -197,7 +196,8 @@ export default class Game {
 
     respawnAt(player: Player, level: Level, pos: Pos, dir: number): void {
         player.dontScore = true;
-        this.moveToLevel(player, level.levelNumber);
+        this.levels[player.levelNumber].removePlayer(player);
+        this.levels[level.levelNumber].spawnAt(player, pos, dir);
     }
 
     exitPlayer(player: Player): void {

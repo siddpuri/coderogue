@@ -99,11 +99,9 @@ export default class CanvasMap {
     }
 
     renderArrow(pos: Pos, dir: number, color: string): void {
-        switch (this.style) {
-        case 0:
+        if (this.style == 0) {
             this.setText(pos, '^>v<'[dir], color);
-            break;
-        case 1:
+        } else {
             let triangle = triangles[dir];
             let x = pos[0] * this.dx;
             let y = pos[1] * this.dy;
@@ -113,53 +111,43 @@ export default class CanvasMap {
             this.ctx.lineTo(x + triangle[1][0], y + triangle[1][1]);
             this.ctx.lineTo(x + triangle[2][0], y + triangle[2][1]);
             this.ctx.fill();
-            break;
         }
     }
 
     renderWall(pos: Pos): void {
-        switch (this.style) {
-        case 0:
+        if (this.style == 0) {
             this.setText(pos, '#');
-            break;
-        case 1:
+        } else {
             let x = pos[0] * this.dx;
             let y = pos[1] * this.dy;
             this.ctx.fillStyle = this.wallColor;
             this.ctx.fillRect(x, y, this.dx, this.dy);
-            break;
         }
     }
 
     renderSpawn(pos: Pos): void {
-        switch (this.style) {
-        case 0:
+        if (this.style == 0) {
             this.setText(pos, '.');
-            break;
-        case 1:
+        } else {
             let x = (pos[0] + .5) * this.dx;
             let y = (pos[1] + .5) * this.dy;
             this.ctx.fillStyle = this.currentPlayerColor;
             this.ctx.beginPath();
             this.ctx.ellipse(x, y, 1, 1, 0, 0, 2 * Math.PI);
             this.ctx.fill();
-            break;
         }
     }
 
     renderExit(pos: Pos): void {
-        switch (this.style) {
-        case 0:
+        if (this.style == 0) {
             this.setText(pos, 'o');
-            break;
-        case 1:
+        } else {
             let x = (pos[0] + .5) * this.dx;
             let y = (pos[1] + .5) * this.dy;
             this.ctx.strokeStyle = this.currentPlayerColor;
             this.ctx.beginPath();
             this.ctx.ellipse(x, y, 5, 5, 0, 0, 2 * Math.PI);
             this.ctx.stroke();
-            break;
         }
     }
 

@@ -22,7 +22,7 @@ export default class Auth {
             [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
         }
         if (!await bcrypt.compare(credentials.password, dbEntry.password)) {
-            return { error: "Incorrect password" };
+            return { error: 'Incorrect password' };
         }
         let playerId = dbEntry.id;
         let authToken = dbEntry.auth_token;
@@ -42,6 +42,6 @@ export default class Auth {
 
     async setPassword(id: number, credentials: LoginRequest): Promise<void> {
         let password = await bcrypt.hash(credentials.password, 10);
-        await this.server.db.setPassword(id, password)
+        await this.server.db.setPassword(id, password);
     }
 }

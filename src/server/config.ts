@@ -23,9 +23,8 @@ export default class Config {
             database: 'game',
         };
         if (await hostStartsWith('codespaces-')) {
-            // @ts-ignore
             // mysql.ConnectionOptions incorrectly specifies port as a number.
-            options.port = '/var/run/mysqld/mysqld.sock';
+            options.port = '/var/run/mysqld/mysqld.sock' as unknown as number;
         }
         return options;
     }
