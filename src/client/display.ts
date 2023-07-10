@@ -414,8 +414,8 @@ export default class Display {
 
     onMouseMove(x: number, y: number): void {
         let [col, row] = this.map.getPosAt(x, y);
-        this.setText('x-coord', col.toString());
-        this.setText('y-coord', row.toString());
+        this.element('x-coord').innerHTML = col.toString();
+        this.element('y-coord').innerHTML = row.toString();
     }
 
     onMouseLeave(): void {
@@ -425,7 +425,7 @@ export default class Display {
     showLoggedIn(): void {
         this.classList('login-form').add('d-none');
         this.classList('logout-form').remove('d-none');
-        this.setText('user-handle', this.client.credentials.textHandle as string);
+        this.element('user-handle').innerHTML = this.client.credentials.textHandle as string;
     }
 
     showLoggedOut(): void {
