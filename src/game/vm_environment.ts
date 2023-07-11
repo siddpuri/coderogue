@@ -28,11 +28,6 @@ export default class VmEnvironment {
             respawn:      this.respawn.bind(this),
             _respawnAt:   this.respawnAt.bind(this),
 
-            forward:  0,
-            right:    1,
-            backward: 2,
-            left:     3,
-
             // Robot sensors
             // TODO: update for level numbering
             getLevel:         () => this.player.levelNumber - 1,
