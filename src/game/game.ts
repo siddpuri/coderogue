@@ -16,7 +16,6 @@ import HunterLevel from '../levels/hunter_level.js';
 
 import Level from './level.js';
 import Player from './player.js';
-import Preamble from './preamble.js';
 import VmEnvironment from './vm_environment.js';
 
 type Pos = [number, number];
@@ -57,7 +56,7 @@ export default class Game {
     }
 
     createNewHandle(): number {
-        const maxHandle = Handles.getMaxHandle();
+        let maxHandle = Handles.getMaxHandle();
         if (this.playerHandles.size >= maxHandle) {
             console.log('Max handles exceeded!');
             return 0;
@@ -137,16 +136,16 @@ export default class Game {
     }
 
     private async createPlayerAction(player: Player): Promise<() => void> {
-        const env = new VmEnvironment(this, player);
-        const vm = new VM({
+        let env = new VmEnvironment(this, player);
+        let vm = new VM({
             timeout: 200,
             sandbox: env.sandbox,
             eval: false,
             wasm: false,
             allowAsync: false,
         });
-        const code = await this.server.repositories.readCode(player.id);
-        const script = new VMScript(Preamble.code + code);
+        let code = await this.server.playerCode.readCode(player.id);
+        let script = new VMScript(this.server.playerCode.preamble + code);
         return () => vm.run(script);
     }
 
@@ -180,7 +179,7 @@ export default class Game {
 
     private punish(player: Player): void {
         player.offenses++;
-        const maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
+        let maxJailtime = jailtimes[Math.min(player.offenses, jailtimes.length) - 1];
         player.jailtime = Math.floor(Math.random() * maxJailtime);
         this.moveToLevel(player, 0);
     }

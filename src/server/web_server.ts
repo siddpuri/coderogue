@@ -50,7 +50,7 @@ export default class WebServer {
 
     private async getCode(req: Req, res: Res, next: Next) {
         try {
-            let code = await this.server.repositories.readCode(req.cookies.playerId);
+            let code = await this.server.playerCode.readCode(req.cookies.playerId);
             res.json({ code });
         } catch (err) {
             next(err);
@@ -79,7 +79,7 @@ export default class WebServer {
     private async setCode(req: Req, res: Res, next: Next) {
         let playerId = req.cookies.playerId;
         try {
-            await this.server.repositories.writeCode(playerId, req.body.code);
+            await this.server.playerCode.writeCode(playerId, req.body.code);
             this.server.game.players[playerId].onNewCode();
             res.json({});
         } catch (err) {

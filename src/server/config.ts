@@ -34,4 +34,8 @@ export default class Config {
             await execAsync('sudo service mysql start');
         }
     }
+
+    static getPlayerRoot(): string {
+        return '~/players';
+    }
 }
