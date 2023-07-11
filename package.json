@@ -25,6 +25,7 @@
     "scripts": {
         "build": "npx tsc -b src",
         "lint": "npx eslint src",
-        "start": "NODE_ENV=production node dist/server/run.js"
+        "start": "NODE_ENV=production node dist/server/run.js",
+        "prof": "NODE_ENV=production node --prof dist/server/run.js"
     }
 }

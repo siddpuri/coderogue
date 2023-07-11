@@ -3,6 +3,7 @@ import { VM, VMScript } from 'vm2';
 
 import Handles from '../shared/handles.js';
 import { StateResponse, PlayerData } from '../shared/protocol.js';
+import Timer from '../shared/timer.js';
 
 import Server from '../server/server.js';
 import { PlayerEntry } from '../server/db.js';
@@ -29,6 +30,7 @@ export default class Game {
     private playerHandles: Set<number> = new Set();
     private lastChartUpdate = Date.now();
     private busy = false;
+    private timer = new Timer();
 
     constructor(
         private readonly server: Server
@@ -80,9 +82,12 @@ export default class Game {
             console.log('Missed a tick.');
             return;
         }
+        this.timer.start();
         this.busy = true;
         await this.doTickActions();
         this.busy = false;
+        this.timer.stop();
+        this.timer.log();
     }
 
     private async doTickActions(): Promise<void> {
