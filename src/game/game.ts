@@ -144,8 +144,8 @@ export default class Game {
             wasm: false,
             allowAsync: false,
         });
-        let code = await this.server.playerCode.readCode(player.id);
-        let script = new VMScript(this.server.playerCode.preamble + code);
+        let code = await this.server.playerCode.readCodeAndWrap(player.id);
+        let script = new VMScript(code);
         return () => vm.run(script);
     }
 

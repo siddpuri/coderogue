@@ -18,8 +18,6 @@ export default class PlayerCode {
         }
     }
 
-    get preamble(): string { return this.preambleCode; }
-
     async start(): Promise<void> {
         await fs.mkdir(this.root, { recursive: true });
         this.preambleCode = await this.readStaticCode('preamble.js');
@@ -42,11 +40,18 @@ export default class PlayerCode {
         await fs.writeFile(filePath, code);
     }
 
+    async readCodeAndWrap(playerId: number): Promise<string> {
+        let code = this.preambleCode;
+        code += await this.readCode(playerId);
+        // This saves 15%, but it will break some players.
+        // code = `(() => { ${code} })();`;
+        return code;
+    }
+
     private async readStaticCode(name: string): Promise<string> {
         let myPath = new url.URL(import.meta.url).pathname;
         let dir = path.join(path.dirname(myPath), '..', '..', 'player_code');
-        let result = await fs.readFile(path.join(dir, name), 'utf-8');
-        return result;
+        return await fs.readFile(path.join(dir, name), 'utf-8');
     }
 
     private filePath(playerId: number): string {
