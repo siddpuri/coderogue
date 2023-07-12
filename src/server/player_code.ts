@@ -21,7 +21,7 @@ export default class PlayerCode {
     async start(): Promise<void> {
         await fs.mkdir(this.root, { recursive: true });
         this.templateCode = await this.readStaticCode('template.js');
-        this.templateCode = this.templateCode.replace('\n', ' ');
+        this.templateCode = this.templateCode.replace(/\n/g, ' ');
         this.defaultCode = await this.readStaticCode('default.js');
     }
 
@@ -42,6 +42,8 @@ export default class PlayerCode {
 
     async readCodeAndWrap(playerId: number): Promise<string> {
         let playerCode = await this.readCode(playerId);
+        // In case player code ends with a comment line or an error
+        playerCode += '\n';
         let code = this.templateCode.replace('/* CODE */', playerCode);
         // This saves 25%, but it will break some players.
         // code = `(() => { ${code} })();`;
