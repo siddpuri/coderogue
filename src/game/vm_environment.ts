@@ -17,7 +17,7 @@ export default class VmEnvironment {
     ) {
         this.sandbox = {
             // General functionality
-            _log:           this.log.bind(this),
+            console:       { log: this.log.bind(this) },
             state:         'initial',
 
             // Robot movement
@@ -37,9 +37,12 @@ export default class VmEnvironment {
 
     private get level() { return this.game.levels[this.player.levelNumber]; }
 
-    private log(entries: string[]): void {
-        for (let entry of entries) this.player.log.write(entry);
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    private log(...args: any[]): void {
+        let text = args.map((e: any) => Util.stringify(e)).join(' ');
+        this.player.log.write(text);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     private moveForward(): void {
         if (!this.player.useTurn()) return;

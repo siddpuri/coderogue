@@ -1,22 +1,25 @@
+/* These variables and functions are defined inside the VM context for performance. */
+/* Don't use line comments here: all newlines will be replaced with spaces! */
+
+/* These values mimic College Board's Pseudocode and Code.org's robot examples. */
 var forward = 0;
 var right = 1;
 var backward = 2;
 var left = 3;
 
-var _logEntries = [];
-var _gameState = _getGameState();
-var _map = null;
-
-function _stringify(x) {
-    if (Array.isArray(x)) {
-        return `[${x.map(y => this._stringify(y)).join(', ')}]`;
-    }
-    return String(x);
+/* These functions replicate Code.org's AppLab environment. */
+function randomNumber(a, b) {
+    return Math.floor(Math.random() * (b - a + 1)) + a;
 }
 
-var console = {
-    log: (... args) => _logEntries.push(args.map(x => _stringify(x)).join(' '))
-};
+function appendItem(l, x) { l.push(x); }
+function insertItem(l, i, x) { l.splice(i, 0, x); }
+function removeItem(l, i) { l.splice(i, 1); }
+
+/* Anything starting with a _ is meant to be private, but isn't security critical. */
+/* Anything security critical is controlled by VmEnvironment. */
+var _gameState = _getGameState();
+var _map = null;
 
 function moveForward(pos) {
     _moveForward(pos);
@@ -43,14 +46,5 @@ function whatsAt(pos) {
     return String.fromCharCode(code?? 35);
 }
 
-function randomNumber(a, b) {
-    return Math.floor(Math.random() * (b - a + 1)) + a;
-}
-
-function appendItem(l, x) { l.push(x); }
-function insertItem(l, i, x) { l.splice(i, 0, x); }
-function removeItem(l, i) { l.splice(i, 1); }
-
+/* Player code will be inserted here: */
 /* CODE */
-
-_log(_logEntries);
