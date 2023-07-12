@@ -7,7 +7,7 @@ import Config from './config.js';
 
 export default class PlayerCode {
     root = Config.getPlayerRoot();
-    preambleCode!: string;
+    templateCode!: string;
     defaultCode!: string;
 
     constructor(
@@ -20,8 +20,8 @@ export default class PlayerCode {
 
     async start(): Promise<void> {
         await fs.mkdir(this.root, { recursive: true });
-        this.preambleCode = await this.readStaticCode('preamble.js');
-        this.preambleCode = this.preambleCode.replace('\n', ' ');
+        this.templateCode = await this.readStaticCode('template.js');
+        this.templateCode = this.templateCode.replace('\n', ' ');
         this.defaultCode = await this.readStaticCode('default.js');
     }
 
@@ -41,9 +41,9 @@ export default class PlayerCode {
     }
 
     async readCodeAndWrap(playerId: number): Promise<string> {
-        let code = this.preambleCode;
-        code += await this.readCode(playerId);
-        // This saves 15%, but it will break some players.
+        let playerCode = await this.readCode(playerId);
+        let code = this.templateCode.replace('/* CODE */', playerCode);
+        // This saves 25%, but it will break some players.
         // code = `(() => { ${code} })();`;
         return code;
     }

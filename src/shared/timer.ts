@@ -14,6 +14,10 @@ export default class Timer {
         this.lastTime = Date.now() - this.startTime;
         this.times[this.index] = this.lastTime;
         this.index = (this.index + 1) % numTimes;
+        if (this.index == 0) {
+            this.log();
+            this.times = [];
+        }
     }
 
     log() {

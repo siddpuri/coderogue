@@ -17,39 +17,29 @@ export default class VmEnvironment {
     ) {
         this.sandbox = {
             // General functionality
-            console: { log: this.log.bind(this) },
-            state: 'initial',
+            _log:           this.log.bind(this),
+            state:         'initial',
 
             // Robot movement
-            _moveForward: this.moveForward.bind(this),
-            turnRight:    this.turnRight.bind(this),
-            turnLeft:     this.turnLeft.bind(this),
-            canMove:      this.canMove.bind(this),
-            respawn:      this.respawn.bind(this),
-            _respawnAt:   this.respawnAt.bind(this),
+            _moveForward:  this.moveForward.bind(this),
+            turnRight:     this.turnRight.bind(this),
+            turnLeft:      this.turnLeft.bind(this),
+            respawn:       this.respawn.bind(this),
+            _respawnAt:    this.respawnAt.bind(this),
 
             // Robot sensors
-            // TODO: update for level numbering
-            getLevel:         () => this.player.levelNumber - 1,
-            getPosition:      () => this.player.pos.slice(),
-            getDirection:     () => this.player.dir,
-            getStartPosition: () => this.level.spawnTargetPos.slice(),
-            getExitPosition:  () => this.level.exitPos.slice(),
-
-            getMap:           this.getMap.bind(this),
-            isProtected:      this.isProtected.bind(this),
-            isWorthPoints:    this.isWorthPoints.bind(this),
+            _getGameState: this.getGameState.bind(this),
+            getMap:        this.getMap.bind(this),
+            isProtected:   this.isProtected.bind(this),
+            isWorthPoints: this.isWorthPoints.bind(this),
         };
     }
 
     private get level() { return this.game.levels[this.player.levelNumber]; }
 
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    private log(...args: any): void {
-        let text = args.map((e: any) => Util.stringify(e)).join(' ');
-        this.player.log.write(text);
+    private log(entries: string[]): void {
+        for (let entry of entries) this.player.log.write(entry);
     }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     private moveForward(): void {
         if (!this.player.useTurn()) return;
@@ -66,12 +56,6 @@ export default class VmEnvironment {
         this.level.turnLeft(this.player);
     }
 
-    private canMove(dir: number): boolean {
-        let checker = new ArgumentChecker(this, 'canMove');
-        if (!checker.checkDir(dir)) return false;
-        return this.level.canMove(this.player, dir);
-    }
-
     private respawn(): void {
         if (!this.player.useTurn()) return;
         this.game.respawn(this.player);
@@ -86,6 +70,25 @@ export default class VmEnvironment {
         let level = this.game.levels[levelNumber + 1];
         this.game.respawnAt(this.player, level, pos, dir);
     }
+
+    private getGameState(): (boolean | number)[] {
+        return [
+            this.level.canMove(this.player, 0),
+            this.level.canMove(this.player, 1),
+            this.level.canMove(this.player, 2),
+            this.level.canMove(this.player, 3),
+            // TODO: update for level numbering
+            this.player.levelNumber - 1,
+            this.player.pos[0],
+            this.player.pos[1],
+            this.player.dir,
+            this.level.spawnTargetPos[0],
+            this.level.spawnTargetPos[1],
+            this.level.exitPos[0],
+            this.level.exitPos[1],
+        ];
+    }
+
 
     private getMap(): Uint8Array {
         let result = new Uint8Array(80 * 40);

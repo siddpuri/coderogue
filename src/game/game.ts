@@ -86,7 +86,6 @@ export default class Game {
         await this.doTickActions();
         this.busy = false;
         this.timer.stop();
-        this.timer.log();
     }
 
     private async doTickActions(): Promise<void> {
