@@ -53,7 +53,8 @@ export default class MonacoEditor {
             fontSize: 12,
             theme: 'vs-light',
             fixedOverflowWidgets: true,
-            scrollBeyondLastLine: false
+            scrollBeyondLastLine: false,
+            minimap: { enabled: false },
         });
 
         // Redirect to Coderogue's default keybindings
