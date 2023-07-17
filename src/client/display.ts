@@ -346,7 +346,7 @@ export default class Display {
         }
         if (player.timesCompleted[2] >= 10) {
             let symbol = this.isGoalMet(player)? '&#x2713': 'x';
-            statsTable.rows[6].cells[2].innerHTML = symbol;
+            statsTable.rows[6].cells[3].innerHTML = symbol;
         }
     }
 
