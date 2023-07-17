@@ -57,33 +57,25 @@ export default class MonacoEditor {
             minimap: { enabled: false },
         });
 
-        // Redirect to Coderogue's default keybindings
-        monaco.editor.addKeybindingRules([
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketLeft,
-                command: this.editor.addCommand(0, () => this.client.display.switchTab(-1)),
-            },
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.BracketRight,
-                command: this.editor.addCommand(0, () => this.client.display.switchTab(1)),
-            },
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow,
-                command: this.editor.addCommand(0, () => this.client.display.switchLevel(1)),
-            },
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow,
-                command: this.editor.addCommand(0, () => this.client.display.switchLevel(-1)),
-            },
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
-                command: this.editor.addCommand(0, () => this.client.display.map.setStyle(1)),
-            },
-            {
-                keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.DownArrow,
-                command: this.editor.addCommand(0, () => this.client.display.map.setStyle(0)),
-            },
-        ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let symbols: { [key: string]: any } = {
+            'C': monaco.KeyMod.CtrlCmd,
+            'S': monaco.KeyMod.Shift,
+            's': monaco.KeyMod.KeyS,
+            '[': monaco.KeyCode.BracketLeft,
+            ']': monaco.KeyCode.BracketRight,
+            'ArrowUp': monaco.KeyCode.UpArrow,
+            'ArrowDown': monaco.KeyCode.DownArrow,
+        };
+
+        let bindings = [];
+        for (let key in this.client.display.keybindings) {
+            bindings.push({
+                keybinding: key.split('-').reduce((acc, val) => acc | symbols[val], 0),
+                command: this.editor.addCommand(0, this.client.display.keybindings[key]),
+            });
+        }
+        monaco.editor.addKeybindingRules(bindings);
 
         resolve();
     }

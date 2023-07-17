@@ -45,6 +45,16 @@ export default class Display {
     private levels: LevelData[] = [];
     private chart!: Chart;
 
+    readonly keybindings: { [key: string]: () => void } = {
+        'C-s':           () => this.client.buttonHooks.submit(),
+        'C-[':           () => this.switchTab(-1),
+        'C-]':           () => this.switchTab(1),
+        'C-ArrowUp':     () => this.switchLevel(1),
+        'C-ArrowDown':   () => this.switchLevel(-1),
+        'C-S-ArrowUp':   () => this.map.setStyle(1),
+        'C-S-ArrowDown': () => this.map.setStyle(0),
+    };
+
     constructor(
         private readonly client: Client
     ) {
@@ -231,10 +241,6 @@ export default class Display {
         this.toggleHighlight(this.renderedPlayers[index].id);
     }
 
-    highlightTile(x: number, y: number): void {
-        this.toggleHighlight(this.map.getPlayerAt(x, y));
-    }
-
     toggleHighlight(playerId: number | null): void {
         if (!playerId) return;
         if (playerId == this.highlightedPlayer) {
@@ -414,14 +420,18 @@ export default class Display {
         this.classList('coords').add('show');
     }
 
-    onMouseMove(x: number, y: number): void {
-        let [col, row] = this.map.getPosAt(x, y);
+    onMouseMove(event: MouseEvent): void {
+        let [col, row] = this.map.getPosAt(event.offsetX, event.offsetY);
         this.element('x-coord').innerHTML = col.toString();
         this.element('y-coord').innerHTML = row.toString();
     }
 
     onMouseLeave(): void {
         this.classList('coords').remove('show');
+    }
+
+    highlightTile(event: MouseEvent): void {
+        this.toggleHighlight(this.map.getPlayerAt(event.offsetX, event.offsetY));
     }
 
     showLoggedIn(): void {

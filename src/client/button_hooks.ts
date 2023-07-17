@@ -13,33 +13,32 @@ export default class ButtonHooks {
     }
 
     async start(): Promise<void> {
-        this.onClick('prev-level', () => this.client.display.switchLevel(-1));
-        this.onClick('next-level', () => this.client.display.switchLevel(1));
-        this.onClick('first-players', () => this.client.display.showPlayers(0));
-        this.onClick('prev-players', () => this.client.display.showPlayers(-1));
-        this.onClick('next-players', () => this.client.display.showPlayers(1));
-        this.onClick('canvas', this.handleMapClick.bind(this));
-        this.onClick('find-handle', () => this.client.display.findHandle());
+        let display = this.client.display;
+        let canvas = this.element('canvas');
+
+        this.onClick('prev-level', () => display.switchLevel(-1));
+        this.onClick('next-level', () => display.switchLevel(1));
+        this.onClick('first-players', () => display.showPlayers(0));
+        this.onClick('prev-players', () => display.showPlayers(-1));
+        this.onClick('next-players', () => display.showPlayers(1));
+        this.onClick('find-handle', () => display.findHandle(), 'handle');
         this.onClick('respawn1', this.respawn.bind(this));
         this.onClick('reformat', this.reformat.bind(this));
         this.onClick('submit', this.submit.bind(this));
         this.onClick('respawn2', this.respawn.bind(this));
-        this.onClick('freeze', () => this.client.display.toggleFreeze());
-        this.onClick('show-all', () => this.client.display.showAll());
-        this.onClick('show-latest', () => this.client.display.showLatest());
-        this.onClick('show-filtered', () => this.client.display.showFiltered());
-        this.onClick('login', this.login.bind(this));
+        this.onClick('freeze', () => display.toggleFreeze());
+        this.onClick('show-all', () => display.showAll());
+        this.onClick('show-latest', () => display.showLatest());
+        this.onClick('show-filtered', () => display.showFiltered());
+        this.onClick('login', this.login.bind(this), 'password');
         this.onClick('logout', this.logout.bind(this));
 
-        let canvas = this.element('canvas');
-        canvas.addEventListener('mouseenter', () => this.client.display.onMouseEnter());
-        canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        canvas.addEventListener('mouseleave', () => this.client.display.onMouseLeave());
+        canvas.addEventListener('mouseenter', () => display.onMouseEnter());
+        canvas.addEventListener('mousemove', event => display.onMouseMove(event));
+        canvas.addEventListener('mouseleave', () => display.onMouseLeave());
+        canvas.addEventListener('click', event => display.highlightTile(event));
 
         document.addEventListener('keydown', this.handleKey.bind(this));
-        this.element('handle').addEventListener('keydown', event => {
-            if (event.key == 'Enter') this.client.display.findHandle();
-        });
     }
 
     private element(id: string): HTMLElement {
@@ -49,14 +48,6 @@ export default class ButtonHooks {
     private getText(id: string): string {
         let textField = this.element(id) as HTMLInputElement;
         return textField.value;
-    }
-
-    private handleMouseMove(event: MouseEvent): void {
-        this.client.display.onMouseMove(event.offsetX, event.offsetY);
-    }
-
-    private handleMapClick(event: MouseEvent): void {
-        this.client.display.highlightTile(event.offsetX, event.offsetY);
     }
 
     private async login(): Promise<void> {
@@ -82,38 +73,29 @@ export default class ButtonHooks {
         this.client.editor.reformat();
     }
 
-    private async submit(): Promise<void> {
+    async submit(): Promise<void> {
         let code = this.client.display.getCode();
         let result = await this.fetcher.postJson('code', { code });
         if (result) this.client.display.say('Code submitted!', 0);
     }
 
-    private async handleKey(event: KeyboardEvent): Promise<void> {
-        let key =
-            (event.ctrlKey? 'C-' : '') +
-            (event.shiftKey? 'S-' : '') +
-            event.key;
-        switch (key) {
-        case 'C-s':
+    private handleKey(event: KeyboardEvent): void {
+        let key = event.key;
+        if (event.shiftKey) key = 'S-' + key;
+        if (event.ctrlKey) key = 'C-' + key;
+        let f = this.client.display.keybindings[key];
+        if (f) {
+            f();
             event.preventDefault();
-            await this.submit();
-            break;
-        case 'C-[':
-            this.client.display.switchTab(-1); break;
-        case 'C-]':
-            this.client.display.switchTab(1); break;
-        case 'C-ArrowUp':
-            this.client.display.switchLevel(1); break;
-        case 'C-ArrowDown':
-            this.client.display.switchLevel(-1); break;
-        case 'C-S-ArrowUp':
-            this.client.display.map.setStyle(1); break;
-        case 'C-S-ArrowDown':
-            this.client.display.map.setStyle(0); break;
         }
     }
 
-    private onClick(id: string, f: (event: MouseEvent) => void): void {
-        this.element(id).addEventListener('click', f, false);
+    private onClick(id: string, f: () => void, orEnter = ''): void {
+        this.element(id).addEventListener('click', f);
+        if (orEnter) {
+            this.element(orEnter).addEventListener('keydown', event => {
+                if (event.key == 'Enter') f();
+            });
+        }
     }
 }

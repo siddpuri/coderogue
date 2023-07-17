@@ -8,15 +8,15 @@ window.onload = () => new Client().start();
 
 export default class Client {
     readonly baseUrl = window.location.origin;
-    readonly credentials: Credentials;
     readonly display: Display;
+    readonly credentials: Credentials;
     readonly editor: MonacoEditor;
     readonly updater: Updater;
     readonly buttonHooks: ButtonHooks;
 
     constructor() {
-        this.credentials = new Credentials(this);
         this.display = new Display(this);
+        this.credentials = new Credentials(this);
         this.editor = new MonacoEditor(this);
         this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
