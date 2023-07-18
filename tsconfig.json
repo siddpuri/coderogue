@@ -1,18 +1,24 @@
 {
   "compilerOptions": {
+    // From vite initial configuration
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
+    // Bundler, still from vite
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+
+    // My own stuff
+    "strict": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
