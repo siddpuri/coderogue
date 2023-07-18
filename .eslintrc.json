@@ -40,7 +40,8 @@
             "error",
             "always"
         ],
-        "prefer-const": "off"
+        "prefer-const": "off",
+        "react/react-in-jsx-scope": "off"
     },
     "overrides": [
         {
