@@ -1,13 +1,25 @@
-// Taken from https://stackoverflow.com/questions/55753163/package-json-is-not-under-rootdir
-
 {
-    "compilerOptions": {
-        "rootDir": ".",
-        "outDir": ".", // if out path for a file is same as its src path, nothing will be emitted
-        "resolveJsonModule": true,
-        "composite": true // required on the dependency project for references to work
-    },
-    "files": [ // by whitelisting the files to include, you avoid the default TS behavior, which
-        "package.json" // will include everything, resulting in `src` being included in both projects (bad)
-    ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
