@@ -1,13 +1,13 @@
+// Part of the original vite configuration
 {
   "compilerOptions": {
-    // From vite initial configuration
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
 
-    // Bundler, still from vite
+    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
@@ -15,10 +15,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    // My own stuff
+    /* Linting */
     "strict": true,
+    "noUnusedLocals": true,
+    /* Sidd removed: */
+    /* "noUnusedParameters": true, */
+    "noFallthroughCasesInSwitch": true,
+    /* Sidd added: */
     "noImplicitAny": true,
-    "sourceMap": true,
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

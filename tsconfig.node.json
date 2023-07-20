@@ -1,3 +1,4 @@
+// Part of the original vite configuration
 {
   "compilerOptions": {
     "composite": true,
