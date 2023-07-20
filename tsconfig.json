@@ -1,4 +1,4 @@
-// Part of the original vite configuration
+/* Original vite configuration */
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -18,12 +18,12 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    /* Sidd removed: */
     /* "noUnusedParameters": true, */
     "noFallthroughCasesInSwitch": true,
-    /* Sidd added: */
-    "noImplicitAny": true,
+
+    /* See https://vitejs.dev/guide/features.html#client-types */
+    "types": ["vite/client"],
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/client/**/*", "src/assets/*"],
+  "references": [{ "path": "./tsconfig.node.json" }],
 }

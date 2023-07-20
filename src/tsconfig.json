@@ -10,11 +10,11 @@
         "strict": true,
         "noUnusedLocals": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
 
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "../dist",
     },
-    "include": ["./**/*.ts"],
+    "include": ["**/*.ts"],
+    // "exclude": ["client/**/*"],
 }
