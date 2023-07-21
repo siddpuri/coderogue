@@ -4,8 +4,6 @@ import Display from './display.js';
 import Updater from './updater.js';
 import MonacoEditor from './monaco_editor.js';
 
-window.onload = () => new Client().start();
-
 export default class Client {
     readonly baseUrl = window.location.origin;
     readonly display: Display;
