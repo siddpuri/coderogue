@@ -2,16 +2,23 @@
 	"version": "2.0.0",
 	"tasks": [
         {
+            "label": "vite",
+            "type": "npm",
+            "script": "dev",
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen",
+            },
+        },
+        {
+            "label": "build server",
             "type": "typescript",
             "tsconfig": "src/tsconfig.json",
-            "problemMatcher": [
-                "$tsc"
-            ],
+            "problemMatcher": ["$tsc"],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
-            "label": "tsc"
-        }
+        },
     ]
 }
