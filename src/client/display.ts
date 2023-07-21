@@ -1,3 +1,5 @@
+import Chart, { ChartItem, Tick } from 'chart.js/auto';
+
 import Util from '../shared/util.js';
 import { StateResponse, PlayerData, LevelData } from '../shared/protocol.js';
 import Grownups from '../shared/grownups.js';
@@ -5,15 +7,6 @@ import Handles from '../shared/handles.js';
 
 import Client from './client.js';
 import CanvasMap from './canvas_map.js';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare class Chart {
-    constructor(canvas: any, config: any);
-    static defaults: any;
-    data: any;
-    update(): void;
-}
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 type Player = PlayerData & {
     textHandle: string,
@@ -112,7 +105,7 @@ export default class Display {
 
     createPlayerTabChart(): void {
         Chart.defaults.color = 'black';
-        this.chart = new Chart(this.element('player-chart'), {
+        this.chart = new Chart(this.element('player-chart') as ChartItem, {
             type: 'line',
             options: {
                 scales: {
@@ -139,8 +132,7 @@ export default class Display {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    tickFunction(value: number, index: number, ticks: number[]): string | undefined {
+    tickFunction(value: string | number, index: number, ticks: Tick[]): string | undefined {
         if (index % 12 != 0) return undefined;
         if (index == 0) return 'cur';
         return `${index / 12}h`;
