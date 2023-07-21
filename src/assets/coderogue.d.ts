@@ -1,3 +1,4 @@
+/* eslint-disable no-var, @typescript-eslint/no-explicit-any */
 declare var forward: number;
 declare var right: number;
 declare var backward: number;

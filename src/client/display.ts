@@ -132,6 +132,7 @@ export default class Display {
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tickFunction(value: string | number, index: number, ticks: Tick[]): string | undefined {
         if (index % 12 != 0) return undefined;
         if (index == 0) return 'cur';
