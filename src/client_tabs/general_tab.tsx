@@ -1,0 +1,168 @@
+import React from 'react';
+
+export default class GeneralTab extends React.Component {
+    render() { return (<>
+        <h5>Welcome to Coderogue!</h5>
+        <p>
+            Coderogue is an online, multiplayer, roguelike game in
+            which the only way to control your character (or "robot")
+            is by writing Javascript code.
+        </p>
+        <p>
+            Start off by creating an account, or logging in if you
+            already have one. In the "Account" tab, you'll see your
+            gamer handle displayed. This is how you will recognize
+            yourself on the high score list.
+        </p>
+        <p>
+            On the "Code" tab, you can edit the code that controls your
+            robot. The game has a clock that ticks once per second. At
+            each tick, your code runs in an environment that includes
+            the API described on the "API" tab. Any errors, messages,
+            calls to <code>console.log</code> result in entries in the
+            "Log" tab.
+        </p>
+
+        <h5>Movement</h5>
+        <p>
+            Your code can contain anything that is legal Javascript.
+            It should culminate in a call to one of the three movement
+            functions:
+        </p>
+        <ul>
+            <li><code>moveForward()</code></li>
+            <li><code>turnLeft()</code></li>
+            <li><code>turnRight()</code></li>
+        </ul>
+        <p>
+            The main constraint on your code is that you can't call
+            more than one movement function per tick. So think of your
+            code as answering the question: in the current state of the
+            world, what is the right next move?
+        </p>
+        <p>
+            If you call two movement functions in one tick, only the
+            first one will be executed. The others will result in an
+            error message on the "Log" tab. 
+        </p>
+
+        <h5>Keeping Track of State</h5>
+        <p>
+            One of the challenges you will face is that each invocation
+            of your code needs to figure out all over again what it
+            should do next. For example, let's say you hit a wall. You'd
+            like to turn and then move along the wall until you get to
+            the end. So on the current tick, you turn right. But on the
+            next tick you've forgotton what you were doing, so you turn
+            back again to face toward the exit. The result is that your
+            bot wiggles in place without every moving forward.
+        </p>
+        <p>
+            Really what you'd like is some way to remember what you're
+            doing from one tick to the next.
+            To make this scenario easier to handle, there is a global
+            variable <code>state</code> that you can use.
+            This variable is initially set to the value
+            <code>"initial"</code>. If you change this to a different
+            state, such as <code>"moving"</code>, then on the next tick
+            you can retrieve this value and act accordingly.
+        </p>
+
+        <h5>Sensors</h5>
+        <p>
+            In order to decide what motion to take, it's useful to be
+            able to ask questions about the world around you. You can
+            do this with the help of five sensor functions:
+        </p>
+        <ul>
+            <li><code>getLevel()</code></li>
+            <li><code>getDirection()</code></li>
+            <li><code>getPosition()</code></li>
+            <li><code>getExitPosition()</code></li>
+            <li><code>whatsAt(pos)</code></li>
+        </ul>
+        <p>
+            A position <code>pos = [x, y]</code> is generally a list of
+            length two, where <code>pos[0]</code> is the column and
+            <code>pos[1]</code> is the row, with
+        </p>
+        <ul className="ms-5 list-unstyled">
+            <li><code>
+                0 &lt; pos[0] &lt; 80
+            </code></li>
+            <li><code>
+                0 &lt; pos[1] &lt; 40
+            </code></li>
+        </ul>
+        <p>
+            So for example,
+        </p>
+        <ul className="ms-5 list-unstyled">
+            <li><code>
+                var dx = getExitPosition()[0] - getPosition()[0]
+            </code></li>
+        </ul>
+        <p>
+            sets <code>dx</code> to be the column distance from your
+            robot to the exit.
+        </p>
+        <p>
+            A direction <code>dir</code> is generally an integer of
+            0, 1, 2, or 3. The thing to note is that in some contexts,
+            like <code>getDirection()</code>, the direction is the
+            absolute heading of the robot (up, right, down, or left),
+            but in some contexts, like <code>canMove(dir)</code>, the
+            direction is relative to the current heading of the robot
+            (forward, right, backward, or left).
+        </p>
+
+        <h5>Levels</h5>
+        <p>
+            Your robot starts off on level 0. In each level, there is a
+            spawn point marked by "." and a goal marked by "o". The
+            chellenge is to navigate your robot to the goal as quickly
+            as you can.
+        </p>
+        <p>
+            Each time you reach the goal, you receive some points and
+            then spawn on the next level. When you pass the last level,
+            you respawn back on level 0.
+        </p>
+        <p>
+            Each level has its own quirks. To see a detailed description
+            of the levels, click on the "Levels" tab.
+        </p>
+
+        <h5>Jail</h5>
+        <p>
+            In order to keep the server from being overloaded, it throws
+            misbehaving robots in "jail." This means the robot is removed
+            from the board for some number of seconds, and then respawns
+            on level 0.
+        </p>
+        <p>
+            There are three possible offenses:
+        </p>
+        <ul>
+            <li>Running for more than 250ms.</li>
+            <li>
+                Having an error that prevents your code from running.
+                In this case, the error message is printed to your log.
+            </li>
+            <li>Staying at the same position for 60 ticks.</li>
+        </ul>
+        <p>
+            On the first offense, the robot is jailed for 0-10 seconds,
+            on the second offense, 0-60 seconds, on the third offense,
+            0-5 minutes, and on the fourth offense, 0-60 minutes. If your
+            robot ever successfully moves to a new position using
+            <code>moveForward()</code> without bumping into a wall, its
+            idle timer and its entire criminal record are reset.
+        </p>
+        <p>
+            The other way to reset your robot is by submitting new code.
+            Anytime you hit the "Submit" button, your robot is immediately
+            released from jail with a clean record.
+        </p>
+    </>);}
+}

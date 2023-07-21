@@ -11,12 +11,14 @@
     "serve": "tsc -b src/tsconfig.json && node dist/server/run.js"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.5.1",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.3.0",
     "chart": "^0.1.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
+    "monaco-editor": "^0.40.0",
     "mysql2": "^3.5.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",

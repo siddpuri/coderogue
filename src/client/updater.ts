@@ -22,16 +22,6 @@ export default class Updater {
 
     async start(): Promise<void> {
         await this.loadCode();
-        await this.loadHtml('general', 'general-text');
-        await this.loadHtml('news', 'news-text');
-        await this.loadHtml('api', 'api-text');
-        await this.loadHtml('levels', 'levels-text');
-        await this.loadHtml('keybindings', 'keybindings-text');
-        await this.loadHtml('account', 'account');
-    }
-
-    private element(id: string): HTMLElement {
-        return document.getElementById(id) as HTMLElement;
     }
 
     async tick(): Promise<void> {
@@ -77,10 +67,5 @@ export default class Updater {
             if (result) log = result.log;
         }
         this.client.display.setLog(log);
-    }
-
-    async loadHtml(name: string, id: string): Promise<void> {
-        let result = await this.fetcher.getText(name + '.html');
-        this.element(id).innerHTML = result;
     }
 }
