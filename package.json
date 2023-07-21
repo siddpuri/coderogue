@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "compile": "tsc -b src/tsconfig.json",
     "serve": "tsc -b src/tsconfig.json && node dist/server/run.js"
   },
   "dependencies": {
