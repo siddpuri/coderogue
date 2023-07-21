@@ -70,7 +70,7 @@ export default class ButtonHooks {
     }
 
     private async reformat(): Promise<void> {
-        this.client.editor.reformat();
+        // this.client.editor.reformat();
     }
 
     async submit(): Promise<void> {

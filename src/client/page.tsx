@@ -1,11 +1,12 @@
 import React from 'react';
 
-import NewsTab from '../client_tabs/news_tab.tsx';
-import GeneralTab from '../client_tabs/general_tab.tsx';
-import ApiTab from '../client_tabs/api_tab.tsx';
-import LevelsTab from '../client_tabs/levels_tab.tsx';
-import KeybindingsTab from '../client_tabs/keybindings_tab.tsx';
-import AccountTab from '../client_tabs/account_tab.tsx';
+import CodeTab from '../client_tabs/code_tab';
+import NewsTab from '../client_tabs/news_tab';
+import GeneralTab from '../client_tabs/general_tab';
+import ApiTab from '../client_tabs/api_tab';
+import LevelsTab from '../client_tabs/levels_tab';
+import KeybindingsTab from '../client_tabs/keybindings_tab';
+import AccountTab from '../client_tabs/account_tab';
 
 export default class Page extends React.Component {
     render() { return (<>
@@ -112,16 +113,7 @@ class BottomPane extends React.Component {
             {/* Code tab */}
             <div className="tab-pane active" id="code" role="tabpanel">
                 <div className="row">
-                    <div className="col-10">
-                        <div id="monaco-editor-container" />
-                    </div>
-                    <div className="col">
-                        <div className="d-grid gap-2">
-                            <button type="button" className="btn btn-secondary" id="respawn1">Respawn</button>
-                            <button type="button" className="btn btn-secondary" id="reformat">Reformat</button>
-                            <button type="button" className="btn btn-primary" id="submit">Submit</button>
-                        </div>
-                    </div>
+                    <CodeTab />
                 </div>
             </div>
 
@@ -129,7 +121,7 @@ class BottomPane extends React.Component {
             <div className="tab-pane" id="log" role="tabpanel">
                 <div className="row">
                     <div className="col">
-                        <textarea className="form-control font-monospace" id="log-text" rows={20} defaultValue={""} />
+                        <textarea className="form-control font-monospace" id="log-text" rows={20} />
                     </div>
                     <div className="col-2">
                         <div className="d-grid gap-2">

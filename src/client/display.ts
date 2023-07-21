@@ -275,11 +275,12 @@ export default class Display {
     }
 
     setCode(code: string): void {
-        this.client.editor.code = code;
+        // this.client.editor.code = code;
     }
 
     getCode(): string {
-        return this.client.editor.code;
+        return '';
+        // return this.client.editor.code;
     }
 
     isShowing(tab: string): boolean {
