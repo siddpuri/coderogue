@@ -2,7 +2,6 @@ import React from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { KeyMod, KeyCode } from 'monaco-editor';
 import type monaco from 'monaco-editor';
-// @ts-expect-error Vite accepts this but VSCode doesn't
 import types from '../assets/coderogue.d.ts?raw';
 
 const keyCodes: { [key: string]: KeyCode } = {
