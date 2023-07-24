@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/dist/server/run.js",
-            "preLaunchTask": "tsc",
+            "preLaunchTask": "build server",
         }
     ]
 }
