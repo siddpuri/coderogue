@@ -30,7 +30,7 @@ class TopPane extends React.Component {
                     </div>
                     <div className="col h4 d-flex text-nowrap">
                         <div className="level">
-                            level <span id="level">1</span>:
+                            level <span id="level">1</span>:{' '}
                             <span id="level-name">The Plains</span>
                         </div>
                         <div className="btn-group ms-2 mb-2">
