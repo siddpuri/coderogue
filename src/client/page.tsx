@@ -1,5 +1,3 @@
-import React from 'react';
-
 import CodeTab from '../client_tabs/code_tab';
 import NewsTab from '../client_tabs/news_tab';
 import GeneralTab from '../client_tabs/general_tab';
@@ -8,8 +6,8 @@ import LevelsTab from '../client_tabs/levels_tab';
 import KeybindingsTab from '../client_tabs/keybindings_tab';
 import AccountTab from '../client_tabs/account_tab';
 
-export default class Page extends React.Component {
-    render() { return (<>
+export default function Page() {
+    return (
         <div className="container-fluid">
             <div className="px-3 pt-3 pb-5">
                 <TopPane />
@@ -17,11 +15,11 @@ export default class Page extends React.Component {
             </div>
             <Alert />
         </div>
-    </>);}
+    );
 }
 
-class TopPane extends React.Component {
-    render() { return (<>
+function TopPane() {
+    return (
         <div className="row">
             <div className="col">
                 <div className="row align-items-baseline">
@@ -30,7 +28,7 @@ class TopPane extends React.Component {
                     </div>
                     <div className="col h4 d-flex text-nowrap">
                         <div className="level">
-                            level <span id="level">1</span>:{' '}
+                            level <span id="level">1</span>{': '}
                             <span id="level-name">The Plains</span>
                         </div>
                         <div className="btn-group ms-2 mb-2">
@@ -40,10 +38,11 @@ class TopPane extends React.Component {
                     </div>
                     <div className="col d-flex justify-content-end fade" id="coords">
                         <div className="coords">
-                            [
-                            <span className="coord" id="x-coord" /> ,
+                            {'[ '}
+                            <span className="coord" id="x-coord" />
+                            {' , '}
                             <span className="coord" id="y-coord" />
-                            ]
+                            {' ]'}
                         </div>
                     </div>
                 </div>
@@ -90,11 +89,11 @@ class TopPane extends React.Component {
                 </div>
             </div>
         </div>
-    </>);}
+    );
 }
 
-class BottomPane extends React.Component {
-    render() { return (<>
+function BottomPane() {
+    return (<>
         {/* Nav tabs in bottom pane */}
         <nav className="nav nav-tabs mt-3 mb-3">
             <a className="nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
@@ -233,15 +232,13 @@ class BottomPane extends React.Component {
                 <AccountTab />
             </div>
         </div>
-    </>);}
+    </>);
 }
 
-class Alert extends React.Component {
-    render() {
-        return (<>
-            <div className="position-fixed start-0 end-0 bottom-0 clickthrough">
-                <div className="alert fade px-4 pt-1 pb-1 mb-0" id="message" />
-            </div>
-        </>);
-    }
+function Alert() {
+    return (
+        <div className="position-fixed start-0 end-0 bottom-0 clickthrough">
+            <div className="alert fade px-4 pt-1 pb-1 mb-0" id="message" />
+        </div>
+    );
 }
