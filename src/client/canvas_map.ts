@@ -16,8 +16,8 @@ const triangles = [
 ];
 
 export default class CanvasMap {
-    private readonly canvas: HTMLCanvasElement;
-    private readonly ctx: CanvasRenderingContext2D;
+    private canvas!: HTMLCanvasElement;
+    private ctx!: CanvasRenderingContext2D;
     private style = 0;
     private level!: LevelData;
     private map!: LevelMap;
@@ -26,8 +26,6 @@ export default class CanvasMap {
     constructor(
         private readonly client: Client
     ) {
-        this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
-        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     }
 
     get backgroundColor()    { return '#f0f0f0'; }
@@ -41,6 +39,8 @@ export default class CanvasMap {
     get dy()                 { return [10, 8][this.style]; }
 
     async start(): Promise<void> {
+        this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         this.clearCanvas();       
     }
 
