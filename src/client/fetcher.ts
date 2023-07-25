@@ -31,9 +31,4 @@ export default class Fetcher {
         }
         return result;
     }
-
-    async getText(name: string): Promise<string> {
-        let response = await fetch(`${this.client.baseUrl}/${name}`);
-        return await response.text();
-    }
 }
