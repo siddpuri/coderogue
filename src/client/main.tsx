@@ -20,6 +20,7 @@ export const CodeContext = createContext<string>('');
 export const LogContext = createContext<string>('');
 
 // Local shared display state
+export const MapStyleContext = createContext<number>(0);
 export const ShowingLevelContext = createContext<number>(1);
 export const HighlightedPlayerContext = createContext<number | null>(null);
 export const CurrentTabContext = createContext<string>('code');

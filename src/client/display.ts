@@ -160,21 +160,11 @@ export default class Display {
             if (playerLevel != 0) this.levelToRender = playerLevel;
         }
         let level = this.levels[this.levelToRender];
-        this.renderTitle(level.name);
         this.map.render(level, this.players);
         this.renderPlayers(this.players);
         if (this.isShowing('player-tab')) {
             this.renderPlayerTab();
         }
-    }
-
-    renderTitle(name: string): void {
-        let span = this.element('level');
-        span.removeChild(span.firstChild as Node);
-        span.appendChild(document.createTextNode(this.levelToRender.toString()));
-        span = this.element('level-name');
-        span.removeChild(span.firstChild as Node);
-        span.appendChild(document.createTextNode(name));
     }
 
     renderPlayers(players: Player[]): void {
@@ -408,20 +398,6 @@ export default class Display {
         lines = lines.filter(line => line.includes(filter));
         lines.reverse();
         return lines.join('\n');
-    }
-
-    onMouseEnter(): void {
-        this.classList('coords').add('show');
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        let [col, row] = this.map.getPosAt(event.offsetX, event.offsetY);
-        this.element('x-coord').innerHTML = col.toString();
-        this.element('y-coord').innerHTML = row.toString();
-    }
-
-    onMouseLeave(): void {
-        this.classList('coords').remove('show');
     }
 
     highlightTile(event: MouseEvent): void {

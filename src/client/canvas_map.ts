@@ -61,6 +61,8 @@ export default class CanvasMap {
     }
 
     render(level: LevelData, players: PlayerData[]): void {
+        this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         this.level = level;
         this.map = new LevelMap(level.map);
         this.players = players;

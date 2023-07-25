@@ -33,9 +33,6 @@ export default class ButtonHooks {
         this.onClick('login', this.login.bind(this), 'password');
         this.onClick('logout', this.logout.bind(this));
 
-        canvas.addEventListener('mouseenter', () => display.onMouseEnter());
-        canvas.addEventListener('mousemove', event => display.onMouseMove(event));
-        canvas.addEventListener('mouseleave', () => display.onMouseLeave());
         canvas.addEventListener('click', event => display.highlightTile(event));
 
         document.addEventListener('keydown', this.handleKey.bind(this));
