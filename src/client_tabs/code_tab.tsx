@@ -1,7 +1,7 @@
 import React from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
-import { KeyMod, KeyCode } from 'monaco-editor';
-import type monaco from 'monaco-editor';
+import { editor, KeyMod, KeyCode } from 'monaco-editor';
+
 import types from '../assets/coderogue.d.ts?raw';
 
 const keyCodes: { [key: string]: KeyCode } = {
@@ -15,8 +15,7 @@ const keyCodes: { [key: string]: KeyCode } = {
 };
 
 export default class CodeTab extends React.Component {
-    editor!: monaco.editor.IStandaloneCodeEditor;
-    monaco!: Monaco;
+    editor!: editor.IStandaloneCodeEditor;
 
     render() { return (<>
         <div className="col-10">
@@ -36,9 +35,8 @@ export default class CodeTab extends React.Component {
         </div>
     </>);}
 
-    async onEditorMount(editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) {
+    async onEditorMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
         this.editor = editor;
-        this.monaco = monaco;
 
         monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
             noSemanticValidation: false,
@@ -68,13 +66,10 @@ export default class CodeTab extends React.Component {
     }
 
     addKeybindings(keybindings: { [key: string]: () => void }) {
-        let rules: monaco.editor.IKeybindingRule[] = [];
         for (let key in keybindings) {
             let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
-            rules.push({ keybinding: keyCode, command: key });
-            this.monaco.editor.addCommand({ id: key, run: keybindings[key] });
+            this.editor.addCommand(keyCode, keybindings[key]);
         }
-        this.monaco.editor.addKeybindingRules(rules);
     }
 
     get code() { return this.editor.getValue(); }
