@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react';
 
-import Button from 'react-bootstrap/Button';
-
 import * as Context from './context';
+import LeftRightButtons from './components/left_right_buttons';
 
 import CodeTab from './tabs/code_tab';
 import NewsTab from './tabs/news_tab';
@@ -44,10 +43,9 @@ function TopPane() {
                         <div className="level">
                             level {level}:{' '}{levelName}
                         </div>
-                        <div className="btn-group ms-2 mb-2">
-                            <SmallButton text="⟨" onClick={() => switchLevel(-1)} />
-                            <SmallButton text="⟩" onClick={() => switchLevel(1)} />
-                        </div>
+                        <LeftRightButtons
+                            onLeft={() => switchLevel(-1)}
+                            onRight={() => switchLevel(1)} />
                     </div>
                     <div className="col d-flex justify-content-end">
                         <div className="coords">{renderCoords()}</div>
@@ -123,19 +121,6 @@ function TopPane() {
         if (!mouseCoords) return null;
         return `[ ${mouseCoords[0]}, ${mouseCoords[1]} ]`;
     }
-}
-
-function SmallButton({ text, onClick }: { text: string, onClick: () => void }) {
-    return (
-        <Button
-            variant="light"
-            size="sm"
-            className="text-muted"
-            onClick={onClick}
-        >
-            {text}
-        </Button>
-    );
 }
 
 function BottomPane() {
