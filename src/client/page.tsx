@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 
-import { GameStateContext, MapStyleContext, ShowingLevelContext } from './main';
+import * as Context from './context';
 
 import CodeTab from '../client_tabs/code_tab';
 import NewsTab from '../client_tabs/news_tab';
@@ -23,10 +23,10 @@ export default function Page() {
 }
 
 function TopPane() {
-    const state = useContext(GameStateContext);
-    const style = useContext(MapStyleContext);
-    const level = useContext(ShowingLevelContext);
-    const levelName = state?.levels[level].name || 'The Plains';
+    const state = useContext(Context.GameState)[0];
+    const style = useContext(Context.MapStyle)[0];
+    const level = useContext(Context.MapLevel)[0];
+    const levelName = state.levels[level]?.name || 'The Plains';
 
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
 
