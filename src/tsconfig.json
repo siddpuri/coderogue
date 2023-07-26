@@ -16,5 +16,4 @@
         "outDir": "../dist",
     },
     "include": ["**/*.ts"],
-    // "exclude": ["client/**/*"],
 }

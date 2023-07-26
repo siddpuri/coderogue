@@ -3,9 +3,9 @@ import { useContext } from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 
-import * as Context from '../client/context';
+import * as Context from '../context';
 
-import types from '../assets/coderogue.d.ts?raw';
+import types from '../../assets/coderogue.d.ts?raw';
 
 export default function CodeTab() {
     const editorRef = useContext(Context.EditorRef);

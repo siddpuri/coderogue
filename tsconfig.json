@@ -24,6 +24,6 @@
         /* See https://vitejs.dev/guide/features.html#client-types */
         "types": ["vite/client"],
     },
-    "include": ["src/client/*", "src/assets/*"],
+    "include": ["src/client/**/*", "src/assets/*"],
     "references": [{ "path": "./tsconfig.node.json" }],
 }

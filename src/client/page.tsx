@@ -4,13 +4,13 @@ import Button from 'react-bootstrap/Button';
 
 import * as Context from './context';
 
-import CodeTab from '../client_tabs/code_tab';
-import NewsTab from '../client_tabs/news_tab';
-import GeneralTab from '../client_tabs/general_tab';
-import ApiTab from '../client_tabs/api_tab';
-import LevelsTab from '../client_tabs/levels_tab';
-import KeybindingsTab from '../client_tabs/keybindings_tab';
-import AccountTab from '../client_tabs/account_tab';
+import CodeTab from './tabs/code_tab';
+import NewsTab from './tabs/news_tab';
+import GeneralTab from './tabs/general_tab';
+import ApiTab from './tabs/api_tab';
+import LevelsTab from './tabs/levels_tab';
+import KeybindingsTab from './tabs/keybindings_tab';
+import AccountTab from './tabs/account_tab';
 
 export default function Page() {
     return (
