@@ -1,5 +1,7 @@
 import { useContext, useState } from 'react';
 
+import Button from 'react-bootstrap/Button';
+
 import * as Context from './context';
 
 import CodeTab from '../client_tabs/code_tab';
@@ -23,13 +25,14 @@ export default function Page() {
 }
 
 function TopPane() {
+    const client = useContext(Context.ClientInstance);
     const state = useContext(Context.GameState)[0];
     const style = useContext(Context.MapStyle)[0];
-    const level = useContext(Context.MapLevel)[0];
+    const [level, setLevel] = useContext(Context.MapLevel);
     const levelName = state.levels[level]?.name || 'The Plains';
 
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
-
+    
     return (
         <div className="row">
             <div className="col">
@@ -42,18 +45,18 @@ function TopPane() {
                             level {level}:{' '}{levelName}
                         </div>
                         <div className="btn-group ms-2 mb-2">
-                            <button type="button" className="btn btn-sm btn-light text-muted" id="prev-level">⟨</button>
-                            <button type="button" className="btn btn-sm btn-light text-muted" id="next-level">⟩</button>
+                            <SmallButton text="⟨" onClick={() => switchLevel(-1)} />
+                            <SmallButton text="⟩" onClick={() => switchLevel(1)} />
                         </div>
                     </div>
                     <div className="col d-flex justify-content-end">
-                        <div className="coords">{renderCoords(mouseCoords)}</div>
+                        <div className="coords">{renderCoords()}</div>
                     </div>
                 </div>
                 <canvas
                     id="canvas"
-                    onMouseMove={e => setMouseCoords(getCoordsFromEvent(e, style))}
-                    onMouseLeave={() => setMouseCoords(null)} />
+                    onMouseMove={e => updateCoords(e)}
+                    onMouseLeave={() => updateCoords(null)} />
             </div>
             <div className="col">
                 <div className="row align-items-baseline">
@@ -97,18 +100,42 @@ function TopPane() {
             </div>
         </div>
     );
+
+    function switchLevel(dir: number): void {
+        let newLevel = client.display.switchLevel(dir);
+        setLevel(newLevel);
+    }
+
+    type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
+
+    function updateCoords(event: eventType | null): void {
+        let coords = event? getCoordsFromEvent(event): null;
+        setMouseCoords(coords);
+    }
+
+    function getCoordsFromEvent(event: eventType): [number, number] {
+        let x = Math.floor(event.nativeEvent.offsetX / 8);
+        let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
+        return [x, y];
+    }
+    
+    function renderCoords(): string | null {
+        if (!mouseCoords) return null;
+        return `[ ${mouseCoords[0]}, ${mouseCoords[1]} ]`;
+    }
 }
 
-type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
-function getCoordsFromEvent(event: eventType, style: number): [number, number] {
-    let x = Math.floor(event.nativeEvent.offsetX / 8);
-    let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
-    return [x, y];
-}
-
-function renderCoords(coords: [number, number] | null) {
-    if (!coords) return null;
-    return `[ ${coords[0]}, ${coords[1]} ]`;
+function SmallButton({ text, onClick }: { text: string, onClick: () => void }) {
+    return (
+        <Button
+            variant="light"
+            size="sm"
+            className="text-muted"
+            onClick={onClick}
+        >
+            {text}
+        </Button>
+    );
 }
 
 function BottomPane() {

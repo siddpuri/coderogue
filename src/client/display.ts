@@ -234,12 +234,13 @@ export default class Display {
         this.render();
     }
 
-    switchLevel(dir: number): void {
+    switchLevel(dir: number): number {
         this.highlightedPlayer = null;
         this.levelToRender += dir;
         this.levelToRender = Math.max(this.levelToRender, 1);
         this.levelToRender = Math.min(this.levelToRender, this.levels.length - 1);
         this.render();
+        return this.levelToRender;
     }
 
     showPlayers(dir: number): void {
