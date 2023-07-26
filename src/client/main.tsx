@@ -14,12 +14,12 @@ const client = new Client();
 window.onload = () => client.start();
 
 createRoot(document.getElementById('root')!).render(
-    <ContextWrapper>
+    <Wrapper>
         <Page />
-    </ContextWrapper>
+    </Wrapper>
 );
 
-function ContextWrapper({ children }: React.PropsWithChildren<object>) {
+function Wrapper({ children }: React.PropsWithChildren<object>) {
     const loginState = useState<LoginResponse | null>(null);
     const gameState = useState<StateResponse>({ players: [], levels: [] });
     const log = useState('');

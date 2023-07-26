@@ -1,0 +1,62 @@
+import { useContext, useState } from 'react';
+
+import * as Context from '../context';
+import LeftRightButtons from '../components/left_right_buttons';
+
+export default function MapPane() {
+    const client = useContext(Context.ClientInstance);
+    const state = useContext(Context.GameState)[0];
+    const style = useContext(Context.MapStyle)[0];
+    const [level, setLevel] = useContext(Context.MapLevel);
+    const levelName = state.levels[level]?.name || 'The Plains';
+
+    const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
+    
+    return (
+        <div className="col">
+            <div className="row align-items-baseline">
+                <div className="col h2">
+                    Coderogue
+                </div>
+                <div className="col h4 d-flex text-nowrap">
+                    <div className="level">
+                        level {level}:{' '}{levelName}
+                    </div>
+                    <LeftRightButtons
+                        onLeft={() => switchLevel(-1)}
+                        onRight={() => switchLevel(1)} />
+                </div>
+                <div className="col d-flex justify-content-end">
+                    <div className="coords">{renderCoords()}</div>
+                </div>
+            </div>
+            <canvas
+                id="canvas"
+                onMouseMove={e => updateCoords(e)}
+                onMouseLeave={() => updateCoords(null)} />
+        </div>
+    );
+
+    function switchLevel(dir: number): void {
+        let newLevel = client.display.switchLevel(dir);
+        setLevel(newLevel);
+    }
+
+    type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
+
+    function updateCoords(event: eventType | null): void {
+        let coords = event? getCoordsFromEvent(event): null;
+        setMouseCoords(coords);
+    }
+
+    function getCoordsFromEvent(event: eventType): [number, number] {
+        let x = Math.floor(event.nativeEvent.offsetX / 8);
+        let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
+        return [x, y];
+    }
+    
+    function renderCoords(): string | null {
+        if (!mouseCoords) return null;
+        return `[ ${mouseCoords[0]}, ${mouseCoords[1]} ]`;
+    }
+}

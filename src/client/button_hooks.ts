@@ -16,8 +16,6 @@ export default class ButtonHooks {
         let display = this.client.display;
         let canvas = this.element('canvas');
 
-        this.onClick('prev-level', () => display.switchLevel(-1));
-        this.onClick('next-level', () => display.switchLevel(1));
         this.onClick('first-players', () => display.showPlayers(0));
         this.onClick('prev-players', () => display.showPlayers(-1));
         this.onClick('next-players', () => display.showPlayers(1));
