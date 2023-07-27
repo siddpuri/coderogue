@@ -6,11 +6,15 @@ import LeftRightButtons from '../components/left_right_buttons';
 export default function MapPane() {
     const client = useContext(Context.ClientInstance);
     const state = useContext(Context.GameState)[0];
-    const style = useContext(Context.MapStyle)[0];
-    const [level, setLevel] = useContext(Context.MapLevel);
-    const levelName = state.levels[level]?.name || 'The Plains';
+    const mapAccessor = useContext(Context.MapAccessor);
 
+    const [style, setStyle] = useState(0);
+    const [level, setLevel] = useState(1);
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
+
+    mapAccessor.current = { setStyle, highlightPlayer };
+
+    const levelName = state.levels[level]?.name || 'The Plains';
     
     return (
         <div className="col">
@@ -40,6 +44,10 @@ export default function MapPane() {
     function switchLevel(dir: number): void {
         let newLevel = client.display.switchLevel(dir);
         setLevel(newLevel);
+    }
+
+    function highlightPlayer(player: number): void {
+        client.display.highlightPlayer(player);
     }
 
     type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;

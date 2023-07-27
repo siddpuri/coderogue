@@ -43,7 +43,7 @@ const keyCodes: { [key: string]: KeyCode } = {
 };
 
 export default function CodeTab() {
-    const setCodeAccessor = useContext(Context.CodeAccessor)[1];
+    const codeAccessor = useContext(Context.CodeAccessor);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
     return (<>
@@ -73,10 +73,10 @@ export default function CodeTab() {
         defaults.addExtraLib(types);
         editor.updateOptions(editorOptions);
 
-        setCodeAccessor({
+        codeAccessor.current = {
             getCode: () => editor.getValue(),
             setCode: (code: string) => editor.setValue(code),
-        });
+        };
     }
 
     function reformat(): void {

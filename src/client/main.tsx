@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './coderogue.css';
@@ -26,10 +26,8 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     const loginState = useState<LoginResponse | null>(null);
     const gameState = useState<StateResponse>(Context.emptyStateResponse);
     const log = useState('');
-    const mapStyle = useState(0);
-    const mapLevel = useState(1);
-    const highlightedPlayer = useState<number | null>(null);
-    const codeAccessor = useState<Context.CodeAccessorType>(Context.emptyCodeAccessor);
+    const mapAccessor = useRef<Context.MapAccessorType>(Context.emptyMapAccessor);
+    const codeAccessor = useRef<Context.CodeAccessorType>(Context.emptyCodeAccessor);
 
     let result = children;
 
@@ -37,9 +35,7 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     result = <Context.Login.Provider value={loginState}>{result}</Context.Login.Provider>;
     result = <Context.GameState.Provider value={gameState}>{result}</Context.GameState.Provider>;
     result = <Context.Log.Provider value={log}>{result}</Context.Log.Provider>;
-    result = <Context.MapStyle.Provider value={mapStyle}>{result}</Context.MapStyle.Provider>;
-    result = <Context.MapLevel.Provider value={mapLevel}>{result}</Context.MapLevel.Provider>;
-    result = <Context.HighlightedPlayer.Provider value={highlightedPlayer}>{result}</Context.HighlightedPlayer.Provider>;
+    result = <Context.MapAccessor.Provider value={mapAccessor}>{result}</Context.MapAccessor.Provider>;
     result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;
 
     result = <React.StrictMode>{result}</React.StrictMode>;

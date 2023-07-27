@@ -10,6 +10,12 @@ function createMutableContext<T>(x: T): React.Context<State<T>> {
     return createContext<State<T>>([x, x => x]);
 }
 
+function createRefContext<T>(x: T): React.Context<React.MutableRefObject<T>> {
+    return createContext<React.MutableRefObject<T>>({ current: x });
+}
+
+const none = () => { /* empty */ };
+
 // Client instance; this should end up being mostly deprecated
 export const ClientInstance = createContext<Client>(null!);
 
@@ -19,11 +25,17 @@ export const emptyStateResponse = { players: [], levels: [] };
 export const GameState = createMutableContext<StateResponse>(emptyStateResponse);
 export const Log = createMutableContext('');
 
-// Local shared display state
-export const MapStyle = createMutableContext(0);
-export const MapLevel = createMutableContext(1);
-export const HighlightedPlayer = createMutableContext<number | null>(null);
+// Exposed controls for components
+export type MapAccessorType = {
+    setStyle: (style: number) => void,
+    highlightPlayer: (player: number) => void,
+};
+export const emptyMapAccessor = { setStyle: none, highlightPlayer: none };
+export const MapAccessor = createRefContext<MapAccessorType>(emptyMapAccessor);
 
-export type CodeAccessorType = { getCode: () => string, setCode: (code: string) => void };
-export const emptyCodeAccessor = { getCode: () => '', setCode: () => { /* empty */ } };
-export const CodeAccessor = createMutableContext<CodeAccessorType>(emptyCodeAccessor);
+export type CodeAccessorType = {
+    getCode: () => string,
+    setCode: (code: string) => void,
+};
+export const emptyCodeAccessor = { getCode: () => '', setCode: none };
+export const CodeAccessor = createRefContext<CodeAccessorType>(emptyCodeAccessor);
