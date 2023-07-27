@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
+import Button from 'react-bootstrap/Button';
 
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
@@ -6,28 +7,6 @@ import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 import * as Context from '../context';
 
 import types from '../../assets/coderogue.d.ts?raw';
-
-export default function CodeTab() {
-    const editorRef = useContext(Context.EditorRef);
-
-    return (<>
-        <div className="col-10">
-            <Editor
-                height="80vh"
-                language="javascript"
-                onMount={(e, m) => { editorRef.current = e; onEditorMount(e, m); }}
-                defaultValue="console.log('Hi');"
-            />
-        </div>
-        <div className="col">
-            <div className="d-grid gap-2">
-                <button type="button" className="btn btn-secondary" id="respawn1">Respawn</button>
-                <button type="button" className="btn btn-secondary" id="reformat">Reformat</button>
-                <button type="button" className="btn btn-primary" id="submit">Submit</button>
-            </div>
-        </div>
-    </>);
-}
 
 const diagnosticsOptions: languages.typescript.DiagnosticsOptions = {
     noSemanticValidation: false,
@@ -53,14 +32,6 @@ const editorOptions: editor.IEditorOptions = {
     scrollBeyondLastLine: false,
 };
 
-function onEditorMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
-    let defaults = monaco.languages.typescript.javascriptDefaults;
-    defaults.setDiagnosticsOptions(diagnosticsOptions);
-    defaults.setCompilerOptions(compilerOptions);
-    defaults.addExtraLib(types);
-    editor.updateOptions(editorOptions);
-}
-
 const keyCodes: { [key: string]: KeyCode } = {
     'C': KeyMod.CtrlCmd,
     'S': KeyMod.Shift,
@@ -71,16 +42,51 @@ const keyCodes: { [key: string]: KeyCode } = {
     'ArrowDown': KeyCode.DownArrow,
 };
 
+export default function CodeTab() {
+    const setCodeAccessor = useContext(Context.CodeAccessor)[1];
+    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
+    return (<>
+        <div className="col-10">
+            <Editor
+                height="80vh"
+                language="javascript"
+                onMount={(e, m) => { editorRef.current = e; onEditorMount(e, m); }}
+                defaultValue="console.log('Hi');"
+            />
+        </div>
+        <div className="col">
+            <div className="d-grid gap-2">
+                <button type="button" className="btn btn-secondary" id="respawn1">Respawn</button>
+                <Button variant="secondary" onClick={reformat}>Reformat</Button>
+                <button type="button" className="btn btn-primary" id="submit">Submit</button>
+            </div>
+        </div>
+    </>);
+
+    function onEditorMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+        editorRef.current = editor;
+
+        let defaults = monaco.languages.typescript.javascriptDefaults;
+        defaults.setDiagnosticsOptions(diagnosticsOptions);
+        defaults.setCompilerOptions(compilerOptions);
+        defaults.addExtraLib(types);
+        editor.updateOptions(editorOptions);
+
+        setCodeAccessor({
+            getCode: () => editor.getValue(),
+            setCode: (code: string) => editor.setValue(code),
+        });
+    }
+
+    function reformat(): void {
+        editorRef.current?.getAction('editor.action.formatDocument')?.run();
+    }
+}
+
 // export function addKeybindings(keybindings: { [key: string]: () => void }): void {
 //     for (let key in keybindings) {
 //         let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
 //         EditorRef.current?.addCommand(keyCode, keybindings[key]);
 //     }
-// }
-
-// export function getCode(): string { return EditorRef.current?.getValue() || ''; }
-// export function setCode(code: string): void { EditorRef.current?.setValue(code); }
-
-// export function reformat(): void {
-//     EditorRef.current?.getAction('editor.action.formatDocument')?.run();
 // }

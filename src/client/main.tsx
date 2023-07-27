@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './coderogue.css';
@@ -7,7 +7,6 @@ import { LoginResponse, StateResponse } from '../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
-import { editor } from 'monaco-editor';
 
 import MapPane from './panes/map_pane';
 import PlayerPane from './panes/player_pane';
@@ -25,12 +24,12 @@ createRoot(document.getElementById('root')!).render(
 
 function Wrapper({ children }: React.PropsWithChildren<object>) {
     const loginState = useState<LoginResponse | null>(null);
-    const gameState = useState<StateResponse>({ players: [], levels: [] });
+    const gameState = useState<StateResponse>(Context.emptyStateResponse);
     const log = useState('');
     const mapStyle = useState(0);
     const mapLevel = useState(1);
     const highlightedPlayer = useState<number | null>(null);
-    const editor = useRef<editor.IStandaloneCodeEditor | null>(null);
+    const codeAccessor = useState<Context.CodeAccessorType>(Context.emptyCodeAccessor);
 
     let result = children;
 
@@ -41,7 +40,7 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     result = <Context.MapStyle.Provider value={mapStyle}>{result}</Context.MapStyle.Provider>;
     result = <Context.MapLevel.Provider value={mapLevel}>{result}</Context.MapLevel.Provider>;
     result = <Context.HighlightedPlayer.Provider value={highlightedPlayer}>{result}</Context.HighlightedPlayer.Provider>;
-    result = <Context.EditorRef.Provider value={editor}>{result}</Context.EditorRef.Provider>;
+    result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;
 
     result = <React.StrictMode>{result}</React.StrictMode>;
     return result;
