@@ -7,8 +7,12 @@ import { LoginResponse, StateResponse } from '../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
-import Page from './page';
 import { editor } from 'monaco-editor';
+
+import MapPane from './panes/map_pane';
+import PlayerPane from './panes/player_pane';
+import TabPane from './panes/tab_pane';
+import AlertPane from './panes/alert_pane';
 
 const client = new Client();
 window.onload = () => client.start();
@@ -29,6 +33,7 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     const editor = useRef<editor.IStandaloneCodeEditor | null>(null);
 
     let result = children;
+
     result = <Context.ClientInstance.Provider value={client}>{result}</Context.ClientInstance.Provider>;
     result = <Context.Login.Provider value={loginState}>{result}</Context.Login.Provider>;
     result = <Context.GameState.Provider value={gameState}>{result}</Context.GameState.Provider>;
@@ -40,4 +45,19 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
 
     result = <React.StrictMode>{result}</React.StrictMode>;
     return result;
+}
+
+function Page() {
+    return (
+        <div className="container-fluid">
+            <div className="px-3 pt-3 pb-5">
+                <div className="row">
+                    <MapPane />
+                    <PlayerPane />
+                </div>
+                <TabPane />
+            </div>
+            <AlertPane />
+        </div>
+    );
 }
