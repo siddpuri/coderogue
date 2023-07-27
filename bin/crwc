@@ -1,5 +1,5 @@
 #!/usr/bin/bash
 
-cd $(dirname "$0")/..
-wc src/*/*
-wc static/*
+cd $(dirname "$0")/../src
+wc server/*.* game/*.* levels/*.* shared/*.*
+wc client/*.* client/*/*.* assets/*.*
