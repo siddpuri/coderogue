@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-import { LoginResponse, StateResponse } from '../shared/protocol.js';
+import { LoginRequest, LoginResponse, StateResponse } from '../shared/protocol.js';
 
 import Client from './client.js';
 
@@ -26,6 +26,16 @@ export const GameState = createMutableContext<StateResponse>(emptyStateResponse)
 export const Log = createMutableContext('');
 
 // Exposed controls for components
+export type ServerApiType = {
+    login: (credentials: LoginRequest) => void,
+    loadCode: () => void,
+    loadLog: () => void,
+    submitCode: () => void,
+    respawn: () => void,
+}
+export const emptyServerApi = { login: none, loadCode: none, loadLog: none, submitCode: none, respawn: none };
+export const ServerApi = createContext<ServerApiType>(emptyServerApi);
+
 export type MapAccessorType = {
     setStyle: (style: number) => void,
     highlightPlayer: (player: number) => void,
