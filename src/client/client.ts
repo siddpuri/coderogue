@@ -1,26 +1,22 @@
 import ButtonHooks from './button_hooks.js';
 import Credentials from './credentials.js';
 import Display from './display.js';
-import Updater from './updater.js';
 
 export default class Client {
     readonly baseUrl = window.location.origin;
     readonly display: Display;
     readonly credentials: Credentials;
-    readonly updater: Updater;
     readonly buttonHooks: ButtonHooks;
 
     constructor() {
         this.display = new Display(this);
         this.credentials = new Credentials(this);
-        this.updater = new Updater(this);
         this.buttonHooks = new ButtonHooks(this);
     }
 
     async start(): Promise<void> {
         await this.display.start();
         await this.credentials.start();
-        await this.updater.start();
         await this.buttonHooks.start();
 
         if (this.credentials.isLoggedIn) {
@@ -30,11 +26,9 @@ export default class Client {
 
     onLogin(): void {
         this.display.showLoggedIn();
-        this.updater.loadCode();
     }
 
     onLogout(): void {
         this.display.showLoggedOut();
-        this.updater.loadCode();
     }
 }
