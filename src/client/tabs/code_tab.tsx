@@ -52,7 +52,7 @@ export default function CodeTab() {
                 height="80vh"
                 language="javascript"
                 onMount={onMount}
-                defaultValue="console.log('Hi');"
+                defaultValue="// Log in to see your code."
             />
         </div>
         <div className="col">

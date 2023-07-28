@@ -16,11 +16,14 @@ export default class ButtonHooks {
         let display = this.client.display;
         let canvas = this.element('canvas');
 
+        // this.onClick('prev-level', () => display.switchLevel(-1));
+        // this.onClick('next-level', () => display.switchLevel(1));
         this.onClick('first-players', () => display.showPlayers(0));
         this.onClick('prev-players', () => display.showPlayers(-1));
         this.onClick('next-players', () => display.showPlayers(1));
         this.onClick('find-handle', () => display.findHandle(), 'handle');
         this.onClick('respawn1', this.respawn.bind(this));
+        // this.onClick('reformat', this.reformat.bind(this));
         this.onClick('submit', this.submit.bind(this));
         this.onClick('respawn2', this.respawn.bind(this));
         this.onClick('freeze', () => display.toggleFreeze());
@@ -30,7 +33,12 @@ export default class ButtonHooks {
         this.onClick('login', this.login.bind(this), 'password');
         this.onClick('logout', this.logout.bind(this));
 
+        // canvas.addEventListener('mouseenter', () => display.onMouseEnter());
+        // canvas.addEventListener('mousemove', event => display.onMouseMove(event));
+        // canvas.addEventListener('mouseleave', () => display.onMouseLeave());        
         canvas.addEventListener('click', event => display.highlightTile(event));
+
+        // document.addEventListener('keydown', this.handleKey.bind(this));
     }
 
     private element(id: string): HTMLElement {
@@ -61,11 +69,26 @@ export default class ButtonHooks {
         await this.fetcher.postJson('respawn');
     }
 
+    // private async reformat(): Promise<void> {
+    //     this.client.editor.reformat();
+    // }
+
     async submit(): Promise<void> {
         let code = this.client.display.getCode();
         let result = await this.fetcher.postJson('code', { code });
         if (result) this.client.display.say('Code submitted!', 0);
     }
+
+    // private handleKey(event: KeyboardEvent): void {
+    //     let key = event.key;
+    //     if (event.shiftKey) key = 'S-' + key;
+    //     if (event.ctrlKey) key = 'C-' + key;
+    //     let f = this.client.display.keybindings[key];
+    //     if (f) {
+    //         f();
+    //         event.preventDefault();
+    //     }
+    // }
 
     private onClick(id: string, f: () => void, orEnter = ''): void {
         if (!this.element(id)) {
