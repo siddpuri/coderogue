@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import * as Context from '../context';
 import LeftRightButtons from '../components/left_right_buttons';
@@ -12,7 +12,7 @@ export default function MapPane() {
     const [level, setLevel] = useState(1);
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
 
-    mapAccessor.current = { setStyle, highlightPlayer };
+    useEffect(() => { mapAccessor.current = { setStyle, highlightPlayer };});
 
     const levelName = state.levels[level]?.name || 'The Plains';
     
