@@ -12,7 +12,7 @@ export default function MapPane() {
     const [level, setLevel] = useState(1);
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
 
-    useEffect(() => { mapAccessor.current = { setStyle, highlightPlayer };});
+    useEffect(() => { mapAccessor.current = { setStyle, highlightPlayer, switchLevel };});
 
     const levelName = state.levels[level]?.name || 'The Plains';
     
@@ -41,13 +41,13 @@ export default function MapPane() {
         </div>
     );
 
+    function highlightPlayer(player: number): void {
+        client.display.highlightPlayer(player);
+    }
+
     function switchLevel(dir: number): void {
         let newLevel = client.display.switchLevel(dir);
         setLevel(newLevel);
-    }
-
-    function highlightPlayer(player: number): void {
-        client.display.highlightPlayer(player);
     }
 
     type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;

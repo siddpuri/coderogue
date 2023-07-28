@@ -29,17 +29,35 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     const mapAccessor = useRef<Context.MapAccessorType>(Context.emptyMapAccessor);
     const codeAccessor = useRef<Context.CodeAccessorType>(Context.emptyCodeAccessor);
 
-    let result = children;
+    const keybindings: { [key: string]: () => void } = {
+        'C-s':           () => client.buttonHooks.submit(),
+        'C-[':           () => client.display.switchTab(-1),
+        'C-]':           () => client.display.switchTab(1),
+        'C-ArrowUp':     () => mapAccessor.current.switchLevel(1),
+        'C-ArrowDown':   () => mapAccessor.current.switchLevel(-1),
+        'C-S-ArrowUp':   () => mapAccessor.current.setStyle(1),
+        'C-S-ArrowDown': () => mapAccessor.current.setStyle(0),
+    };
 
+    let result = children;
     result = <Context.ClientInstance.Provider value={client}>{result}</Context.ClientInstance.Provider>;
     result = <Context.Login.Provider value={loginState}>{result}</Context.Login.Provider>;
     result = <Context.GameState.Provider value={gameState}>{result}</Context.GameState.Provider>;
     result = <Context.Log.Provider value={log}>{result}</Context.Log.Provider>;
     result = <Context.MapAccessor.Provider value={mapAccessor}>{result}</Context.MapAccessor.Provider>;
     result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;
-
+    result = <div onKeyDown={onKeyDown}>{result}</div>;
     result = <React.StrictMode>{result}</React.StrictMode>;
     return result;
+
+    function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+        let key = event.key;
+        if (event.shiftKey) key = 'S-' + key;
+        if (event.ctrlKey) key = 'C-' + key;
+        if (!keybindings[key]) return;
+        keybindings[key]();
+        event.preventDefault();
+    }
 }
 
 function Page() {

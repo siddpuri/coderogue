@@ -21,7 +21,6 @@ export default class ButtonHooks {
         this.onClick('next-players', () => display.showPlayers(1));
         this.onClick('find-handle', () => display.findHandle(), 'handle');
         this.onClick('respawn1', this.respawn.bind(this));
-        this.onClick('reformat', this.reformat.bind(this));
         this.onClick('submit', this.submit.bind(this));
         this.onClick('respawn2', this.respawn.bind(this));
         this.onClick('freeze', () => display.toggleFreeze());
@@ -32,8 +31,6 @@ export default class ButtonHooks {
         this.onClick('logout', this.logout.bind(this));
 
         canvas.addEventListener('click', event => display.highlightTile(event));
-
-        document.addEventListener('keydown', this.handleKey.bind(this));
     }
 
     private element(id: string): HTMLElement {
@@ -64,28 +61,17 @@ export default class ButtonHooks {
         await this.fetcher.postJson('respawn');
     }
 
-    private async reformat(): Promise<void> {
-        // this.client.editor.reformat();
-    }
-
     async submit(): Promise<void> {
         let code = this.client.display.getCode();
         let result = await this.fetcher.postJson('code', { code });
         if (result) this.client.display.say('Code submitted!', 0);
     }
 
-    private handleKey(event: KeyboardEvent): void {
-        let key = event.key;
-        if (event.shiftKey) key = 'S-' + key;
-        if (event.ctrlKey) key = 'C-' + key;
-        let f = this.client.display.keybindings[key];
-        if (f) {
-            f();
-            event.preventDefault();
-        }
-    }
-
     private onClick(id: string, f: () => void, orEnter = ''): void {
+        if (!this.element(id)) {
+            console.log(`Missing element: ${id}`);
+            return;
+        }
         this.element(id).addEventListener('click', f);
         if (orEnter) {
             this.element(orEnter).addEventListener('keydown', event => {

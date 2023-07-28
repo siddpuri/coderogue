@@ -29,8 +29,9 @@ export const Log = createMutableContext('');
 export type MapAccessorType = {
     setStyle: (style: number) => void,
     highlightPlayer: (player: number) => void,
+    switchLevel: (dir: number) => void,
 };
-export const emptyMapAccessor = { setStyle: none, highlightPlayer: none };
+export const emptyMapAccessor = { setStyle: none, highlightPlayer: none, switchLevel: none };
 export const MapAccessor = createRefContext<MapAccessorType>(emptyMapAccessor);
 
 export type CodeAccessorType = {
