@@ -51,7 +51,7 @@ export default function CodeTab() {
             <Editor
                 height="80vh"
                 language="javascript"
-                onMount={(e, m) => { editorRef.current = e; onEditorMount(e, m); }}
+                onMount={onMount}
                 defaultValue="console.log('Hi');"
             />
         </div>
@@ -64,7 +64,7 @@ export default function CodeTab() {
         </div>
     </>);
 
-    function onEditorMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+    function onMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef.current = editor;
 
         let defaults = monaco.languages.typescript.javascriptDefaults;
