@@ -6,7 +6,7 @@ import Grownups from '../shared/grownups.js';
 import Handles from '../shared/handles.js';
 
 import Client from './client.js';
-import CanvasMap from './canvas_map.js';
+// import CanvasMap from './components/canvas_map.js';
 
 type Player = PlayerData & {
     textHandle: string,
@@ -31,7 +31,7 @@ export default class Display {
     private renderedPlayers: Player[] = [];
     private messageNumber = 0;
     private messagesToShow = 'all';
-    map: CanvasMap;
+    // map: CanvasMap;
     highlightedPlayer: number | null = null;
     logIsFrozen = false;
     private players: Player[] = [];
@@ -44,18 +44,18 @@ export default class Display {
         'C-]':           () => this.switchTab(1),
         'C-ArrowUp':     () => this.switchLevel(1),
         'C-ArrowDown':   () => this.switchLevel(-1),
-        'C-S-ArrowUp':   () => this.map.setStyle(1),
-        'C-S-ArrowDown': () => this.map.setStyle(0),
+        // 'C-S-ArrowUp':   () => this.map.setStyle(1),
+        // 'C-S-ArrowDown': () => this.map.setStyle(0),
     };
 
     constructor(
         private readonly client: Client
     ) {
-        this.map = new CanvasMap(client);
+        // this.map = new CanvasMap(client);
     }
 
     async start(): Promise<void> {
-        await this.map.start();
+        // await this.map.start();
         this.createPlayerRows();
         this.createPlayerTabColumns();
         this.createPlayerTabChart();
@@ -159,8 +159,8 @@ export default class Display {
             let playerLevel = this.players[this.highlightedPlayer].levelNumber;
             if (playerLevel != 0) this.levelToRender = playerLevel;
         }
-        let level = this.levels[this.levelToRender];
-        this.map.render(level, this.players);
+        // let level = this.levels[this.levelToRender];
+        // this.map.render(level, this.players);
         this.renderPlayers(this.players);
         if (this.isShowing('player-tab')) {
             this.renderPlayerTab();
@@ -402,7 +402,7 @@ export default class Display {
     }
 
     highlightTile(event: MouseEvent): void {
-        this.toggleHighlight(this.map.getPlayerAt(event.offsetX, event.offsetY));
+        // this.toggleHighlight(this.map.getPlayerAt(event.offsetX, event.offsetY));
     }
 
     showLoggedIn(): void {

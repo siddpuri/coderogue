@@ -1,7 +1,8 @@
-import { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import * as Context from '../context';
 import LeftRightButtons from '../components/left_right_buttons';
+import CanvasMap from '../components/canvas_map';
 
 export default function MapPane() {
     const client = useContext(Context.ClientInstance);
@@ -34,10 +35,7 @@ export default function MapPane() {
                     <div className="coords">{renderCoords()}</div>
                 </div>
             </div>
-            <canvas
-                id="canvas"
-                onMouseMove={e => updateCoords(e)}
-                onMouseLeave={() => updateCoords(null)} />
+            <CanvasMap style={style} level={level} setMouseCoords={setMouseCoords} />
         </div>
     );
 
@@ -48,19 +46,6 @@ export default function MapPane() {
     function switchLevel(dir: number): void {
         let newLevel = client.display.switchLevel(dir);
         setLevel(newLevel);
-    }
-
-    type eventType = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
-
-    function updateCoords(event: eventType | null): void {
-        let coords = event? getCoordsFromEvent(event): null;
-        setMouseCoords(coords);
-    }
-
-    function getCoordsFromEvent(event: eventType): [number, number] {
-        let x = Math.floor(event.nativeEvent.offsetX / 8);
-        let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
-        return [x, y];
     }
     
     function renderCoords(): string | null {

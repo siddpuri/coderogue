@@ -14,7 +14,7 @@ export default class ButtonHooks {
 
     async start(): Promise<void> {
         let display = this.client.display;
-        let canvas = this.element('canvas');
+        // let canvas = this.element('canvas');
 
         // this.onClick('prev-level', () => display.switchLevel(-1));
         // this.onClick('next-level', () => display.switchLevel(1));
@@ -36,7 +36,7 @@ export default class ButtonHooks {
         // canvas.addEventListener('mouseenter', () => display.onMouseEnter());
         // canvas.addEventListener('mousemove', event => display.onMouseMove(event));
         // canvas.addEventListener('mouseleave', () => display.onMouseLeave());        
-        canvas.addEventListener('click', event => display.highlightTile(event));
+        // canvas.addEventListener('click', event => display.highlightTile(event));
 
         // document.addEventListener('keydown', this.handleKey.bind(this));
     }
