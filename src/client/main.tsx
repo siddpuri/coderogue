@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './coderogue.css';
 
@@ -7,6 +8,7 @@ import { LoginResponse, StateResponse } from '../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
+import store from './store';
 import ServerApiProvider from './server_api';
 import KeyBindingProvider from './key_bindings';
 
@@ -18,7 +20,8 @@ import AlertPane from './panes/alert_pane';
 const client = new Client();
 window.onload = () => client.start();
 
-createRoot(document.getElementById('root')!).render(
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(
     <Wrapper>
         <Page />
     </Wrapper>
@@ -40,6 +43,7 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     result = <Context.Log.Provider value={log}>{result}</Context.Log.Provider>;
     result = <Context.MapAccessor.Provider value={mapAccessor}>{result}</Context.MapAccessor.Provider>;
     result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;
+    result = <Provider store={store}>{result}</Provider>;
     result = <React.StrictMode>{result}</React.StrictMode>;
     return result;
 
