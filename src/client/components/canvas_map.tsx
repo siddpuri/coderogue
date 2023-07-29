@@ -38,7 +38,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
     const dx                 = 8;
     const dy                 = [10, 8][style];
 
-    let map = new LevelMap(state.levels[level]?.map);
+    let map = new LevelMap(state?.levels[level].map);
 
     useEffect(render);
 
@@ -91,12 +91,12 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
             if (playerId == client.credentials.playerId) {
                 color = currentPlayerColor;
             }
-            let dir = state.players[playerId]?.dir ?? 0;
+            let dir = state!.players[playerId]!.dir;
             renderArrow(pos, dir, color);
         }
 
         function renderMob(pos: Pos, mobId: number): void {
-            let dir = state.levels[level].mobs[mobId].dir;
+            let dir = state!.levels[level].mobs[mobId].dir;
             renderArrow(pos, dir, mobColor);
         }
 
@@ -179,7 +179,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
             for (let x = x0 - 1; x <= x0 + 1; x++) {
                 let playerId = getPlayerAtPos([x, y]);
                 if (playerId == null) continue;
-                let player = state.players[playerId] as PlayerData;
+                let player = state?.players[playerId] as PlayerData;
                 let distance = getDistance(mouseX, mouseY, player.pos);
                 if (distance < closestDistance) {
                     closestPlayerId = playerId;

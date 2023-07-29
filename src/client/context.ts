@@ -21,9 +21,8 @@ export const ClientInstance = createContext<Client>(null!);
 
 // State received from the server
 export const Login = createMutableContext<LoginResponse | null>(null);
-export const emptyStateResponse = { players: [], levels: [] };
-export const GameState = createMutableContext<StateResponse>(emptyStateResponse);
-export const Log = createMutableContext('');
+export const GameState = createMutableContext<StateResponse | null>(null);
+export const Log = createMutableContext<string | null>(null);
 
 // Exposed controls for components
 export type ServerApiType = {

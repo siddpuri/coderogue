@@ -26,8 +26,8 @@ createRoot(document.getElementById('root')!).render(
 
 function Wrapper({ children }: React.PropsWithChildren<object>) {
     const loginState = useState<LoginResponse | null>(null);
-    const gameState = useState<StateResponse>(Context.emptyStateResponse);
-    const log = useState('Log in to see your log.');
+    const gameState = useState<StateResponse | null>(null);
+    const log = useState<string | null>(null);
     const mapAccessor = useRef<Context.MapAccessorType>(Context.emptyMapAccessor);
     const codeAccessor = useRef<Context.CodeAccessorType>(Context.emptyCodeAccessor);
 

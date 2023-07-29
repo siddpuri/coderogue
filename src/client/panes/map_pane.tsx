@@ -15,7 +15,7 @@ export default function MapPane() {
 
     useEffect(() => { mapAccessor.current = { setStyle, highlightPlayer, switchLevel };});
 
-    const levelName = state.levels[level]?.name || 'The Plains';
+    const levelName = state?.levels[level].name || 'The Plains';
     
     return (
         <div className="col">
