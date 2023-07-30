@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import { useContext, useRef, useEffect } from 'react';
 
 import * as Context from '../context';
 
@@ -47,7 +47,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
             ref={canvasRef}
             onMouseMove={e => setMouseCoords(getCoordsFromEvent(e))}
             onMouseLeave={() => setMouseCoords(null)}
-            /*onClick={onClick}*/ />
+            onClick={e => highlightPlayerAt(e)} />
     );
 
     function render(): void {
@@ -168,6 +168,10 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
         let x = Math.floor(event.nativeEvent.offsetX / 8);
         let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
         return [x, y];
+    }
+
+    function highlightPlayerAt(event: React.MouseEvent): void {
+        getPlayerAt(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
     }
 
     function getPlayerAt(mouseX: number, mouseY: number): number | null {

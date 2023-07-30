@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import { useContext, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 
 import Editor, { Monaco } from '@monaco-editor/react';
@@ -84,9 +84,10 @@ export default function CodeTab() {
     }
 }
 
-// export function addKeybindings(keybindings: { [key: string]: () => void }): void {
-//     for (let key in keybindings) {
-//         let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
-//         EditorRef.current?.addCommand(keyCode, keybindings[key]);
-//     }
-// }
+export function addKeybindings(keybindings: { [key: string]: () => void }): void {
+    let EditorRef = { current: null as editor.IStandaloneCodeEditor | null};
+    for (let key in keybindings) {
+        let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
+        EditorRef.current?.addCommand(keyCode, keybindings[key]);
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import * as Context from '../context';
 import LeftRightButtons from '../components/left_right_buttons';
