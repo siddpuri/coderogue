@@ -8,7 +8,7 @@ import { LoginResponse, StateResponse } from '../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
-import store from './store';
+import { store } from './redux_store.js';
 import ServerApiProvider from './server_api';
 import KeyBindingProvider from './key_bindings';
 

@@ -1,17 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { LoginResponse } from '../../shared/protocol.js';
 
 const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
 const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
+interface LoginState {
+    credentials: LoginResponse | null,
+}
+
+const initialState: LoginState = {
+    credentials: readCookie(),
+};
+
 export const loginSlice = createSlice({
     name: 'login',
-    initialState: {
-        credentials: readCookie(),
-    },
+    initialState,
     reducers: {
-        onLogin: (state, { payload }: { payload: LoginResponse }) => {
+        onLogin: (state, { payload }: PayloadAction<LoginResponse> ) => {
             state.credentials = payload;
             writeCookie('playerId', payload.playerId);
             writeCookie('authToken', payload.authToken);
