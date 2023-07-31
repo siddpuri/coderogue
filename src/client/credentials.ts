@@ -14,6 +14,7 @@ export default class Credentials {
     ) {}
 
     async start(): Promise<void> {
+        this.client;
         this.readCookie();
     }
 
@@ -48,7 +49,6 @@ export default class Credentials {
         this.writeCookie('playerId', serverResponse.playerId);
         this.writeCookie('authToken', serverResponse.authToken);
         this.writeCookie('textHandle', serverResponse.textHandle);
-        this.client.onLogin();
     }
 
     async onLogout(): Promise<void> {
@@ -58,6 +58,5 @@ export default class Credentials {
         this.deleteCookie('playerId');
         this.deleteCookie('authToken');
         this.deleteCookie('textHandle');
-        this.client.onLogout();
     }
 }

@@ -18,17 +18,5 @@ export default class Client {
         await this.display.start();
         await this.credentials.start();
         await this.buttonHooks.start();
-
-        if (this.credentials.isLoggedIn) {
-            this.onLogin();
-        }
-    }
-
-    onLogin(): void {
-        this.display.showLoggedIn();
-    }
-
-    onLogout(): void {
-        this.display.showLoggedOut();
     }
 }
