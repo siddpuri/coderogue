@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 
+import { keyBindings } from '../key_bindings';
 import * as Context from '../context';
 import LeftRightButtons from '../components/left_right_buttons';
 import CanvasMap from '../components/canvas_map';
@@ -7,13 +8,17 @@ import CanvasMap from '../components/canvas_map';
 export default function MapPane() {
     const client = useContext(Context.ClientInstance);
     const state = useContext(Context.GameState)[0];
-    const mapAccessor = useContext(Context.MapAccessor);
 
     const [style, setStyle] = useState(0);
     const [level, setLevel] = useState(1);
     const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
 
-    useEffect(() => { mapAccessor.current = { setStyle, highlightPlayer, switchLevel };});
+    useEffect(() => {
+        keyBindings['C-ArrowUp'] = () => switchLevel(1);
+        keyBindings['C-ArrowDown'] = () => switchLevel(-1);
+        keyBindings['C-S-ArrowUp'] = () => setStyle(1);
+        keyBindings['C-S-ArrowDown'] = () => setStyle(0);
+    });
 
     const levelName = state?.levels[level].name || 'The Plains';
     
@@ -38,10 +43,6 @@ export default function MapPane() {
             <CanvasMap style={style} level={level} setMouseCoords={setMouseCoords} />
         </div>
     );
-
-    function highlightPlayer(player: number): void {
-        client.display.highlightPlayer(player);
-    }
 
     function switchLevel(dir: number): void {
         let newLevel = client.display.switchLevel(dir);

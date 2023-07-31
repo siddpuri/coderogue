@@ -31,7 +31,6 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     const loginState = useState<LoginResponse | null>(null);
     const gameState = useState<StateResponse | null>(null);
     const log = useState<string | null>(null);
-    const mapAccessor = useRef<Context.MapAccessorType>(Context.emptyMapAccessor);
     const codeAccessor = useRef<Context.CodeAccessorType>(Context.emptyCodeAccessor);
 
     let result = children;
@@ -41,7 +40,6 @@ function Wrapper({ children }: React.PropsWithChildren<object>) {
     result = <Context.Login.Provider value={loginState}>{result}</Context.Login.Provider>;
     result = <Context.GameState.Provider value={gameState}>{result}</Context.GameState.Provider>;
     result = <Context.Log.Provider value={log}>{result}</Context.Log.Provider>;
-    result = <Context.MapAccessor.Provider value={mapAccessor}>{result}</Context.MapAccessor.Provider>;
     result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;
     result = <Provider store={store}>{result}</Provider>;
     result = <React.StrictMode>{result}</React.StrictMode>;

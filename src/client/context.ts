@@ -35,14 +35,6 @@ export type ServerApiType = {
 export const emptyServerApi = { login: none, loadCode: none, loadLog: none, submitCode: none, respawn: none };
 export const ServerApi = createContext<ServerApiType>(emptyServerApi);
 
-export type MapAccessorType = {
-    setStyle: (style: number) => void,
-    highlightPlayer: (player: number) => void,
-    switchLevel: (dir: number) => void,
-};
-export const emptyMapAccessor = { setStyle: none, highlightPlayer: none, switchLevel: none };
-export const MapAccessor = createRefContext<MapAccessorType>(emptyMapAccessor);
-
 export type CodeAccessorType = {
     getCode: () => string,
     setCode: (code: string) => void,
