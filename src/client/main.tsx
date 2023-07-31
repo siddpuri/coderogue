@@ -20,7 +20,7 @@ import AlertPane from './panes/alert_pane';
 const client = new Client();
 window.onload = () => client.start();
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
     <Wrapper>
         <Page />
