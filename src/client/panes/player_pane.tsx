@@ -1,4 +1,11 @@
+import { useContext } from 'react';
+
+import * as Context from '../context';
+import LeftRightButtons from '../components/left_right_buttons';
+
 export default function PlayerPane() {
+    const client = useContext(Context.ClientInstance);
+
     return (
         <div className="col">
             <div className="row align-items-baseline">
@@ -6,11 +13,10 @@ export default function PlayerPane() {
                     Players
                 </div>
                 <div className="col d-flex justify-content-end">
-                    <div className="btn-group ms-2 mb-2">
-                        <button type="button" className="btn btn-sm btn-light text-muted" id="first-players">⟪</button>
-                        <button type="button" className="btn btn-sm btn-light text-muted" id="prev-players">⟨</button>
-                        <button type="button" className="btn btn-sm btn-light text-muted" id="next-players">⟩</button>
-                    </div>
+                    <LeftRightButtons
+                        onLeftLeft={() => client.display.showPlayers(0)}
+                        onLeft={() => client.display.showPlayers(-1)}
+                        onRight={() => client.display.showPlayers(1)} />
                 </div>
             </div>
             <div className="row">
