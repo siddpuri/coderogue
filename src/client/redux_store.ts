@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import loginReducer from './state/login_state';
 import alertReducer from './state/alert_state';
+import loginReducer from './state/login_state';
 
 export const store = configureStore({
     reducer: {
-        login: loginReducer,
         alert: alertReducer,
+        login: loginReducer,
     },
 });
 

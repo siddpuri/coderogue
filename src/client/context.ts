@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-import { LoginRequest, LoginResponse, StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../shared/protocol.js';
 
 import Client from './client.js';
 
@@ -20,19 +20,17 @@ const none = () => { /* empty */ };
 export const ClientInstance = createContext<Client>(null!);
 
 // State received from the server
-export const Login = createMutableContext<LoginResponse | null>(null);
 export const GameState = createMutableContext<StateResponse | null>(null);
 export const Log = createMutableContext<string | null>(null);
 
 // Exposed controls for components
 export type ServerApiType = {
-    login: (credentials: LoginRequest) => void,
     loadCode: () => void,
     loadLog: () => void,
     submitCode: () => void,
     respawn: () => void,
 }
-export const emptyServerApi = { login: none, loadCode: none, loadLog: none, submitCode: none, respawn: none };
+export const emptyServerApi = { loadCode: none, loadLog: none, submitCode: none, respawn: none };
 export const ServerApi = createContext<ServerApiType>(emptyServerApi);
 
 export type CodeAccessorType = {

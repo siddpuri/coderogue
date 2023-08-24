@@ -4,7 +4,7 @@ import './coderogue.css';
 import { PropsWithChildren, useState, useRef } from 'react';
 import { Provider } from 'react-redux';
 
-import { LoginResponse, StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
@@ -38,7 +38,6 @@ export default function Page() {
 }
 
 function Wrapper({ children }: PropsWithChildren<object>) {
-    const loginState = useState<LoginResponse | null>(null);
     const gameState = useState<StateResponse | null>(null);
     const log = useState<string | null>(null);
     const codeAccessor = useRef<Context.CodeAccessorType>(Context.emptyCodeAccessor);
@@ -47,7 +46,6 @@ function Wrapper({ children }: PropsWithChildren<object>) {
     result = <KeyBindingProvider>{result}</KeyBindingProvider>;
     result = <ServerApiProvider>{result}</ServerApiProvider>;
     result = <Context.ClientInstance.Provider value={client}>{result}</Context.ClientInstance.Provider>;
-    result = <Context.Login.Provider value={loginState}>{result}</Context.Login.Provider>;
     result = <Context.GameState.Provider value={gameState}>{result}</Context.GameState.Provider>;
     result = <Context.Log.Provider value={log}>{result}</Context.Log.Provider>;
     result = <Context.CodeAccessor.Provider value={codeAccessor}>{result}</Context.CodeAccessor.Provider>;

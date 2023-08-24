@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import { LoginRequest, LoginResponse, StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../shared/protocol.js';
 
 import * as Context from './context.js';
 
@@ -8,7 +8,6 @@ const baseUrl = window.location.origin;
 
 export default function ServerApiProvider({ children }: React.PropsWithChildren<object>) {
     const client = useContext(Context.ClientInstance);
-    const loginState = useContext(Context.Login);
     const gameState = useContext(Context.GameState);
     const log = useContext(Context.Log);
     const codeAccessor = useContext(Context.CodeAccessor);
@@ -19,7 +18,7 @@ export default function ServerApiProvider({ children }: React.PropsWithChildren<
         return () => clearInterval(interval);
     });
     
-    const serverApi = { login, loadCode, loadLog, submitCode, respawn };
+    const serverApi = { loadCode, loadLog, submitCode, respawn };
 
     return (
         <Context.ServerApi.Provider value={serverApi}>
@@ -38,11 +37,6 @@ export default function ServerApiProvider({ children }: React.PropsWithChildren<
         } finally {
             busy = false;
         }
-    }
-
-    async function login(credentials: LoginRequest): Promise<void> {
-        let result = await postJson<LoginResponse>('login', credentials);
-        if (result) loginState[1](result);
     }
 
     async function loadCode(): Promise<void> {
