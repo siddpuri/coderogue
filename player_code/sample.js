@@ -69,8 +69,7 @@ function search() {
     for (let dir = 0; dir < 4; dir++) {
         visit(y1, x1, dir, forward);
     }
-    while (true) {
-        if (table.head == table.tail) break;
+    while (table.head != table.tail) {
         let [y, x, dir] = unpack(dequeue());
         if (y == y0 && x == x0 && dir == dir0) break;
         visit(y, x, (dir + 1) % 4, left);
