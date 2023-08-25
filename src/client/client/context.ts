@@ -1,14 +1,6 @@
 import React, { createContext } from 'react';
 
-import { StateResponse } from '../../shared/protocol.js';
-
 import Client from './client.js';
-
-type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
-
-function createMutableContext<T>(x: T): React.Context<State<T>> {
-    return createContext<State<T>>([x, x => x]);
-}
 
 function createRefContext<T>(x: T): React.Context<React.MutableRefObject<T>> {
     return createContext<React.MutableRefObject<T>>({ current: x });
@@ -18,10 +10,6 @@ const none = () => { /* empty */ };
 
 // Client instance; this should end up being mostly deprecated
 export const ClientInstance = createContext<Client>(null!);
-
-// State received from the server
-export const GameState = createMutableContext<StateResponse | null>(null);
-export const Log = createMutableContext<string | null>(null);
 
 // Exposed controls for components
 export type ServerApiType = {

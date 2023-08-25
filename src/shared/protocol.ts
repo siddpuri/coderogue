@@ -9,14 +9,6 @@ export type LoginResponse = {
     textHandle: string;
 }
 
-export type CodeResponse = {
-    code: string;
-}
-
-export type LogResponse = {
-    log: string;
-}
-
 export type StateResponse = {
     players: (PlayerData | undefined)[];
     levels: LevelData[];

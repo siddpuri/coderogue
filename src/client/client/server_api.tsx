@@ -1,4 +1,6 @@
 import React, { useContext, useEffect } from 'react';
+import { useAppDispatch } from '../redux_hooks';
+import { updateState, updateLog } from '../state/game_state';
 
 import { StateResponse } from '../../shared/protocol.js';
 
@@ -8,9 +10,8 @@ const baseUrl = window.location.origin;
 
 export default function ServerApiProvider({ children }: React.PropsWithChildren<object>) {
     const client = useContext(Context.ClientInstance);
-    const gameState = useContext(Context.GameState);
-    const log = useContext(Context.Log);
     const codeAccessor = useContext(Context.CodeAccessor);
+    const dispatch = useAppDispatch();
     
     let busy = false;
     useEffect(() => {
@@ -32,7 +33,7 @@ export default function ServerApiProvider({ children }: React.PropsWithChildren<
         try {
             let result = await getJson<StateResponse>('state');
             if (!result) return;
-            gameState[1](result);
+            dispatch(updateState(result));
             client.display.setState(result);
         } finally {
             busy = false;
@@ -46,14 +47,15 @@ export default function ServerApiProvider({ children }: React.PropsWithChildren<
 
     async function loadLog(): Promise<void> {
         let result = await getJson<string>('log');
-        if (result) log[1](result);
+        if (result) dispatch(updateLog(result));
     }
 
     async function submitCode(): Promise<void> {
         let code = codeAccessor.current.getCode();
         let result = await postJson<StateResponse>('code', { code });
-        if (result) gameState[1](result);
-        if (result) client.display.setState(result);
+        if (!result) return;
+        dispatch(updateState(result));
+        client.display.setState(result);
     }
 
     async function respawn(): Promise<void> {
