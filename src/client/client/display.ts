@@ -1,9 +1,9 @@
 import Chart, { ChartItem, Tick } from 'chart.js/auto';
 
-import Util from '../shared/util.js';
-import { StateResponse, PlayerData, LevelData } from '../shared/protocol.js';
-import Grownups from '../shared/grownups.js';
-import Handles from '../shared/handles.js';
+import Util from '../../shared/util.js';
+import { StateResponse, PlayerData, LevelData } from '../../shared/protocol.js';
+import Grownups from '../../shared/grownups.js';
+import Handles from '../../shared/handles.js';
 
 import Client from './client.js';
 // import CanvasMap from './components/canvas_map.js';

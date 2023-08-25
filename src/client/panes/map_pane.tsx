@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 
-import { keyBindings } from '../key_bindings';
-import * as Context from '../context';
+import { keyBindings } from '../client/key_bindings';
+import * as Context from '../client/context';
 import LeftRightButtons from '../components/left_right_buttons';
 import CanvasMap from '../components/canvas_map';
 

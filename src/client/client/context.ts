@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-import { StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../../shared/protocol.js';
 
 import Client from './client.js';
 

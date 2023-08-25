@@ -1,5 +1,5 @@
-import { PlayerData } from '../shared/protocol.js';
-import Handles from '../shared/handles.js';
+import { PlayerData } from '../../shared/protocol.js';
+import Handles from '../../shared/handles.js';
 
 import { PlayerEntry } from '../server/db.js';
 

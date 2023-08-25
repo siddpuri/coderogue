@@ -1,4 +1,4 @@
-import Util from '../shared/util.js';
+import Util from '../../shared/util.js';
 
 import Server from '../server/server.js';
 

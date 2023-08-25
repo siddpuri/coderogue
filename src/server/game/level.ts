@@ -1,7 +1,7 @@
-import Util from '../shared/util.js';
-import Grownups from '../shared/grownups.js';
-import LevelMap from '../shared/level_map.js';
-import { LevelData } from '../shared/protocol.js';
+import Util from '../../shared/util.js';
+import Grownups from '../../shared/grownups.js';
+import LevelMap from '../../shared/level_map.js';
+import { LevelData } from '../../shared/protocol.js';
 
 import Server from '../server/server.js';
 

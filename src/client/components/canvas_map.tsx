@@ -1,6 +1,6 @@
 import { useContext, useRef, useEffect } from 'react';
 
-import * as Context from '../context';
+import * as Context from '../client/context';
 
 import { PlayerData } from '../../shared/protocol.js';
 import LevelMap from '../../shared/level_map.js';

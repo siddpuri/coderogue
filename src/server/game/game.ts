@@ -1,9 +1,9 @@
 import util from 'util';
 import { VM, VMScript } from 'vm2';
 
-import Handles from '../shared/handles.js';
-import { StateResponse, PlayerData } from '../shared/protocol.js';
-import Timer from '../shared/timer.js';
+import Handles from '../../shared/handles.js';
+import { StateResponse, PlayerData } from '../../shared/protocol.js';
+import Timer from '../../shared/timer.js';
 
 import Server from '../server/server.js';
 import { PlayerEntry } from '../server/db.js';

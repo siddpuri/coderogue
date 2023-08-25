@@ -13,7 +13,7 @@
         {
             "label": "build server",
             "type": "typescript",
-            "tsconfig": "src/tsconfig.json",
+            "tsconfig": "src/server/tsconfig.json",
             "problemMatcher": ["$tsc"],
             "group": {
                 "kind": "build",

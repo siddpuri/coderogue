@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import * as Context from '../context';
+import * as Context from '../client/context';
 import LeftRightButtons from '../components/left_right_buttons';
 
 export default function PlayerPane() {

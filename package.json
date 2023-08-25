@@ -8,8 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "compile": "tsc -b src/tsconfig.json",
-    "serve": "tsc -b src/tsconfig.json && node dist/server/run.js"
+    "compile": "tsc -b src/server/tsconfig.json",
+    "serve": "tsc -b src/server/tsconfig.json && node dist/server/run.js"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.5.1",

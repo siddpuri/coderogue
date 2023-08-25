@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-import { LoginRequest, LoginResponse, ErrorResponse } from '../shared/protocol.js';
-import Handles from '../shared/handles.js';
+import { LoginRequest, LoginResponse, ErrorResponse } from '../../shared/protocol.js';
+import Handles from '../../shared/handles.js';
 
 import Server from './server.js';
 

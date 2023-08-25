@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import { StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../../shared/protocol.js';
 
 import * as Context from './context.js';
 

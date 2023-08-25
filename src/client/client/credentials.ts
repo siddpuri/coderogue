@@ -1,5 +1,5 @@
 import Client from './client.js';
-import { LoginResponse } from '../shared/protocol.js';
+import { LoginResponse } from '../../shared/protocol.js';
 
 const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
 const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';

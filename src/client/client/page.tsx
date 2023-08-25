@@ -4,18 +4,18 @@ import './coderogue.css';
 import { PropsWithChildren, useState, useRef } from 'react';
 import { Provider } from 'react-redux';
 
-import { StateResponse } from '../shared/protocol.js';
+import { StateResponse } from '../../shared/protocol.js';
 
 import Client from './client';
 import * as Context from './context';
-import { store } from './redux_store.js';
+import { store } from '../redux_store.js';
 import ServerApiProvider from './server_api';
 import KeyBindingProvider from './key_bindings';
 
-import MapPane from './panes/map_pane';
-import PlayerPane from './panes/player_pane';
-import TabPane from './panes/tab_pane';
-import AlertPane from './panes/alert_pane';
+import MapPane from '../panes/map_pane';
+import PlayerPane from '../panes/player_pane';
+import TabPane from '../panes/tab_pane';
+import AlertPane from '../panes/alert_pane';
 
 const client = new Client();
 window.onload = () => client.start();

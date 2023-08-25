@@ -11,10 +11,8 @@
         "noUnusedLocals": true,
         "noFallthroughCasesInSwitch": true,
 
-        "baseUrl": ".",
-        "rootDir": ".",
-        "outDir": "../dist",
+        "rootDir": "..",
+        "outDir": "../../dist",
     },
-    "include": ["."],
-    "exclude": ["client"],
+    "include": [".", "../shared"],
 }

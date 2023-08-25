@@ -1,6 +1,6 @@
-import { LoginResponse } from '../shared/protocol.js';
+import { LoginResponse } from '../../shared/protocol.js';
 
-import Client from './client.js';
+import Client from 'client/client.js';
 import Fetcher from './fetcher.js';
 
 export default class ButtonHooks {

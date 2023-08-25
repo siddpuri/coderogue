@@ -52,7 +52,7 @@ export default class PlayerCode {
 
     private async readStaticCode(name: string): Promise<string> {
         let myPath = new url.URL(import.meta.url).pathname;
-        let dir = path.join(path.dirname(myPath), '..', '..', 'player_code');
+        let dir = path.join(path.dirname(myPath), '..', '..', '..', 'player_code');
         return await fs.readFile(path.join(dir, name), 'utf-8');
     }
 

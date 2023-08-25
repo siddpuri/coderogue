@@ -1,6 +1,6 @@
-import Util from '../shared/util.js';
-import Handles from '../shared/handles.js';
-import { MobData } from '../shared/protocol.js';
+import Util from '../../shared/util.js';
+import Handles from '../../shared/handles.js';
+import { MobData } from '../../shared/protocol.js';
 
 import Level from './level.js';
 

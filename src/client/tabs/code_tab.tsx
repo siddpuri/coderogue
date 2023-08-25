@@ -4,9 +4,9 @@ import Button from 'react-bootstrap/Button';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 
-import * as Context from '../context';
+import * as Context from '../client/context';
 
-import types from '../../assets/coderogue.d.ts?raw';
+import types from '../assets/coderogue.d.ts?raw';
 
 const diagnosticsOptions: languages.typescript.DiagnosticsOptions = {
     noSemanticValidation: false,

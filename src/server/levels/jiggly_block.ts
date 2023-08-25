@@ -1,4 +1,4 @@
-import Util from '../shared/util.js';
+import Util from '../../shared/util.js';
 
 import Level from '../game/level.js';
 
