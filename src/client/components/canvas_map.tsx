@@ -1,7 +1,7 @@
 import { useContext, useRef, useEffect } from 'react';
-import { useAppSelector } from '../redux_hooks';
 
 import * as Context from '../client/context';
+import { useGetStateQuery } from '../client/server_api.js';
 
 import { PlayerData } from '../../shared/protocol.js';
 import LevelMap from '../../shared/level_map.js';
@@ -27,7 +27,7 @@ type propType = {
 export default function CanvasMap({ style, level, setMouseCoords }: propType) {
     const client = useContext(Context.ClientInstance);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const state = useAppSelector(state => state.gameState.state);
+    const state = useGetStateQuery()?.data;
 
     const backgroundColor    = '#f0f0f0';
     const foregroundColor    = ['#101010', '#000000'][style];

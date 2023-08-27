@@ -1,14 +1,14 @@
 import { useContext, useState, useEffect } from 'react';
-import { useAppSelector } from '../redux_hooks';
 
 import { keyBindings } from '../client/key_bindings';
 import * as Context from '../client/context';
+import { useGetStateQuery } from '../client/server_api.js';
 import LeftRightButtons from '../components/left_right_buttons';
 import CanvasMap from '../components/canvas_map';
 
 export default function MapPane() {
     const client = useContext(Context.ClientInstance);
-    const state = useAppSelector(state => state.gameState.state);
+    const state = useGetStateQuery()?.data;
 
     const [style, setStyle] = useState(0);
     const [level, setLevel] = useState(1);
