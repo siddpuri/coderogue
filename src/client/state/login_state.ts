@@ -1,6 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { LoginResponse } from '../../shared/protocol.js';
+
+import { serverApi } from '../client/server_api';
 
 const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
 const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
@@ -17,13 +19,6 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        onLogin: (state, { payload }: PayloadAction<LoginResponse> ) => {
-            state.credentials = payload;
-            writeCookie('playerId', payload.playerId);
-            writeCookie('authToken', payload.authToken);
-            writeCookie('textHandle', payload.textHandle);
-        },
-
         onLogout: (state) => {
             state.credentials = null;
             deleteCookie('playerId');
@@ -31,9 +26,20 @@ export const loginSlice = createSlice({
             deleteCookie('textHandle');
         },
     },
+    extraReducers: (builder) => {
+        builder.addMatcher(
+            serverApi.endpoints.login.matchFulfilled,
+            (state, { payload }) => {
+                state.credentials = payload;
+                writeCookie('playerId', payload.playerId);
+                writeCookie('authToken', payload.authToken);
+                writeCookie('textHandle', payload.textHandle);
+            }
+        );
+    }
 });
 
-export const { onLogin, onLogout } = loginSlice.actions;
+export const { onLogout } = loginSlice.actions;
 export default loginSlice.reducer;
 
 function readCookie(): LoginResponse | null {

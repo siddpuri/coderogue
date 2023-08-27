@@ -1,10 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { StateResponse } from '../../shared/protocol.js';
+import type { LoginRequest, LoginResponse, StateResponse } from '../../shared/protocol.js';
 
 export const serverApi = createApi({
     reducerPath: 'serverApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'api' }),
     endpoints: (build) => ({
+        login: build.mutation<LoginResponse, LoginRequest>({
+            query: (credentials) => ({ url: 'login', method: 'POST', body: credentials }),
+        }),
         getState: build.query<StateResponse, void>({
             query: () => 'state',
         }),
