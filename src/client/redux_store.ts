@@ -13,7 +13,10 @@ export const store = configureStore({
         login: loginReducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(serverApi.middleware),
+        getDefaultMiddleware({
+            serializableCheck: { warnAfter: 128 },
+        })
+            .concat(serverApi.middleware)
 });
 
 setupListeners(store.dispatch);
