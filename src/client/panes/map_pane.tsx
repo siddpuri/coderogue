@@ -44,10 +44,7 @@ export default function MapPane() {
                     <div className="coords">{renderCoords()}</div>
                 </div>
             </div>
-            <CanvasMap
-                style={display.style}
-                level={display.level}
-                setMouseCoords={coords => dispatch(actions.setCoords(coords))} />
+            <CanvasMap />
         </div>
     );
     

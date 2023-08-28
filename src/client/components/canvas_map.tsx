@@ -1,10 +1,13 @@
 import { useContext, useRef, useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../redux_hooks';
+
+import { PlayerData } from '../../shared/protocol.js';
+import LevelMap from '../../shared/level_map.js';
 
 import * as Context from '../client/context';
 import { useGetStateQuery } from '../client/server_api.js';
 
-import { PlayerData } from '../../shared/protocol.js';
-import LevelMap from '../../shared/level_map.js';
+import { displaySlice } from '../state/display_state';
 
 type Pos = [number, number];
 
@@ -18,28 +21,25 @@ const triangles = [
     [[8, 1], [8, 7], [0, 4]]
 ];
 
-type propType = {
-    style: number,
-    level: number,
-    setMouseCoords: (coords: [number, number] | null) => void,
-};
-
-export default function CanvasMap({ style, level, setMouseCoords }: propType) {
+export default function CanvasMap() {
     const client = useContext(Context.ClientInstance);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     const state = useGetStateQuery()?.data;
+    const actions = displaySlice.actions;
+    const display = useAppSelector(state => state.display);
+    const dispatch = useAppDispatch();
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const backgroundColor    = '#f0f0f0';
-    const foregroundColor    = ['#101010', '#000000'][style];
-    const wallColor          = ['#101010', '#8080a0'][style];
-    const highlightColor     = ['#ffff00', '#4040ff'][style];
-    const currentPlayerColor = ['#ff0000', '#ff4040'][style];
-    const mobColor           = ['#00c000', '#00a000'][style];
+    const foregroundColor    = ['#101010', '#000000'][display.style];
+    const wallColor          = ['#101010', '#8080a0'][display.style];
+    const highlightColor     = ['#ffff00', '#4040ff'][display.style];
+    const currentPlayerColor = ['#ff0000', '#ff4040'][display.style];
+    const mobColor           = ['#00c000', '#00a000'][display.style];
     const font               = '10pt sans-serif';
     const dx                 = 8;
-    const dy                 = [10, 8][style];
+    const dy                 = [10, 8][display.style];
 
-    let map = new LevelMap(state?.levels[level].map);
+    let map = new LevelMap(state?.levels[display.level].map);
 
     useEffect(render);
 
@@ -50,6 +50,10 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
             onMouseLeave={() => setMouseCoords(null)}
             onClick={e => highlightPlayerAt(e)} />
     );
+
+    function setMouseCoords(coords: [number, number] | null): void {
+        dispatch(actions.setCoords(coords));
+    }
 
     function render(): void {
         const canvas = canvasRef.current as HTMLCanvasElement;
@@ -97,12 +101,12 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
         }
 
         function renderMob(pos: Pos, mobId: number): void {
-            let dir = state!.levels[level].mobs[mobId].dir;
+            let dir = state!.levels[display.level].mobs[mobId].dir;
             renderArrow(pos, dir, mobColor);
         }
 
         function renderArrow(pos: Pos, dir: number, color: string): void {
-            if (style == 0) {
+            if (display.style == 0) {
                 setText(pos, '^>v<'[dir], color);
             } else {
                 let triangle = triangles[dir];
@@ -118,7 +122,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
         }
 
         function renderWall(pos: Pos): void {
-            if (style == 0) {
+            if (display.style == 0) {
                 setText(pos, '#');
             } else {
                 let x = pos[0] * dx;
@@ -129,7 +133,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
         }
 
         function renderSpawn(pos: Pos): void {
-            if (style == 0) {
+            if (display.style == 0) {
                 setText(pos, '.');
             } else {
                 let x = (pos[0] + .5) * dx;
@@ -142,7 +146,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
         }
 
         function renderExit(pos: Pos): void {
-            if (style == 0) {
+            if (display.style == 0) {
                 setText(pos, 'o');
             } else {
                 let x = (pos[0] + .5) * dx;
@@ -167,7 +171,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
 
     function getCoordsFromEvent(event: React.MouseEvent): [number, number] {
         let x = Math.floor(event.nativeEvent.offsetX / 8);
-        let y = Math.floor(event.nativeEvent.offsetY / [10, 8][style]);
+        let y = Math.floor(event.nativeEvent.offsetY / [10, 8][display.style]);
         return [x, y];
     }
 
@@ -176,7 +180,7 @@ export default function CanvasMap({ style, level, setMouseCoords }: propType) {
     }
 
     function getPlayerAt(mouseX: number, mouseY: number): number | null {
-        if (!level) return null;
+        if (!display.level) return null;
         let [x0, y0] = getPosAt(mouseX, mouseY);
         let closestPlayerId: number | null = null;
         let closestDistance = Infinity;
