@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../redux_hooks';
-import { dismiss } from '../state/alert_state';
-
 import Alert from 'react-bootstrap/Alert';
+import { useAppSelector, useAppDispatch } from '../redux_hooks';
+
+import { dismiss } from '../state/alert_state';
 
 const variants = {
     'success': 'success',
@@ -11,13 +11,11 @@ const variants = {
 };
 
 export default function AlertPane() {
-    const message = useAppSelector(state => state.alert.message);
-    const kind = useAppSelector(state => state.alert.kind);
-    const isShowing = useAppSelector(state => state.alert.isShowing);
+    const alert = useAppSelector(state => state.alert);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (isShowing) {
+        if (alert.isShowing) {
             let timeout = setTimeout(() => { dispatch(dismiss()); }, 500);
             return () => clearTimeout(timeout);
         }
@@ -26,10 +24,10 @@ export default function AlertPane() {
     return (
         <div className="position-fixed start-0 end-0 bottom-0 clickthrough">
             <Alert
-                variant={variants[kind]}
-                show={isShowing}
+                variant={variants[alert.kind]}
+                show={alert.isShowing}
                 className="px-4 pt-1 pb-1 mb-0">
-                {message}
+                {alert.message}
             </Alert>
         </div>
     );

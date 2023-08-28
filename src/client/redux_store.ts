@@ -4,12 +4,14 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { serverApi } from './client/server_api';
 
 import alertReducer from './state/alert_state';
+import { displaySlice } from './state/display_state';
 import loginReducer from './state/login_state';
 
 export const store = configureStore({
     reducer: {
         [serverApi.reducerPath]: serverApi.reducer,
         alert: alertReducer,
+        display: displaySlice.reducer,
         login: loginReducer,
     },
     middleware: (getDefaultMiddleware) =>
