@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { useGetStateQuery } from '../client/server_api';
 
@@ -7,6 +7,7 @@ const playerStep = 8;
 interface DisplayState {
     style: number,
     level: number,
+    coords: [number, number] | null,
     firstPlayer: number,
     highlightedPlayerId: number | null,
 }
@@ -14,6 +15,7 @@ interface DisplayState {
 const initialState: DisplayState = {
     style: 0,
     level: 1,
+    coords: null,
     firstPlayer: 0,
     highlightedPlayerId: null,
 };
@@ -37,6 +39,9 @@ export const displaySlice = createSlice({
             let gameState = useGetStateQuery(undefined)?.data;
             if (!gameState) return;
             state.level = gameState.levels.length;
+        },
+        setCoords: (state, { payload }: PayloadAction<[number, number] | null>) => {
+            state.coords = payload;
         },
         showFirstPlayer: (state) => { state.firstPlayer = 0; },
         showPrevPlayer: (state) => {

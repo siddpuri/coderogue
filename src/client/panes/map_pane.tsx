@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../redux_hooks';
 
 import { keyBindings } from '../client/key_bindings';
@@ -14,8 +14,6 @@ export default function MapPane() {
     const actions = displaySlice.actions;
     const dispatch = useAppDispatch();
     const gameState = useGetStateQuery()?.data;
-
-    const [mouseCoords, setMouseCoords] = useState<[number, number] | null>(null);
 
     useEffect(() => {
         keyBindings['C-ArrowUp'] = () => dispatch(actions.showNextLevel());
@@ -46,12 +44,15 @@ export default function MapPane() {
                     <div className="coords">{renderCoords()}</div>
                 </div>
             </div>
-            <CanvasMap style={display.style} level={display.level} setMouseCoords={setMouseCoords} />
+            <CanvasMap
+                style={display.style}
+                level={display.level}
+                setMouseCoords={coords => dispatch(actions.setCoords(coords))} />
         </div>
     );
     
     function renderCoords(): string | null {
-        if (!mouseCoords) return null;
-        return `[ ${mouseCoords[0]}, ${mouseCoords[1]} ]`;
+        if (!display.coords) return null;
+        return `[ ${display.coords[0]}, ${display.coords[1]} ]`;
     }
 }
