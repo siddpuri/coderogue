@@ -39,9 +39,6 @@ export const loginSlice = createSlice({
     }
 });
 
-export const { onLogout } = loginSlice.actions;
-export default loginSlice.reducer;
-
 function readCookie(): LoginResponse | null {
     let credentials = {} as LoginResponse;
     let cookies = document.cookie.split('; ');

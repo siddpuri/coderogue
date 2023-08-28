@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { useAppSelector, useAppDispatch } from '../redux_hooks';
 
-import { dismiss } from '../state/alert_state';
+import { alertSlice } from '../state/alert_state';
 
 const variants = {
     'success': 'success',
@@ -12,11 +12,12 @@ const variants = {
 
 export default function AlertPane() {
     const alert = useAppSelector(state => state.alert);
+    const actions = alertSlice.actions;
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (alert.isShowing) {
-            let timeout = setTimeout(() => { dispatch(dismiss()); }, 500);
+            let timeout = setTimeout(() => { dispatch(actions.dismiss()); }, 500);
             return () => clearTimeout(timeout);
         }
     });

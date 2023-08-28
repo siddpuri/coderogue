@@ -23,9 +23,6 @@ export const alertSlice = createSlice({
     },
 });
 
-export const { showSuccess, showInfo, showError, dismiss } = alertSlice.actions;
-export default alertSlice.reducer;
-
 function show(kind: 'success' | 'info' | 'error') {
     return (state: AlertState, { payload }: PayloadAction<string>) => {
         state.message = payload;
