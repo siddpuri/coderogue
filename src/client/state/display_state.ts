@@ -9,7 +9,7 @@ interface DisplayState {
     level: number,
     coords: [number, number] | null,
     firstPlayer: number,
-    highlightedPlayerId: number | null,
+    highlightedPlayer: number | null,
 }
 
 const initialState: DisplayState = {
@@ -17,7 +17,7 @@ const initialState: DisplayState = {
     level: 1,
     coords: null,
     firstPlayer: 0,
-    highlightedPlayerId: null,
+    highlightedPlayer: null,
 };
 
 export const displaySlice = createSlice({
@@ -56,6 +56,10 @@ export const displaySlice = createSlice({
             let gameState = useGetStateQuery(undefined)?.data;
             if (!gameState) return;
             state.firstPlayer = gameState.players.length - playerStep;
+        },
+        highlightPlayer: (state, { payload }: PayloadAction<number | null>) => {
+            if (payload === state.highlightedPlayer) payload = null;
+            state.highlightedPlayer = payload;
         },
     },
 });

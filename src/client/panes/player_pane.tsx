@@ -1,10 +1,24 @@
-import { useContext } from 'react';
+import { useAppSelector, useAppDispatch } from '../redux_hooks';
 
-import * as Context from '../client/context';
+import { PlayerData } from '../../shared/protocol.js';
+import Grownups from '../../shared/grownups.js';
+
+import { useGetStateQuery } from '../client/server_api.js';
+
+import { displaySlice } from '../state/display_state';
+
 import LeftRightButtons from '../components/left_right_buttons';
 
+const numPlayersToRender = 10;
+
 export default function PlayerPane() {
-    const client = useContext(Context.ClientInstance);
+    const credentials = useAppSelector(state => state.login)?.credentials;
+    const display = useAppSelector(state => state.display);
+    const actions = displaySlice.actions;
+    const dispatch = useAppDispatch();
+    const gameState = useGetStateQuery()?.data;
+
+    const { players, highlightIndex } = renderPlayers();
 
     return (
         <div className="col">
@@ -14,24 +28,23 @@ export default function PlayerPane() {
                 </div>
                 <div className="col d-flex justify-content-end">
                     <LeftRightButtons
-                        onLeftLeft={() => client.display.showPlayers(0)}
-                        onLeft={() => client.display.showPlayers(-1)}
-                        onRight={() => client.display.showPlayers(1)} />
+                        onLeftLeft={() => dispatch(actions.showFirstPlayer())}
+                        onLeft={() => dispatch(actions.showPrevPlayer())}
+                        onRight={() => dispatch(actions.showNextPlayer())}
+                        onRightRight={() => dispatch(actions.showLastPlayer())} />
                 </div>
             </div>
             <div className="row">
                 <div className="col">
                     <table className="table table-hover" id="players">
-                        <thead><tr>
-                            <th>#</th>
-                            <th>Score</th>
-                            <th>L</th>
-                            <th>Handle</th>
-                            <th>K</th>
-                            <th>D</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                {['#', 'Score', 'L', 'Handle', 'K', 'D']
+                                    .map((s, i) => <th key={i}>{s}</th>)}
+                            </tr>
                         </thead>
-                        <tbody />
+                        <tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -47,4 +60,32 @@ export default function PlayerPane() {
             </div>
         </div>
     );
+
+    function renderPlayers(): { players: string[][], highlightIndex: number | null } {
+        let currentPlayer = credentials?.playerId || null;
+        let players = gameState?.players || [];
+
+        let playersToRender: PlayerData[] = [];
+        if (currentPlayer) playersToRender.push(players[currentPlayer]);
+        if (display.highlightedPlayer && display.highlightedPlayer != currentPlayer) {
+            playersToRender.push(display.highlightedPlayer);
+        }
+
+        players.sort((a, b) => b.totalScore - a.totalScore);
+        players.forEach((p, i) => p.rank = i + 1);
+        if (!Grownups.includes(currentPlayer)) {
+            players.forEach(p => {
+                if (!Grownups.includes(p.id)) return;
+                p.score = new Array(p.score.length).fill(0);
+            });
+        }
+        for (let i = this.renderPlayersFrom; i < players.length; i++) {
+            let player = players[i];
+            if (playersToRender.some(p => p.id == player.id)) continue;
+            playersToRender.push(player);
+            if (playersToRender.length >= numPlayersToRender) break;
+        }
+        playersToRender.sort((a, b) => a.rank - b.rank);
+        return playersToRender;
+    }
 }
