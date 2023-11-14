@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
 cd $(dirname "$0")/../src
-wc server/*.* game/*.* levels/*.* shared/*.*
-wc client/*.* client/*/*.* assets/*.*
+for i in server client shared; do
+    echo $i
+    wc $(find $i -name \*.ts -o -name \*.tsx)
+    echo
+done
