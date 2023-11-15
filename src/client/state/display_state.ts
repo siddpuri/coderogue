@@ -58,8 +58,7 @@ export const displaySlice = createSlice({
             state.firstPlayer = gameState.players.length - playerStep;
         },
         highlightPlayer: (state, { payload }: PayloadAction<number | null>) => {
-            if (payload === state.highlightedPlayer) payload = null;
-            state.highlightedPlayer = payload;
+            state.highlightedPlayer = (state.highlightedPlayer == payload)? null: payload;
         },
     },
 });
