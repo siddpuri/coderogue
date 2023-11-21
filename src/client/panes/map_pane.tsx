@@ -15,8 +15,10 @@ export default function MapPane() {
     const dispatch = useAppDispatch();
     const gameState = useGetStateQuery()?.data;
 
+    const numLevels = gameState?.levels.length || 0;
+
     useEffect(() => {
-        keyBindings['C-ArrowUp'] = () => dispatch(actions.showNextLevel());
+        keyBindings['C-ArrowUp'] = () => dispatch(actions.showNextLevel(numLevels));
         keyBindings['C-ArrowDown'] = () => dispatch(actions.showPrevLevel());
         keyBindings['C-S-ArrowUp'] = () => dispatch(actions.setPrevStyle());
         keyBindings['C-S-ArrowDown'] = () => dispatch(actions.setNextStyle());
@@ -37,8 +39,8 @@ export default function MapPane() {
                     <LeftRightButtons
                         onLeftLeft={() => dispatch(actions.showFirstLevel())}
                         onLeft={() => dispatch(actions.showPrevLevel())}
-                        onRight={() => dispatch(actions.showNextLevel())}
-                        onRightRight={() => dispatch(actions.showLastLevel())} />
+                        onRight={() => dispatch(actions.showNextLevel(numLevels))}
+                        onRightRight={() => dispatch(actions.showLastLevel(numLevels))} />
                 </div>
                 <div className="col d-flex justify-content-end">
                     <div className="coords">{renderCoords()}</div>

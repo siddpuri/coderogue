@@ -27,6 +27,7 @@ export const serverApi = createApi({
 });
 
 export const {
+    useLoginMutation,
     useGetStateQuery,
     useLoadCodeQuery,
     useLoadLogQuery,

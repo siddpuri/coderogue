@@ -18,6 +18,8 @@ export default function PlayerPane() {
     const dispatch = useAppDispatch();
     const gameState = useGetStateQuery()?.data;
 
+    const numPlayers = gameState?.players.filter(p => p).length || 0;
+
     const { players, highlightIndex } = renderPlayers();
 
     return (
@@ -30,8 +32,8 @@ export default function PlayerPane() {
                     <LeftRightButtons
                         onLeftLeft={() => dispatch(actions.showFirstPlayer())}
                         onLeft={() => dispatch(actions.showPrevPlayer())}
-                        onRight={() => dispatch(actions.showNextPlayer())}
-                        onRightRight={() => dispatch(actions.showLastPlayer())} />
+                        onRight={() => dispatch(actions.showNextPlayer(numPlayers))}
+                        onRightRight={() => dispatch(actions.showLastPlayer(numPlayers))} />
                 </div>
             </div>
             <div className="row">
