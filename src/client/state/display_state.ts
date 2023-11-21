@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { useGetStateQuery } from '../client/server_api';
-
 const playerStep = 8;
 
 interface DisplayState {
@@ -30,11 +28,11 @@ export const displaySlice = createSlice({
         showPrevLevel: (state) => { state.level = Math.max(state.level - 1, 1); },
         showNextLevel: (state, { payload }: PayloadAction<number>) => {
             let numLevels: number = payload;
-            state.level = Math.min(state.level + 1, numLevels);
+            state.level = Math.min(state.level + 1, numLevels - 1);
         },
         showLastLevel: (state, { payload }: PayloadAction<number>) => {
             let numLevels: number = payload;
-            state.level = numLevels;
+            state.level = numLevels - 1;
         },
         setCoords: (state, { payload }: PayloadAction<[number, number] | null>) => {
             let coords: [number, number] | null = payload;
