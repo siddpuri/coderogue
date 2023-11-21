@@ -22,7 +22,7 @@ export default function MapPane() {
         keyBindings['C-ArrowDown'] = () => dispatch(actions.showPrevLevel());
         keyBindings['C-S-ArrowUp'] = () => dispatch(actions.setPrevStyle());
         keyBindings['C-S-ArrowDown'] = () => dispatch(actions.setNextStyle());
-    });
+    }, []);
 
     const levelName = gameState?.levels[display.level].name || 'The Plains';
     

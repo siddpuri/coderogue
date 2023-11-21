@@ -51,7 +51,7 @@ function readCookie(): LoginResponse | null {
         }
     }
     let isValid = credentials.playerId && credentials.authToken && credentials.textHandle;
-    return isValid ? credentials : null;
+    return isValid? credentials : null;
 }
 
 function writeCookie(key: string, value: string | number): void {

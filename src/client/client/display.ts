@@ -56,7 +56,7 @@ export default class Display {
 
     async start(): Promise<void> {
         // await this.map.start();
-        this.createPlayerRows();
+        // this.createPlayerRows();
         this.createPlayerTabColumns();
         this.createPlayerTabChart();
     }

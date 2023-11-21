@@ -32,5 +32,5 @@ export const {
     useLoadCodeQuery,
     useLoadLogQuery,
     useSubmitCodeMutation,
-    useRespawnMutation
+    useRespawnMutation,
 } = serverApi;
