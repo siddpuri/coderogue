@@ -143,15 +143,19 @@ export default function PlayerPane() {
             </tr>;
     }
 
-    function findPlayer() {
-        if (!findValue) dispatch(actions.highlightPlayer(null));
+    function findPlayer(): void {
+        if (!findValue) {
+            dispatch(actions.highlightPlayer(null));
+            return;
+        }
         let player = players.findIndex(
             p => p && Handles.getTextHandle(p.handle) == findValue);
         if (!player) {
             dispatch(alertSlice.actions.showError(`Player ${findValue} not found`));
-        } else if (player != highlightedPlayer) {
-            dispatch(actions.highlightPlayer(player));
-            dispatch(alertSlice.actions.showSuccess(`Highlighted player ${findValue}`))
+            return;
         }
+        if (player == highlightedPlayer) return;
+        dispatch(actions.highlightPlayer(player));
+        dispatch(alertSlice.actions.showSuccess(`Highlighted player ${findValue}`))
     }
 }
