@@ -151,7 +151,7 @@ export default function PlayerPane() {
         }
         let player = players.findIndex(
             p => p && Handles.getTextHandle(p.handle) == findValue);
-        if (!player) {
+        if (player < 0) {
             dispatch(alertSlice.actions.showError(`Player ${findValue} not found`));
             return;
         }
