@@ -3,10 +3,10 @@ import './coderogue.css';
 
 import { useRef } from 'react';
 
-import MapPane from '../panes/map_pane';
-import PlayerPane from '../panes/player_pane';
-import TabPane from '../panes/tab_pane';
-import AlertPane from '../panes/alert_pane';
+import MapPane from '../components/map_pane';
+import PlayerPane from '../components/player_pane';
+import TabPane from '../components/tab_pane';
+import AlertPane from '../components/alert_pane.js';
 
 import Client from './client';
 import * as Context from './context';
