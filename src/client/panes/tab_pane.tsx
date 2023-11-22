@@ -1,3 +1,6 @@
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+
 import CodeTab from '../tabs/code_tab';
 import NewsTab from '../tabs/news_tab';
 import GeneralTab from '../tabs/general_tab';
@@ -7,31 +10,18 @@ import KeybindingsTab from '../tabs/keybindings_tab';
 import AccountTab from '../tabs/account_tab';
 
 export default function TabPane() {
-    return (<>
-        {/* Nav tabs in bottom pane */}
-        <nav className="nav nav-tabs mt-3 mb-3">
-            <a className="nav-link active" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" role="tab">Code</a>
-            <a className="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" role="tab">Log</a>
-            <a className="nav-link" id="player-tab" data-bs-toggle="tab" data-bs-target="#player" role="tab">Player</a>
-            <a className="nav-link" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" role="tab">News</a>
-            <a className="nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" role="tab">General</a>
-            <a className="nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api" role="tab">Api</a>
-            <a className="nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels" role="tab">Levels</a>
-            <a className="nav-link" id="keybindings-tab" data-bs-toggle="tab" data-bs-target="#keybindings" role="tab">Shortcuts</a>
-            <a className="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" role="tab">Account</a>
-        </nav>
+    return (
+        <Tabs
+            defaultActiveKey="code"
+            id="tab-pane"
+            className="mt-3 mb-3"
+            justify>
 
-        <div className="tab-content">
+            <Tab eventKey="code" title="Code">
+                <CodeTab />
+            </Tab>
 
-            {/* Code tab */}
-            <div className="tab-pane active" id="code" role="tabpanel">
-                <div className="row">
-                    <CodeTab />
-                </div>
-            </div>
-
-            {/* Log tab */}
-            <div className="tab-pane" id="log" role="tabpanel">
+            <Tab eventKey="log" title="Log">
                 <div className="row">
                     <div className="col">
                         <textarea className="form-control font-monospace" id="log-text" rows={20} />
@@ -49,10 +39,9 @@ export default function TabPane() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </Tab>
 
-            {/* Player tab */}
-            <div className="tab-pane" id="player" role="tabpanel">
+            <Tab eventKey="player" title="Player">
                 <div className="row d-flex justify-content-between">
                     <div className="col-4">
                         <table className="table" id="player-stats">
@@ -94,57 +83,32 @@ export default function TabPane() {
                         </table>
                     </div>
                 </div>
-            </div>
+            </Tab>
 
-            {/* News tab */}
-            <div className="tab-pane" id="news" role="tabpanel">
-                <div className="row">
-                    <div className="col-8" id="news-text">
-                        <NewsTab />
-                    </div>
-                </div>
-            </div>
+            <Tab eventKey="news" title="News">
+                <NewsTab />
+            </Tab>
 
-            {/* General documentation tab */}
-            <div className="tab-pane" id="general" role="tabpanel">
-                <div className="row">
-                    <div className="col-8" id="general-text">
-                        <GeneralTab />
-                    </div>
-                </div>
-            </div>
+            <Tab eventKey="general" title="General">
+                <GeneralTab />
+            </Tab>
 
-            {/* API documentation tab */}
-            <div className="tab-pane" id="api" role="tabpanel">
-                <div className="row">
-                    <div className="col-8" id="api-text">
-                        <ApiTab />
-                    </div>
-                </div>
-            </div>
+            <Tab eventKey="api" title="Api">
+                <ApiTab />
+            </Tab>
 
-            {/* Level documentation tab */}
-            <div className="tab-pane" id="levels" role="tabpanel">
-                <div className="row">
-                    <div className="col-8" id="levels-text">
-                        <LevelsTab />
-                    </div>
-                </div>
-            </div>
+            <Tab eventKey="levels" title="Levels">
+                <LevelsTab />
+            </Tab>
 
-            {/* Keybindings documentation tab */}
-            <div className="tab-pane" id="keybindings" role="tabpanel">
-                <div className="row">
-                    <div className="col-8" id="keybindings-text">
-                        <KeybindingsTab />
-                    </div>
-                </div>
-            </div>
+            <Tab eventKey="keybindings" title="Shortcuts">
+                <KeybindingsTab />
+            </Tab>
 
-            {/* Account tab */}
-            <div className="tab-pane" id="account" role="tabpanel">
+            <Tab eventKey="account" title="Account">
                 <AccountTab />
-            </div>
-        </div>
-    </>);
+            </Tab>
+
+        </Tabs>
+    );
 }
