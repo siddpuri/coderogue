@@ -91,24 +91,24 @@ export default function PlayerPane() {
             </div>
         </div>
     );
-    
+
     function renderPlayers(): JSX.Element[] {
         let stats: (PlayerStats | undefined)[] = players.map(getStats);
         if (currentPlayer && !Grownups.includes(currentPlayer)) {
             stats.forEach(s => { if (s && Grownups.includes(s.id)) s.score = 0; });
         }
         if (highlightedPlayer) stats[highlightedPlayer]!.highlight = true;
-    
+
         let statsToRender: (PlayerStats | undefined)[] = [];
         if (currentPlayer) statsToRender.push(stats[currentPlayer]!);
         if (highlightedPlayer && highlightedPlayer != currentPlayer) {
             statsToRender.push(stats[highlightedPlayer]!);
         }
-    
+
         let topStats: PlayerStats[] = stats.filter(s => s) as PlayerStats[];
         topStats.sort((a, b) => b.score - a.score);
         topStats.forEach((s, i) => s.rank = i + 1);
-    
+
         for (let i = firstPlayer; statsToRender.length < numPlayersToRender; i++) {
             let stat = topStats[i];
             if (!stat || !statsToRender.some(s => s!.id == stat.id)) {
@@ -118,7 +118,7 @@ export default function PlayerPane() {
         statsToRender.sort((a, b) => b!.score - a!.score);
         return statsToRender.map(renderStats);
     }
-    
+
     function getStats(player: PlayerData | undefined): PlayerStats | undefined {
         return player ? {
             id: player.id,
@@ -130,10 +130,13 @@ export default function PlayerPane() {
             highlight: false,
         } : undefined;
     }
-    
+
     function renderStats(stats: PlayerStats | undefined, i: number): JSX.Element {
         return stats ?
-            <tr key={i} className={stats.highlight ? 'highlighted' : ''}>
+            <tr
+                key={i}
+                className={stats.highlight ? 'highlighted' : ''}
+                onClick={() => dispatch(actions.highlightPlayer(stats.id))}>
                 <td>{stats.rank}</td>
                 <td>{stats.score}</td>
                 <td>{stats.levelNumber ? stats.levelNumber : 'J'}</td>
