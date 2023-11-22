@@ -53,6 +53,7 @@ export default function PlayerPane() {
                         onRightRight={() => dispatch(actions.showLastPlayer(numPlayers))} />
                 </div>
             </div>
+
             <div className="row">
                 <div className="col">
                     <table className="table table-hover">
@@ -114,6 +115,7 @@ export default function PlayerPane() {
                 statsToRender.push(stat);
             }
         }
+        statsToRender.sort((a, b) => b!.score - a!.score);
         return statsToRender.map(renderStats);
     }
     

@@ -34,14 +34,11 @@ span {
 .table tbody tr {
     height: 1.2rem;
 }
-#players tr:not(:nth-child(1)) {
-    cursor: pointer;
-}
 nav a {
     cursor: pointer;
 }
-.highlighted {
-    background-color: #e0e0e0;
+.highlighted td {
+    background-color: #d0d0d0;
 }
 
 .nav-tabs .nav-link,

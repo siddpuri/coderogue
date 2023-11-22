@@ -21,7 +21,7 @@ export default class ButtonHooks {
         // this.onClick('first-players', () => display.showPlayers(0));
         // this.onClick('prev-players', () => display.showPlayers(-1));
         // this.onClick('next-players', () => display.showPlayers(1));
-        this.onClick('find-handle', () => display.findHandle(), 'handle');
+        // this.onClick('find-handle', () => display.findHandle(), 'handle');
         this.onClick('respawn1', this.respawn.bind(this));
         // this.onClick('reformat', this.reformat.bind(this));
         this.onClick('submit', this.submit.bind(this));
