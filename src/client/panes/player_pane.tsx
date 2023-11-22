@@ -74,7 +74,8 @@ export default function PlayerPane() {
                         type="text"
                         className="form-control"
                         placeholder="Handle"
-                        onChange={e => setFindValue(e.target.value)} />
+                        onChange={e => setFindValue(e.target.value)}
+                        onKeyDown={e => { if (e.key == 'Enter') findPlayer(); }} />
                 </div>
                 <div className="col pb-0">
                     <div className="d-grid">
@@ -87,7 +88,7 @@ export default function PlayerPane() {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
     
     function renderPlayers(): JSX.Element[] {
