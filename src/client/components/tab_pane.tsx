@@ -12,23 +12,23 @@ import KeybindingsTab from '../tabs/keybindings_tab';
 import AccountTab from '../tabs/account_tab';
 
 const tabs = [
-    { name: 'Code', component: CodeTab },
-    { name: 'Log', component: LogTab },
-    { name: 'Player', component: PlayerTab },
-    { name: 'News', component: NewsTab },
-    { name: 'General', component: GeneralTab },
-    { name: 'Api', component: ApiTab },
-    { name: 'Levels', component: LevelsTab },
-    { name: 'Shortcuts', component: KeybindingsTab },
-    { name: 'Account', component: AccountTab },
+    { name: 'Code', component: <CodeTab /> },
+    { name: 'Log', component: <LogTab /> },
+    { name: 'Player', component: <PlayerTab /> },
+    { name: 'News', component: <NewsTab /> },
+    { name: 'General', component: <GeneralTab /> },
+    { name: 'Api', component: <ApiTab /> },
+    { name: 'Levels', component: <LevelsTab /> },
+    { name: 'Shortcuts', component: <KeybindingsTab /> },
+    { name: 'Account', component: <AccountTab /> },
 ]
 
 export default function TabPane() {
     return (
         <Tabs defaultActiveKey="code" id="tab-pane" className="mt-3 mb-3" justify>
-            {tabs.map(({ name, component: Component }) => (
+            {tabs.map(({ name, component }) => (
                 <Tab eventKey={name} title={name}>
-                    <Component />
+                    {component}
                 </Tab>
             ))}
         </Tabs>
