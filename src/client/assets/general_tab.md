@@ -1,4 +1,4 @@
-## Welcome to Coderogue!
+#### Welcome to Coderogue!
 
 Coderogue is an online, multiplayer, roguelike game in
 which the only way to control your character (or "robot")
@@ -16,7 +16,7 @@ the API described on the "API" tab. Any errors, messages,
 calls to `console.log` result in entries in the
 "Log" tab.
 
-## Movement
+#### Movement
 
 Your code can contain anything that is legal Javascript.
 It should culminate in a call to one of the three movement
@@ -35,7 +35,7 @@ If you call two movement functions in one tick, only the
 first one will be executed. The others will result in an
 error message on the "Log" tab. 
 
-## Keeping Track of State
+#### Keeping Track of State
 
 One of the challenges you will face is that each invocation
 of your code needs to figure out all over again what it
@@ -55,7 +55,7 @@ This variable is initially set to the value
 state, such as `"moving"`, then on the next tick
 you can retrieve this value and act accordingly.
 
-## Sensors
+#### Sensors
 
 In order to decide what motion to take, it's useful to be
 able to ask questions about the world around you. You can
@@ -89,7 +89,7 @@ but in some contexts, like `canMove(dir)`, the
 direction is relative to the current heading of the robot
 (forward, right, backward, or left).
 
-## Levels
+#### Levels
 
 Your robot starts off on level 0. In each level, there is a
 spawn point marked by "." and a goal marked by "o". The
@@ -103,7 +103,7 @@ you respawn back on level 0.
 Each level has its own quirks. To see a detailed description
 of the levels, click on the "Levels" tab.
 
-## Jail
+#### Jail
 
 In order to keep the server from being overloaded, it throws
 misbehaving robots in "jail." This means the robot is removed

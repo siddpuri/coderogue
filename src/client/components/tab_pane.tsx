@@ -6,24 +6,25 @@ import Markdown from 'react-markdown'
 import CodeTab from '../tabs/code_tab';
 import LogTab from '../tabs/log_tab';
 import PlayerTab from '../tabs/player_tab';
-import NewsTab from '../tabs/news_tab';
-import general from '../assets/general_tab.md?raw';
 import ApiTab from '../tabs/api_tab';
 import LevelsTab from '../tabs/levels_tab';
 import KeybindingsTab from '../tabs/keybindings_tab';
 import AccountTab from '../tabs/account_tab';
 
+import generalMarkdown from '../assets/general_tab.md?raw';
+import newsMarkdown from '../assets/news_tab.md?raw';
+
 const tabs = [
     { name: 'Code', component: <CodeTab /> },
     { name: 'Log', component: <LogTab /> },
     { name: 'Player', component: <PlayerTab /> },
-    { name: 'News', component: <NewsTab /> },
-    { name: 'General', component: <Markdown>{general}</Markdown> },
+    { name: 'News', component: <Markdown>{newsMarkdown}</Markdown> },
+    { name: 'General', component: <Markdown>{generalMarkdown}</Markdown> },
     { name: 'Api', component: <ApiTab /> },
     { name: 'Levels', component: <LevelsTab /> },
     { name: 'Shortcuts', component: <KeybindingsTab /> },
     { name: 'Account', component: <AccountTab /> },
-]
+];
 
 export default function TabPane() {
     return (
