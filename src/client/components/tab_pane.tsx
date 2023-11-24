@@ -1,11 +1,13 @@
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
+import Markdown from 'react-markdown'
+
 import CodeTab from '../tabs/code_tab';
 import LogTab from '../tabs/log_tab';
 import PlayerTab from '../tabs/player_tab';
 import NewsTab from '../tabs/news_tab';
-import GeneralTab from '../tabs/general_tab';
+import general from '../assets/general_tab.md?raw';
 import ApiTab from '../tabs/api_tab';
 import LevelsTab from '../tabs/levels_tab';
 import KeybindingsTab from '../tabs/keybindings_tab';
@@ -16,7 +18,7 @@ const tabs = [
     { name: 'Log', component: <LogTab /> },
     { name: 'Player', component: <PlayerTab /> },
     { name: 'News', component: <NewsTab /> },
-    { name: 'General', component: <GeneralTab /> },
+    { name: 'General', component: <Markdown>{general}</Markdown> },
     { name: 'Api', component: <ApiTab /> },
     { name: 'Levels', component: <LevelsTab /> },
     { name: 'Shortcuts', component: <KeybindingsTab /> },
