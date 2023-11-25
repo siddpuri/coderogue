@@ -4,9 +4,9 @@ import type { LoginRequest, LoginResponse, StateResponse } from '../../shared/pr
 export const serverApi = createApi({
     reducerPath: 'serverApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'api' }),
-    endpoints: (build) => ({
+    endpoints: build => ({
         login: build.mutation<LoginResponse, LoginRequest>({
-            query: (credentials) => ({ url: 'login', method: 'POST', body: credentials }),
+            query: credentials => ({ url: 'login', method: 'POST', body: credentials }),
         }),
         getState: build.query<StateResponse, void>({
             query: () => 'state',
@@ -18,7 +18,7 @@ export const serverApi = createApi({
             query: () => 'log',
         }),
         submitCode: build.mutation<void, string>({
-            query: (code) => ({ url: 'code', method: 'POST', body: { code } }),
+            query: code => ({ url: 'code', method: 'POST', body: { code } }),
         }),
         respawn: build.mutation<void, void>({
             query: () => ({ url: 'respawn', method: 'POST' }),

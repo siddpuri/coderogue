@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './coderogue.css';
+import '../assets/coderogue.css';
 
 import MapPane from '../components/map_pane';
 import PlayerPane from '../components/player_pane';

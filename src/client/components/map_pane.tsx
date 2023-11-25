@@ -20,9 +20,9 @@ export default function MapPane() {
     useEffect(() => {
         keyBindings['C-ArrowUp'] = () => dispatch(actions.showNextLevel(numLevels));
         keyBindings['C-ArrowDown'] = () => dispatch(actions.showPrevLevel());
-        keyBindings['C-S-ArrowUp'] = () => dispatch(actions.setPrevStyle());
-        keyBindings['C-S-ArrowDown'] = () => dispatch(actions.setNextStyle());
-    }, []);
+        keyBindings['C-S-ArrowUp'] = () => dispatch(actions.switchStyle());
+        keyBindings['C-S-ArrowDown'] = () => dispatch(actions.switchStyle());
+    });
 
     const levelName = gameState?.levels[display.level].name || 'The Plains';
     
