@@ -1,10 +1,8 @@
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
-
-import * as Context from '../client/context';
 
 import types from '../assets/coderogue.d.ts?raw';
 
@@ -43,7 +41,6 @@ const keyCodes: { [key: string]: KeyCode } = {
 };
 
 export default function CodeTab() {
-    const codeAccessor = useContext(Context.CodeAccessor);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
     return (<>
@@ -73,10 +70,10 @@ export default function CodeTab() {
         defaults.addExtraLib(types);
         editor.updateOptions(editorOptions);
 
-        codeAccessor.current = {
-            getCode: () => editor.getValue(),
-            setCode: (code: string) => editor.setValue(code),
-        };
+        // codeAccessor.current = {
+        //     getCode: () => editor.getValue(),
+        //     setCode: (code: string) => editor.setValue(code),
+        // };
     }
 
     function reformat(): void {

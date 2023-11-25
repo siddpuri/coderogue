@@ -1,11 +1,9 @@
-import React from 'react';
-
-export default class AccountTab extends React.Component {
-    render() { return (<>
+export default function AccountTab() {
+    return (<>
         <form id="login-form">
             <div className="row mb-3">
                 <label>
-                    You can use this either to log in or to register a new account.
+                    Log in or create a new account.
                 </label>
             </div>
             <div className="row mb-3">
@@ -40,5 +38,5 @@ export default class AccountTab extends React.Component {
                 </div>
             </div>
         </form>
-    </>);}
+    </>);
 }
