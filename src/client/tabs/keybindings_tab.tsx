@@ -1,7 +1,15 @@
-import React from 'react';
+const bindings = [
+    { key: 'Ctrl-S', desc: 'Submit code' },
+    { key: 'Ctrl-[', desc: 'Previous tab' },
+    { key: 'Ctrl-]', desc: 'Next tab' },
+    { key: 'Ctrl-Up', desc: 'Next level' },
+    { key: 'Ctrl-Down', desc: 'Previous level' },
+    { key: 'Ctrl-Shift-Up', desc: 'Show high-contrast map' },
+    { key: 'Ctrl-Shift-Down', desc: 'Show traditional ASCII map' },
+];
 
-export default class KeybindingsTab extends React.Component {
-    render() { return (<>
+export default function KeybindingsTab() {
+    return (<>
         <h5>Some helpful key bindings</h5>
         <table className="table">
             <thead>
@@ -11,35 +19,13 @@ export default class KeybindingsTab extends React.Component {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><code>Ctrl-S</code></td>
-                    <td>Submit code</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-&lbrack;</code></td>
-                    <td>Previous tab</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-&rbrack;</code></td>
-                    <td>Next tab</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-Up</code></td>
-                    <td>Next level</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-Down</code></td>
-                    <td>Previous level</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-Shift-Up</code></td>
-                    <td>Show high-contrast map</td>
-                </tr>
-                <tr>
-                    <td><code>Ctrl-Shift-Down</code></td>
-                    <td>Show traditional ASCII map</td>
-                </tr>
+                {bindings.map(({ key, desc }) => (
+                    <tr key={key}>
+                        <td><code>{key}</code></td>
+                        <td>{desc}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
-    </>);}
+    </>);
 }
