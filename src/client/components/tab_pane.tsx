@@ -28,9 +28,9 @@ const tabs = [
 
 export default function TabPane() {
     return (
-        <Tabs defaultActiveKey="code" id="tab-pane" className="mt-3 mb-3" justify>
+        <Tabs defaultActiveKey="Code" id="tab-pane" className="mt-3 mb-3" justify>
             {tabs.map(({ name, component }) => (
-                <Tab eventKey={name} title={name}>
+                <Tab key={name} eventKey={name} title={name}>
                     {component}
                 </Tab>
             ))}
