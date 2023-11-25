@@ -1,10 +1,9 @@
-import { useContext, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../redux_hooks';
 
 import { PlayerData } from '../../shared/protocol.js';
 import LevelMap from '../../shared/level_map.js';
 
-import * as Context from '../client/context';
 import { useGetStateQuery } from '../client/server_api.js';
 
 import { displaySlice } from '../state/display_state';
@@ -22,11 +21,12 @@ const triangles = [
 ];
 
 export default function CanvasMap() {
-    const client = useContext(Context.ClientInstance);
-    const state = useGetStateQuery()?.data;
-    const actions = displaySlice.actions;
+    const gameState = useGetStateQuery()?.data;
+    const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const display = useAppSelector(state => state.display);
+    const actions = displaySlice.actions;
     const dispatch = useAppDispatch();
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const backgroundColor    = '#f0f0f0';
@@ -39,7 +39,7 @@ export default function CanvasMap() {
     const dx                 = 8;
     const dy                 = [10, 8][display.style];
 
-    let map = new LevelMap(state?.levels[display.level].map);
+    let map = new LevelMap(gameState?.levels[display.level].map);
 
     useEffect(render);
 
@@ -90,18 +90,18 @@ export default function CanvasMap() {
 
         function renderPlayer(pos: Pos, playerId: number): void {
             let color = foregroundColor;
-            if (playerId == client.display.highlightedPlayer) {
+            if (playerId == display.highlightedPlayer) {
                 color = highlightColor;
             }
-            if (playerId == client.credentials.playerId) {
+            if (playerId == currentPlayer) {
                 color = currentPlayerColor;
             }
-            let dir = state!.players[playerId]!.dir;
+            let dir = gameState!.players[playerId]!.dir;
             renderArrow(pos, dir, color);
         }
 
         function renderMob(pos: Pos, mobId: number): void {
-            let dir = state!.levels[display.level].mobs[mobId].dir;
+            let dir = gameState!.levels[display.level].mobs[mobId].dir;
             renderArrow(pos, dir, mobColor);
         }
 
@@ -188,7 +188,7 @@ export default function CanvasMap() {
             for (let x = x0 - 1; x <= x0 + 1; x++) {
                 let playerId = getPlayerAtPos([x, y]);
                 if (playerId == null) continue;
-                let player = state?.players[playerId] as PlayerData;
+                let player = gameState?.players[playerId] as PlayerData;
                 let distance = getDistance(mouseX, mouseY, player.pos);
                 if (distance < closestDistance) {
                     closestPlayerId = playerId;
