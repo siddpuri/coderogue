@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../redux_hooks';
-
-import { keyBindings } from '../client/key_bindings';
+import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { useGetStateQuery } from '../client/server_api.js';
+import { keyBindings } from '../client/key_bindings';
 
 import { displaySlice } from '../state/display_state';
 

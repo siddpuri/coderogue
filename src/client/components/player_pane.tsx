@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../redux_hooks';
+import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
+import { useGetStateQuery } from '../client/server_api.js';
 
 import { PlayerData } from '../../shared/protocol.js';
 import Handles from '../../shared/handles.js';
 import Grownups from '../../shared/grownups.js';
-
-import { useGetStateQuery } from '../client/server_api.js';
 
 import { displaySlice } from '../state/display_state';
 import { alertSlice } from '../state/alert_state';

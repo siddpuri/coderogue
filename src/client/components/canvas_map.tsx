@@ -1,10 +1,9 @@
 import { useRef, useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../redux_hooks';
+import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
+import { useGetStateQuery } from '../client/server_api.js';
 
 import { PlayerData } from '../../shared/protocol.js';
 import LevelMap from '../../shared/level_map.js';
-
-import { useGetStateQuery } from '../client/server_api.js';
 
 import { displaySlice } from '../state/display_state';
 

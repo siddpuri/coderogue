@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
-import { serverApi } from './client/server_api';
+import { serverApi } from './server_api';
 
-import { alertSlice } from './state/alert_state';
-import { displaySlice } from './state/display_state';
-import { loginSlice } from './state/login_state';
+import { alertSlice } from '../state/alert_state';
+import { displaySlice } from '../state/display_state';
+import { loginSlice } from '../state/login_state';
 
 export const store = configureStore({
     reducer: {

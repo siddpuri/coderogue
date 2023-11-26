@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
-import { useAppSelector, useAppDispatch } from '../redux_hooks';
+import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
 import { alertSlice } from '../state/alert_state';
 

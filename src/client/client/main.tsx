@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 
 import { store } from './redux_store.js';
-import Page from './client/page';
+import Page from './page.js';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
