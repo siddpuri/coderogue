@@ -49,7 +49,8 @@ export default function PlayerPane() {
                         onLeftLeft={() => dispatch(actions.showFirstPlayer())}
                         onLeft={() => dispatch(actions.showPrevPlayer())}
                         onRight={() => dispatch(actions.showNextPlayer(numPlayers))}
-                        onRightRight={() => dispatch(actions.showLastPlayer(numPlayers))} />
+                        onRightRight={() => dispatch(actions.showLastPlayer(numPlayers))}
+                    />
                 </div>
             </div>
 
@@ -75,14 +76,16 @@ export default function PlayerPane() {
                         className="form-control"
                         placeholder="Handle"
                         onChange={e => setFindValue(e.target.value)}
-                        onKeyDown={e => { if (e.key == 'Enter') findPlayer(); }} />
+                        onKeyDown={e => { if (e.key == 'Enter') findPlayer(); }}
+                    />
                 </div>
                 <div className="col pb-0">
                     <div className="d-grid">
                         <button
                             type="button"
                             className="btn btn-secondary"
-                            onClick={findPlayer}>
+                            onClick={findPlayer}
+                        >
                             Find
                         </button>
                     </div>
@@ -135,7 +138,8 @@ export default function PlayerPane() {
             <tr
                 key={i}
                 className={stats.highlight ? 'highlighted' : ''}
-                onClick={() => dispatch(actions.highlightPlayer(stats.id))}>
+                onClick={() => dispatch(actions.highlightPlayer(stats.id))}
+            >
                 <td>{stats.rank}</td>
                 <td>{stats.score}</td>
                 <td>{stats.levelNumber ? stats.levelNumber : 'J'}</td>

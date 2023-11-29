@@ -47,7 +47,8 @@ export default function CanvasMap() {
             ref={canvasRef}
             onMouseMove={e => setMouseCoords(getCoordsFromEvent(e))}
             onMouseLeave={() => setMouseCoords(null)}
-            onClick={e => highlightPlayerAt(e)} />
+            onClick={e => highlightPlayerAt(e)}
+        />
     </>;
 
     function setMouseCoords(coords: [number, number] | null): void {

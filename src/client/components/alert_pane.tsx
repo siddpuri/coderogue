@@ -27,7 +27,8 @@ export default function AlertPane() {
             <Alert
                 variant={variants[alert.kind]}
                 show={alert.isShowing}
-                className="px-4 pt-1 pb-1 mb-0">
+                className="px-4 pt-1 pb-1 mb-0"
+            >
                 {alert.message}
             </Alert>
         </div>

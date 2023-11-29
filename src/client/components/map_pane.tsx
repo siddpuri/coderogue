@@ -24,7 +24,7 @@ export default function MapPane() {
     });
 
     const levelName = gameState?.levels[display.level].name || 'The Plains';
-    
+
     return <>
         <div className="col">
             <div className="row align-items-baseline">
@@ -39,7 +39,8 @@ export default function MapPane() {
                         onLeftLeft={() => dispatch(actions.showFirstLevel())}
                         onLeft={() => dispatch(actions.showPrevLevel())}
                         onRight={() => dispatch(actions.showNextLevel(numLevels))}
-                        onRightRight={() => dispatch(actions.showLastLevel(numLevels))} />
+                        onRightRight={() => dispatch(actions.showLastLevel(numLevels))}
+                    />
                 </div>
                 <div className="col d-flex justify-content-end">
                     <div className="coords">{renderCoords()}</div>
@@ -48,7 +49,7 @@ export default function MapPane() {
             <CanvasMap />
         </div>
     </>;
-    
+
     function renderCoords(): string | null {
         if (!display.coords) return null;
         return `[ ${display.coords[0]}, ${display.coords[1]} ]`;

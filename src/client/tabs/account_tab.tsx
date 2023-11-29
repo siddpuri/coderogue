@@ -17,7 +17,7 @@ export default function AccountTab() {
     const [passwordValue, setPasswordValue] = useState('');
 
     const currentPlayer = credentials?.playerId ?? null;
-    return currentPlayer? logoutForm() : loginForm();
+    return currentPlayer ? logoutForm() : loginForm();
 
     function loginForm() {
         return <>
@@ -34,7 +34,8 @@ export default function AccountTab() {
                             className="form-control"
                             placeholder="s-jsmith"
                             onChange={e => setEmailValue(e.target.value)}
-                            onKeyDown={e => { if (e.key == "Enter") passwordRef.current!.focus() }} />
+                            onKeyDown={e => { if (e.key == "Enter") passwordRef.current!.focus() }}
+                        />
                         <span className="input-group-text">@lwsd.org</span>
                     </div>
                 </div>
@@ -45,7 +46,8 @@ export default function AccountTab() {
                         className="form-control"
                         placeholder="Password"
                         onChange={e => setPasswordValue(e.target.value)}
-                        onKeyDown={e => { if (e.key == "Enter") login(); }} />
+                        onKeyDown={e => { if (e.key == "Enter") login(); }}
+                    />
                 </div>
             </div>
             <div className="row mb-3">
