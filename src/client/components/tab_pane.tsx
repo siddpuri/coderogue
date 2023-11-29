@@ -27,7 +27,7 @@ const tabs = [
 ];
 
 export default function TabPane() {
-    return (
+    return <>
         <Tabs defaultActiveKey="Code" id="tab-pane" className="mt-3 mb-3" justify>
             {tabs.map(({ name, component }) => (
                 <Tab key={name} eventKey={name} title={name}>
@@ -35,5 +35,5 @@ export default function TabPane() {
                 </Tab>
             ))}
         </Tabs>
-    );
+    </>;
 }

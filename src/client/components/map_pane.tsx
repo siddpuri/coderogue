@@ -25,7 +25,7 @@ export default function MapPane() {
 
     const levelName = gameState?.levels[display.level].name || 'The Plains';
     
-    return (
+    return <>
         <div className="col">
             <div className="row align-items-baseline">
                 <div className="col h2">
@@ -47,7 +47,7 @@ export default function MapPane() {
             </div>
             <CanvasMap />
         </div>
-    );
+    </>;
     
     function renderCoords(): string | null {
         if (!display.coords) return null;

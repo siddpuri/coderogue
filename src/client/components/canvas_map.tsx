@@ -42,13 +42,13 @@ export default function CanvasMap() {
 
     useEffect(render);
 
-    return (
+    return <>
         <canvas
             ref={canvasRef}
             onMouseMove={e => setMouseCoords(getCoordsFromEvent(e))}
             onMouseLeave={() => setMouseCoords(null)}
             onClick={e => highlightPlayerAt(e)} />
-    );
+    </>;
 
     function setMouseCoords(coords: [number, number] | null): void {
         dispatch(actions.setCoords(coords));

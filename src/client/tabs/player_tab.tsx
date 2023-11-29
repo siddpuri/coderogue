@@ -1,5 +1,5 @@
 export default function PlayerTab() {
-    return (
+    return <>
         <div className="row d-flex justify-content-between">
             <div className="col-4">
                 <table className="table" id="player-stats">
@@ -41,5 +41,5 @@ export default function PlayerTab() {
                 </table>
             </div>
         </div>
-    );
+    </>;
 }

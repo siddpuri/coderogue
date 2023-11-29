@@ -22,7 +22,7 @@ export default function AlertPane() {
         }
     });
 
-    return (
+    return <>
         <div className="position-fixed start-0 end-0 bottom-0 clickthrough">
             <Alert
                 variant={variants[alert.kind]}
@@ -31,5 +31,5 @@ export default function AlertPane() {
                 {alert.message}
             </Alert>
         </div>
-    );
+    </>;
 }

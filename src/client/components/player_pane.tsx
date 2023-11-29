@@ -38,7 +38,7 @@ export default function PlayerPane() {
     const players = gameState?.players ?? [];
     const numPlayers = gameState?.players.filter(p => p).length || 0;
 
-    return (
+    return <>
         <div className="col">
             <div className="row align-items-baseline">
                 <div className="col h2">
@@ -89,7 +89,7 @@ export default function PlayerPane() {
                 </div>
             </div>
         </div>
-    );
+    </>;
 
     function renderPlayers(): JSX.Element[] {
         let stats: (PlayerStats | undefined)[] = players.map(getStats);

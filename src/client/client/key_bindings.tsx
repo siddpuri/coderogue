@@ -3,11 +3,11 @@ import React from 'react';
 export const keyBindings: { [key: string]: () => void } = {};
 
 export default function KeyBindingProvider({ children }: React.PropsWithChildren<object>) {
-    return (
+    return <>
         <div onKeyDown={onKeyDown} tabIndex={-1}>
             {children}
         </div>
-    );
+    </>;
 
     function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
         let key = event.key;

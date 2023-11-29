@@ -9,7 +9,7 @@ const bindings = [
 ];
 
 export default function KeybindingsTab() {
-    return (<>
+    return <>
         <h5>Some helpful key bindings</h5>
         <table className="table">
             <thead>
@@ -27,5 +27,5 @@ export default function KeybindingsTab() {
                 ))}
             </tbody>
         </table>
-    </>);
+    </>;
 }

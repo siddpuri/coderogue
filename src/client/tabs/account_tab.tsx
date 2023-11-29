@@ -59,7 +59,7 @@ export default function AccountTab() {
     }
 
     function logoutForm() {
-        return (
+        return <>
             <form id="logout-form">
                 <div className="row mb-3">
                     <label>
@@ -74,7 +74,7 @@ export default function AccountTab() {
                     </div>
                 </div>
             </form>
-        );
+        </>;
     }
 
     function login() {

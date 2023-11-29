@@ -43,7 +43,7 @@ const keyCodes: { [key: string]: KeyCode } = {
 export default function CodeTab() {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
-    return (<>
+    return <>
         <div className="col-10">
             <Editor
                 height="80vh"
@@ -59,7 +59,7 @@ export default function CodeTab() {
                 <button type="button" className="btn btn-primary" id="submit">Submit</button>
             </div>
         </div>
-    </>);
+    </>;
 
     function onMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef.current = editor;

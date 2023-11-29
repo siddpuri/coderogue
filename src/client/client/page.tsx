@@ -12,7 +12,7 @@ import { useGetStateQuery } from '../state/server_api.js';
 export default function Page() {
     useGetStateQuery(undefined, { pollingInterval: 1000 });
 
-    return (
+    return <>
         <KeyBindingProvider>
             <div className="container-fluid">
                 <div className="px-3 pt-3 pb-5">
@@ -25,5 +25,5 @@ export default function Page() {
                 <AlertPane />
             </div>
         </KeyBindingProvider>
-    );
+    </>;
 }

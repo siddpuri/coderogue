@@ -1,5 +1,5 @@
 export default function LogTab() {
-    return (
+    return <>
         <div className="row">
             <div className="col">
                 <textarea className="form-control font-monospace" id="log-text" rows={20} />
@@ -17,5 +17,5 @@ export default function LogTab() {
                 </div>
             </div>
         </div>
-    );
+    </>;
 }
