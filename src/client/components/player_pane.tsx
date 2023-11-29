@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
-import { useGetStateQuery } from '../client/server_api.js';
+import { useGetStateQuery } from '../state/server_api.js';
 
 import { PlayerData } from '../../shared/protocol.js';
 import Handles from '../../shared/handles.js';

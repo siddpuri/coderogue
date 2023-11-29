@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
-import { serverApi } from './server_api';
+import { serverApi } from '../state/server_api';
 
 import { alertSlice } from '../state/alert_state';
 import { displaySlice } from '../state/display_state';

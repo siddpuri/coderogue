@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { LoginResponse } from '../../shared/protocol.js';
 
-import { serverApi } from '../client/server_api';
+import { serverApi } from './server_api.js';
 
 const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
 const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
@@ -19,7 +19,7 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        onLogout: (state) => {
+        logout: (state) => {
             state.credentials = null;
             deleteCookie('playerId');
             deleteCookie('authToken');

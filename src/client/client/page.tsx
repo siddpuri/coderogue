@@ -7,7 +7,7 @@ import TabPane from '../components/tab_pane';
 import AlertPane from '../components/alert_pane.js';
 
 import KeyBindingProvider from './key_bindings';
-import { useGetStateQuery } from './server_api.js';
+import { useGetStateQuery } from '../state/server_api.js';
 
 export default function Page() {
     useGetStateQuery(undefined, { pollingInterval: 1000 });
