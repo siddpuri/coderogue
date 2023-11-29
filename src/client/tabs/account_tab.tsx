@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
 import { useLoginMutation } from '../state/server_api.js';
@@ -10,6 +10,8 @@ export default function AccountTab() {
     const credentials = useAppSelector(state => state.login?.credentials ?? null);
     const actions = loginSlice.actions;
     const dispatch = useAppDispatch();
+
+    const passwordRef = useRef<HTMLInputElement>(null);
 
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
@@ -32,12 +34,13 @@ export default function AccountTab() {
                             className="form-control"
                             placeholder="s-jsmith"
                             onChange={e => setEmailValue(e.target.value)}
-                            onKeyDown={e => { if (e.key == "Enter") {} }} />
+                            onKeyDown={e => { if (e.key == "Enter") passwordRef.current!.focus() }} />
                         <span className="input-group-text">@lwsd.org</span>
                     </div>
                 </div>
                 <div className="col-3">
                     <input
+                        ref={passwordRef}
                         type="password"
                         className="form-control"
                         placeholder="Password"
