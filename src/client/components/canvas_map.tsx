@@ -176,7 +176,8 @@ export default function CanvasMap() {
     }
 
     function highlightPlayerAt(event: React.MouseEvent): void {
-        getPlayerAt(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+        let player = getPlayerAt(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+        dispatch(actions.highlightPlayer(player));
     }
 
     function getPlayerAt(mouseX: number, mouseY: number): number | null {

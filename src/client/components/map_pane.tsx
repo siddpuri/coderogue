@@ -15,15 +15,10 @@ export default function MapPane() {
     const gameState = useGetStateQuery()?.data;
 
     const numLevels = gameState?.levels.length || 0;
-
-    useEffect(() => {
-        keyBindings['C-ArrowUp'] = () => dispatch(actions.showNextLevel(numLevels));
-        keyBindings['C-ArrowDown'] = () => dispatch(actions.showPrevLevel());
-        keyBindings['C-S-ArrowUp'] = () => dispatch(actions.switchStyle());
-        keyBindings['C-S-ArrowDown'] = () => dispatch(actions.switchStyle());
-    });
-
     const levelName = gameState?.levels[display.level].name || 'The Plains';
+
+    bindKeys();
+    showHighlightedPlayer();
 
     return <>
         <div className="col">
@@ -36,10 +31,10 @@ export default function MapPane() {
                         level {display.level}:{' '}{levelName}
                     </div>
                     <LeftRightButtons
-                        onLeftLeft={() => dispatch(actions.showFirstLevel())}
-                        onLeft={() => dispatch(actions.showPrevLevel())}
-                        onRight={() => dispatch(actions.showNextLevel(numLevels))}
-                        onRightRight={() => dispatch(actions.showLastLevel(numLevels))}
+                        onLeftLeft={showFirstLevel}
+                        onLeft={showPrevLevel}
+                        onRight={showNextLevel}
+                        onRightRight={showLastLevel}
                     />
                 </div>
                 <div className="col d-flex justify-content-end">
@@ -49,6 +44,46 @@ export default function MapPane() {
             <CanvasMap />
         </div>
     </>;
+
+    function bindKeys(): void {
+        useEffect(() => {
+            keyBindings['C-S-ArrowLeft'] = showPrevLevel;
+            keyBindings['C-S-ArrowRight'] = showNextLevel;
+            keyBindings['C-S-ArrowUp'] = () => dispatch(actions.switchStyle());
+            keyBindings['C-S-ArrowDown'] = () => dispatch(actions.switchStyle());
+        });
+    }
+
+    function showHighlightedPlayer(): void {
+        let targetLevel = gameState?.players[display.highlightedPlayer ?? -1]?.levelNumber;
+        if (targetLevel && display.level != targetLevel) {
+            dispatch(actions.showLevel(targetLevel));
+        }    
+    }
+
+    function showFirstLevel(): void {
+        if (display.level == 0) return;
+        dispatch(actions.showFirstLevel());
+        dispatch(actions.highlightPlayer(null));
+    }
+
+    function showPrevLevel(): void {
+        if (display.level == 0) return;
+        dispatch(actions.showPrevLevel());
+        dispatch(actions.highlightPlayer(null));
+    }
+
+    function showNextLevel(): void {
+        if (display.level == numLevels - 1) return;
+        dispatch(actions.showNextLevel(numLevels));
+        dispatch(actions.highlightPlayer(null));
+    }
+
+    function showLastLevel(): void {
+        if (display.level == numLevels - 1) return;
+        dispatch(actions.showLastLevel(numLevels));
+        dispatch(actions.highlightPlayer(null));
+    }
 
     function renderCoords(): string | null {
         if (!display.coords) return null;

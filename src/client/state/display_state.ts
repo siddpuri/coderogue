@@ -23,6 +23,10 @@ export const displaySlice = createSlice({
     initialState,
     reducers: {
         switchStyle: (state) => { state.style = 1 - state.style; },
+        showLevel: (state, { payload }: PayloadAction<number>) => {
+            let level: number = payload;
+            state.level = level;
+        },
         showFirstLevel: (state) => { state.level = 1; },
         showPrevLevel: (state) => { state.level = Math.max(state.level - 1, 1); },
         showNextLevel: (state, { payload }: PayloadAction<number>) => {
