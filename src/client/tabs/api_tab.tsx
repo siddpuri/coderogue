@@ -1,12 +1,10 @@
-import React from 'react';
-
-export default class ApiTab extends React.Component {
-    render() { return (<>
+export default function ApiTab() {
+    return <>
         <h5>API documentation</h5>
         <table className="table">
             <thead>
                 <tr>
-                    <th className="col-4">Function</th>
+                    <th className="col-3">Function</th>
                     <th>Description</th>
                 </tr>
             </thead>
@@ -149,5 +147,5 @@ export default class ApiTab extends React.Component {
                 </tr>
             </tbody>
         </table>
-    </>);}
+    </>;
 }
