@@ -1,3 +1,125 @@
+import Markdown from 'react-markdown'
+
+const entries = [
+    {
+        code: 'console.log(val)',
+        desc: `Prints \`val\` to the log, which is accessible in the Log pane
+              of this page`
+    },
+    {
+        code: 'moveForward()',
+        desc: `Moves the player forward one square`
+    },
+    {
+        code: 'turnRight()',
+        desc: `Turns the player right 90 degrees`
+    },
+    {
+        code: 'turnLeft()',
+        desc: `Turns the player left 90 degrees`
+    },
+    {
+        code: 'canMove(dir)',
+        desc: `Returns \`true\` if the player can move in direction \`dir\`
+              without touching a wall or another player.
+
+              \`dir\` is an integer where 0 is forward, 1 is right, 2 is
+              backward, and 3 is left, **relative to the direction the player
+              is facing.** This is the one function that uses relative
+              direction in order to stay consistent with College Board's
+              Psuedocode language.
+
+              For your convenience, you can use the pre-defined variables
+              \`forward\`, \`right\`, \`backward\`, and \`left\`, which are set
+              to their corresponding integers.`
+    },
+    {
+        code: 'respawn()',
+        desc: `Immediately respawn on level 0`
+    },
+    {
+        code: 'respawnAt(level, pos, dir)',
+        desc: `Immediately respawn on level \`level\`, at position \`pos\`,
+              facing direction \`dir\`.
+
+              The next time the player exits after calling this function, it
+              will yield no points! Similarly, bumping off another player on
+              level 2 after respawning yields no points.
+
+              For example: \`respawnAt(1, [10, 9], 2)\` respaws the player on
+              level 1, just above the exit and facing downward.`
+    },
+    {
+        code: 'getLevel()',
+        desc: `Returns the current level`
+    },
+    {
+        code: 'getDirection()',
+        desc: `Returns an integer represting the direciton the player is facing,
+              where 0 is up, 1 is right, 2 is down, and 3 is left`
+    },
+    {
+        code: 'getPosition()',
+        desc: `Returns a list of length 2 in the form of \`[col, row]\`,
+              representing the current position of the player`
+    },
+    {
+        code: 'getStartPosition()',
+        desc: `Returns a list of length 2 in the form of \`[col, row]\`,
+              representing the position of the spawn point on the current level`
+    },
+    {
+        code: 'getExitPosition()',
+        desc: `Returns a list of length 2 in the form of \`[col, row]\`,
+              representing the position of the exit that the player is trying to
+              reach`
+    },
+    {
+        code: 'whatsAt(pos)',
+        desc: `Returns a string of length 1 correponding to what the map is
+              showing at \`pos\`.
+
+              For example: \`whatsAt([0, 0])\` always returns \`'#'\`.`
+    },
+    {
+        code: 'isProtected(pos)',
+        desc: `Returns whether a player at that position is protected from PVP
+              attacks.
+
+              This is always true on levels 0 and 1, and is true on level 2 if
+              the position is near spawn or exit.`
+    },
+    {
+        code: 'isWorthPoints(pos)',
+        desc: `Returns how many points you would get for bumping off the player
+              at that position.
+
+              This returns 0 if there is no player at that position, or if the
+              player is protected, or if the player recently called
+              \`respawnAt()\`. Using this function can protect you from wasting
+              your time hunting respawned players.
+
+              On level 3, this returns 100 for positions with automata, and 200
+              for positions with players.`
+    },
+    {
+        code: 'randomNumber(min, max)',
+        desc: `Returns a random integer *n*, where \`min\` < *n* < \`max\``
+    },
+    {
+        code: 'appendItem(list, value)',
+        desc: `Modifies \`list\` by appending \`value\` at the end`
+    },
+    {
+        code: 'insertItem(list, i, value)',
+        desc: `Modifies \`list\` by inserting \`value\` at index \`i\``
+    },
+    {
+        code: 'removeItem(list, i)',
+        desc: `Modifies \`list\` by removing the element at index \`i\``
+    },
+];
+
 export default function ApiTab() {
     return <>
         <h5>API documentation</h5>
@@ -9,142 +131,12 @@ export default function ApiTab() {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><code>console.log(val)</code></td>
-                    <td>Prints <code>val</code> to the log, which is accessible in the Log pane of this page</td>
-                </tr>
-                <tr>
-                    <td><code>moveForward()</code></td>
-                    <td>Moves the player forward one square</td>
-                </tr>
-                <tr>
-                    <td><code>turnRight()</code></td>
-                    <td>Turns the player right 90 degrees</td>
-                </tr>
-                <tr>
-                    <td><code>turnLeft()</code></td>
-                    <td>Turns the player left 90 degrees</td>
-                </tr>
-                <tr>
-                    <td><code>canMove(dir)</code></td>
-                    <td>
-                        <p>
-                            Returns <code>true</code> if the player can move in direction <code>dir</code>
-                            without touching a wall or another player.
-                        </p>
-                        <p>
-                            <code>dir</code> is an integer where 0 is forward, 1 is right, 2 is backward, and 3 is left,
-                            <span className="fw-bold">relative to the direction the player is facing.</span> This is the
-                            one function that uses relative direction in order to stay consistent with College Board's
-                            Psuedocode language.
-                        </p>
-                        <p>
-                            For your convenience, you can use the pre-defined variables <code>forward</code>,
-                            <code>right</code>, <code>backward</code>, and <code>left</code>, which are set to their
-                            corresponding integers.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>respawn()</code></td>
-                    <td>Immediately respawn on level 0</td>
-                </tr>
-                <tr>
-                    <td><code>respawnAt(level, pos, dir)</code></td>
-                    <td>
-                        <p>
-                            Immediately respawn on level <code>level</code>, at position <code>pos</code>, facing direction
-                            <code>dir</code>.
-                        </p>
-                        <p>
-                            The next time the player exits after calling this function, it will yield no points! Similarly,
-                            bumping off another player on level 2 after respawning yields no points.
-                        </p>
-                        <p>
-                            For example: <code>respawnAt(1, [10, 9], 2)</code> respaws the player on level 1, just above the
-                            exit and facing downward.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>getLevel()</code></td>
-                    <td>Returns the current level</td>
-                </tr>
-                <tr>
-                    <td><code>getDirection()</code></td>
-                    <td>
-                        Returns an integer represting the direciton the player is facing, where 0 is up, 1 is right, 2 is down,
-                        and 3 is left
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>getPosition()</code></td>
-                    <td>
-                        Returns a list of length 2 in the form of <code>[col, row]</code>, representing the current position
-                        of the player
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>getStartPosition()</code></td>
-                    <td>
-                        Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the
-                        spawn point on the current level
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>getExitPosition()</code></td>
-                    <td>
-                        Returns a list of length 2 in the form of <code>[col, row]</code>, representing the position of the
-                        exit that the player is trying to reach
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>whatsAt(pos)</code></td>
-                    <td>
-                        <p>Returns a string of length 1 correponding to what the map is showing at <code>pos</code>.</p>
-                        <p>For example: <code>whatsAt([0, 0])</code> always returns <code>'#'</code>.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>isProtected(pos)</code></td>
-                    <td>
-                        <p>Returns whether a player at that position is protected from PVP attacks.</p>
-                        <p>
-                            This is always true on levels 0 and 1, and is true on level 2 if the position is near spawn
-                            or exit.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>isWorthPoints(pos)</code></td>
-                    <td>
-                        <p>Returns how many points you would get for bumping off the player at that position.</p>
-                        <p>
-                            This returns 0 if there is no player at that position, or if the player is protected,
-                            or if the player recently called <code>respawnAt()</code>. Using
-                            this function can protect you from wasting your time hunting respawned players.
-                        </p>
-                        <p>
-                            On level 3, this returns 100 for positions with automata, and 200 for positions with players.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><code>randomNumber(min, max)</code></td>
-                    <td>Returns a random integer <em>n</em>, where <code>min</code> &le; <em>n</em> &le; <code>max</code></td>
-                </tr>
-                <tr>
-                    <td><code>appendItem(list, value)</code></td>
-                    <td>Modifies <code>list</code> by appending <code>value</code> at the end</td>
-                </tr>
-                <tr>
-                    <td><code>insertItem(list, i, value)</code></td>
-                    <td>Modifies <code>list</code> by inserting <code>value</code> at index <code>i</code></td>
-                </tr>
-                <tr>
-                    <td><code>removeItem(list, i)</code></td>
-                    <td>Modifies <code>list</code> by removing the element at index <code>i</code></td>
-                </tr>
+                {entries.map(({ code, desc }) =>
+                    <tr key={code}>
+                        <td><code>{code}</code></td>
+                        <td><Markdown>{desc.replace(/^ */gm, '')}</Markdown></td>
+                    </tr>
+                )}
             </tbody>
         </table>
     </>;
