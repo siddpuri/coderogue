@@ -23,18 +23,19 @@ const tabs = [
     { name: 'Shortcuts', component: <KeybindingsTab /> },
     { name: 'Levels', component: <Markdown>{levelsMarkdown}</Markdown> },
     { name: 'News', component: <Markdown>{newsMarkdown}</Markdown> },
-    { name: 'Code', component: <CodeTab /> },
-    { name: 'Log', component: <LogTab /> },
+    { name: 'Code', component: <CodeTab />, disable: true },
+    { name: 'Log', component: <LogTab />, disable: true },
     { name: 'Player', component: <PlayerTab /> },
     { name: 'Account', component: <AccountTab /> },
 ];
 
-export default function TabPane() {
-    const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
+const message = <div className="text-center">Log in to see this tab.</div>;
 
+export default function TabPane() {
+    const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const [key, setKey] = useState<string | null>('General');
 
-    useEffect(() => { if (currentPlayer) setKey('Code'); }, []);
+    useEffect(() => { if (isLoggedIn) setKey('Code'); }, []);
 
     return <>
         <Tabs
@@ -43,9 +44,9 @@ export default function TabPane() {
             className="mt-3 mb-3"
             justify
         >
-            {tabs.map(({ name, component }) => (
+            {tabs.map(({ name, component, disable }) => (
                 <Tab key={name} eventKey={name} title={name}>
-                    {component}
+                    {disable && !isLoggedIn ? message : component}
                 </Tab>
             ))}
         </Tabs>
