@@ -10,21 +10,21 @@ const bindings = [
 
 export default function KeybindingsTab() {
     return <>
-        <h5>Some helpful key bindings</h5>
+        <h5>Some helpful keyboard shortcuts:</h5>
         <table className="table">
             <thead>
                 <tr>
-                    <th className="col-4">Key</th>
+                    <th className="col-3">Key</th>
                     <th>Description</th>
                 </tr>
             </thead>
             <tbody>
-                {bindings.map(({ key, desc }) => (
+                {bindings.map(({ key, desc }) =>
                     <tr key={key}>
                         <td><code>{key}</code></td>
                         <td>{desc}</td>
                     </tr>
-                ))}
+                )}
             </tbody>
         </table>
     </>;
