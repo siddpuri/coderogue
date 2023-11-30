@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
-import { useLoginMutation } from '../state/server_api.js';
+import { useLoginMutation, useLoadCodeQuery } from '../state/server_api.js';
 
 import { loginSlice } from '../state/login_state';
 
@@ -80,7 +80,9 @@ export default function AccountTab() {
     }
 
     function login() {
-        sendLogin({ email: emailValue, password: passwordValue });
+        sendLogin({ email: emailValue, password: passwordValue })
+        .unwrap()
+        .then(() => useLoadCodeQuery());
     }
 
     function logout() {
