@@ -1,5 +1,6 @@
-import { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
+
+import { useLoadCodeQuery } from '../state/server_api.js';
 
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
@@ -40,15 +41,17 @@ const keyCodes: { [key: string]: KeyCode } = {
     'ArrowDown': KeyCode.DownArrow,
 };
 
+export let editorRef: editor.IStandaloneCodeEditor | null = null;
+
 export default function CodeTab() {
-    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+    let code = useLoadCodeQuery()?.data ?? '// Waiting to load code from server ...';
 
     return <>
         <div className="col-10">
             <Editor
                 height="80vh"
                 language="javascript"
-                onMount={onMount}
+                onMount={(editorInstance, monaco) => onMount(editorInstance, monaco, code)}
             />
         </div>
         <div className="col">
@@ -60,30 +63,25 @@ export default function CodeTab() {
         </div>
     </>;
 
-    function onMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
-        editorRef.current = editor;
+    function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco, code: string) {
+        editorRef = editorInstance;
 
         let defaults = monaco.languages.typescript.javascriptDefaults;
         defaults.setDiagnosticsOptions(diagnosticsOptions);
         defaults.setCompilerOptions(compilerOptions);
         defaults.addExtraLib(types);
-        editor.updateOptions(editorOptions);
-
-        // codeAccessor.current = {
-        //     getCode: () => editor.getValue(),
-        //     setCode: (code: string) => editor.setValue(code),
-        // };
+        editorRef.updateOptions(editorOptions);
+        editorRef.setValue(code);
     }
 
     function reformat(): void {
-        editorRef.current?.getAction('editor.action.formatDocument')?.run();
+        editorRef?.getAction('editor.action.formatDocument')?.run();
     }
 }
 
 export function addKeybindings(keybindings: { [key: string]: () => void }): void {
-    let EditorRef = { current: null as editor.IStandaloneCodeEditor | null};
     for (let key in keybindings) {
         let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
-        EditorRef.current?.addCommand(keyCode, keybindings[key]);
+        // editor?.addCommand(keyCode, keybindings[key]);
     }
 }
