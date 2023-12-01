@@ -1,7 +1,5 @@
 import Button from 'react-bootstrap/Button';
 
-import { useLoadCodeQuery } from '../state/server_api.js';
-
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 
@@ -44,14 +42,12 @@ const keyCodes: { [key: string]: KeyCode } = {
 export let editorRef: editor.IStandaloneCodeEditor | null = null;
 
 export default function CodeTab() {
-    let code = useLoadCodeQuery()?.data ?? '// Waiting to load code from server ...';
-
     return <>
         <div className="col-10">
             <Editor
                 height="80vh"
                 language="javascript"
-                onMount={(editorInstance, monaco) => onMount(editorInstance, monaco, code)}
+                onMount={(editorInstance, monaco) => onMount(editorInstance, monaco)}
             />
         </div>
         <div className="col">
@@ -63,7 +59,7 @@ export default function CodeTab() {
         </div>
     </>;
 
-    function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco, code: string) {
+    function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef = editorInstance;
 
         let defaults = monaco.languages.typescript.javascriptDefaults;
@@ -71,7 +67,6 @@ export default function CodeTab() {
         defaults.setCompilerOptions(compilerOptions);
         defaults.addExtraLib(types);
         editorRef.updateOptions(editorOptions);
-        editorRef.setValue(code);
     }
 
     function reformat(): void {
