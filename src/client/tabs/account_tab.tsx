@@ -8,7 +8,6 @@ import { loginSlice } from '../state/login_state';
 export default function AccountTab() {
     const [sendLogin, _credentials] = useLoginMutation();
     const credentials = useAppSelector(state => state.login?.credentials ?? null);
-    const actions = loginSlice.actions;
     const dispatch = useAppDispatch();
 
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -84,6 +83,6 @@ export default function AccountTab() {
     }
 
     function logout() {
-        dispatch(actions.logout());
+        dispatch(loginSlice.actions.logout());
     }
 }

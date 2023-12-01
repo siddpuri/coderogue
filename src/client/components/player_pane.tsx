@@ -30,7 +30,6 @@ export default function PlayerPane() {
     const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const firstPlayer = useAppSelector(state => state.display.firstPlayer);
     const highlightedPlayer = useAppSelector(state => state.display.highlightedPlayer);
-    const actions = displaySlice.actions;
     const dispatch = useAppDispatch();
 
     const [findValue, setFindValue] = useState('');
@@ -46,10 +45,10 @@ export default function PlayerPane() {
                 </div>
                 <div className="col d-flex justify-content-end">
                     <LeftRightButtons
-                        onLeftLeft={() => dispatch(actions.showFirstPlayer())}
-                        onLeft={() => dispatch(actions.showPrevPlayer())}
-                        onRight={() => dispatch(actions.showNextPlayer(numPlayers))}
-                        onRightRight={() => dispatch(actions.showLastPlayer(numPlayers))}
+                        onLeftLeft={() => dispatch(displaySlice.actions.showFirstPlayer())}
+                        onLeft={() => dispatch(displaySlice.actions.showPrevPlayer())}
+                        onRight={() => dispatch(displaySlice.actions.showNextPlayer(numPlayers))}
+                        onRightRight={() => dispatch(displaySlice.actions.showLastPlayer(numPlayers))}
                     />
                 </div>
             </div>
@@ -138,7 +137,7 @@ export default function PlayerPane() {
             <tr
                 key={i}
                 className={stats.highlight ? 'highlighted' : ''}
-                onClick={() => dispatch(actions.highlightPlayer(stats.id))}
+                onClick={() => dispatch(displaySlice.actions.highlightPlayer(stats.id))}
             >
                 <td>{stats.rank}</td>
                 <td>{stats.score}</td>
@@ -154,7 +153,7 @@ export default function PlayerPane() {
 
     function findPlayer(): void {
         if (!findValue) {
-            dispatch(actions.highlightPlayer(null));
+            dispatch(displaySlice.actions.highlightPlayer(null));
             return;
         }
         let player = players.findIndex(
@@ -164,7 +163,7 @@ export default function PlayerPane() {
             return;
         }
         if (player == highlightedPlayer) return;
-        dispatch(actions.highlightPlayer(player));
+        dispatch(displaySlice.actions.highlightPlayer(player));
         dispatch(alertSlice.actions.showSuccess(`Highlighted player ${findValue}`))
     }
 }

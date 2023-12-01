@@ -23,7 +23,6 @@ export default function CanvasMap() {
     const gameState = useGetStateQuery()?.data;
     const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const display = useAppSelector(state => state.display);
-    const actions = displaySlice.actions;
     const dispatch = useAppDispatch();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,7 +51,7 @@ export default function CanvasMap() {
     </>;
 
     function setMouseCoords(coords: [number, number] | null): void {
-        dispatch(actions.setCoords(coords));
+        dispatch(displaySlice.actions.setCoords(coords));
     }
 
     function render(): void {
@@ -177,7 +176,7 @@ export default function CanvasMap() {
 
     function highlightPlayerAt(event: React.MouseEvent): void {
         let player = getPlayerAt(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
-        dispatch(actions.highlightPlayer(player));
+        dispatch(displaySlice.actions.highlightPlayer(player));
     }
 
     function getPlayerAt(mouseX: number, mouseY: number): number | null {

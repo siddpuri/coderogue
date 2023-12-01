@@ -9,10 +9,9 @@ import LeftRightButtons from '../components/left_right_buttons';
 import CanvasMap from '../components/canvas_map';
 
 export default function MapPane() {
-    const display = useAppSelector(state => state.display);
-    const actions = displaySlice.actions;
-    const dispatch = useAppDispatch();
     const gameState = useGetStateQuery()?.data;
+    const display = useAppSelector(state => state.display);
+    const dispatch = useAppDispatch();
 
     const numLevels = gameState?.levels.length || 0;
     const levelName = gameState?.levels[display.level].name || 'The Plains';
@@ -49,40 +48,40 @@ export default function MapPane() {
         useEffect(() => {
             keyBindings['C-S-ArrowLeft'] = showPrevLevel;
             keyBindings['C-S-ArrowRight'] = showNextLevel;
-            keyBindings['C-S-ArrowUp'] = () => dispatch(actions.switchStyle());
-            keyBindings['C-S-ArrowDown'] = () => dispatch(actions.switchStyle());
+            keyBindings['C-S-ArrowUp'] = () => dispatch(displaySlice.actions.switchStyle());
+            keyBindings['C-S-ArrowDown'] = () => dispatch(displaySlice.actions.switchStyle());
         });
     }
 
     function showHighlightedPlayer(): void {
         let targetLevel = gameState?.players[display.highlightedPlayer ?? -1]?.levelNumber;
         if (targetLevel && display.level != targetLevel) {
-            dispatch(actions.showLevel(targetLevel));
+            dispatch(displaySlice.actions.showLevel(targetLevel));
         }    
     }
 
     function showFirstLevel(): void {
         if (display.level == 0) return;
-        dispatch(actions.showFirstLevel());
-        dispatch(actions.highlightPlayer(null));
+        dispatch(displaySlice.actions.showFirstLevel());
+        dispatch(displaySlice.actions.highlightPlayer(null));
     }
 
     function showPrevLevel(): void {
         if (display.level == 0) return;
-        dispatch(actions.showPrevLevel());
-        dispatch(actions.highlightPlayer(null));
+        dispatch(displaySlice.actions.showPrevLevel());
+        dispatch(displaySlice.actions.highlightPlayer(null));
     }
 
     function showNextLevel(): void {
         if (display.level == numLevels - 1) return;
-        dispatch(actions.showNextLevel(numLevels));
-        dispatch(actions.highlightPlayer(null));
+        dispatch(displaySlice.actions.showNextLevel(numLevels));
+        dispatch(displaySlice.actions.highlightPlayer(null));
     }
 
     function showLastLevel(): void {
         if (display.level == numLevels - 1) return;
-        dispatch(actions.showLastLevel(numLevels));
-        dispatch(actions.highlightPlayer(null));
+        dispatch(displaySlice.actions.showLastLevel(numLevels));
+        dispatch(displaySlice.actions.highlightPlayer(null));
     }
 
     function renderCoords(): string | null {
