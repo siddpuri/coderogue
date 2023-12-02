@@ -45,7 +45,12 @@ export default function TabPane() {
             justify
         >
             {tabs.map(({ name, component, disable }) => (
-                <Tab key={name} eventKey={name} title={name}>
+                <Tab
+                    key={name}
+                    eventKey={name}
+                    title={name}
+                    style={{ minHeight: '1000px' }}
+                >
                     {disable && !isLoggedIn ? message : component}
                 </Tab>
             ))}
