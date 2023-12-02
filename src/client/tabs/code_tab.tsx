@@ -1,4 +1,5 @@
 import { useAppSelector } from '../client/redux_hooks';
+import { keyBindings } from '../client/key_bindings';
 
 import { useLoadCodeQuery } from '../state/server_api';
 
@@ -41,6 +42,8 @@ const keyCodes: { [key: string]: KeyCode } = {
     ']': KeyCode.BracketRight,
     'ArrowUp': KeyCode.UpArrow,
     'ArrowDown': KeyCode.DownArrow,
+    'ArrowLeft': KeyCode.LeftArrow,
+    'ArrowRight': KeyCode.RightArrow,
 };
 
 export let editorRef: editor.IStandaloneCodeEditor | null = null;
@@ -52,18 +55,20 @@ export default function CodeTab() {
     initializeCode();
 
     return <>
-        <div className="col-10">
-            <Editor
-                height="80vh"
-                language="javascript"
-                onMount={onMount}
-            />
-        </div>
-        <div className="col">
-            <div className="d-grid gap-2">
-                <button type="button" className="btn btn-secondary" id="respawn1">Respawn</button>
-                <Button variant="secondary" onClick={reformat}>Reformat</Button>
-                <button type="button" className="btn btn-primary" id="submit">Submit</button>
+        <div className="row">
+            <div className="col">
+                <Editor
+                    height="80vh"
+                    language="javascript"
+                    onMount={onMount}
+                />
+            </div>
+            <div className="col-2">
+                <div className="d-grid gap-2">
+                    <button type="button" className="btn btn-secondary">Respawn</button>
+                    <Button variant="secondary" onClick={reformat}>Reformat</Button>
+                    <button type="button" className="btn btn-primary">Submit</button>
+                </div>
             </div>
         </div>
     </>;
@@ -77,6 +82,11 @@ export default function CodeTab() {
         defaults.setCompilerOptions(compilerOptions);
         defaults.addExtraLib(types);
         editorRef.updateOptions(editorOptions);
+
+        for (let key in keyBindings) {
+            let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
+            editorRef?.addCommand(keyCode, () => keyBindings[key]());
+        }
     }
 
     function reformat(): void {
@@ -88,12 +98,5 @@ export default function CodeTab() {
             isCodeInitialized = true;
             editorRef.setValue(code);
         }
-    }
-}
-
-export function addKeybindings(keybindings: { [key: string]: () => void }): void {
-    for (let key in keybindings) {
-        let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
-        // editor?.addCommand(keyCode, keybindings[key]);
     }
 }
