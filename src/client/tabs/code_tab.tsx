@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
 
-import { useLoadCodeQuery, useSubmitCodeMutation } from '../state/server_api';
+import { useLoadCodeQuery, useSubmitCodeMutation, useRespawnMutation } from '../state/server_api';
 import { alertSlice } from '../state/alert_state';
 
 import Button from 'react-bootstrap/Button';
@@ -48,17 +48,18 @@ const keyCodes: { [key: string]: KeyCode } = {
     'ArrowRight': KeyCode.RightArrow,
 };
 
-let editorRef: editor.IStandaloneCodeEditor | null = null;
-let isCodeInitialized = false;
-
 export default function CodeTab() {
     const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
-    const code = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data ?? null;
+    const serverCode = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data;
+    const [respawn] = useRespawnMutation();
     const [submitCode] = useSubmitCodeMutation();
     const dispatch = useAppDispatch();
 
+    const editorRef = useRef<editor.IStandaloneCodeEditor>();
+    const [code, setCode] = useState<string>(serverCode ?? '');
+
     useEffect(bindKeys);
-    useEffect(initializeCode);
+    if (serverCode && !code) setCode(serverCode);
 
     return <>
         <div className="row">
@@ -66,12 +67,14 @@ export default function CodeTab() {
                 <Editor
                     height="80vh"
                     language="javascript"
+                    value={code}
                     onMount={onMount}
+                    onChange={code => setCode(code ?? '')}
                 />
             </div>
             <div className="col-2">
                 <div className="d-grid gap-2">
-                    <button type="button" className="btn btn-secondary">Respawn</button>
+                    <Button variant="secondary" onClick={() => respawn()}>Respawn</Button>
                     <Button variant="secondary" onClick={reformat}>Reformat</Button>
                     <Button variant="primary" onClick={submit}>Submit</Button>
                 </div>
@@ -84,37 +87,28 @@ export default function CodeTab() {
     }
 
     function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco): void {
-        editorRef = editorInstance;
-        initializeCode();
+        editorRef.current = editorInstance;
 
         let defaults = monaco.languages.typescript.javascriptDefaults;
         defaults.setDiagnosticsOptions(diagnosticsOptions);
         defaults.setCompilerOptions(compilerOptions);
         defaults.addExtraLib(types);
-        editorRef.updateOptions(editorOptions);
+        editorInstance.updateOptions(editorOptions);
 
         for (let key in keyBindings) {
             let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
-            editorRef?.addCommand(keyCode, () => keyBindings[key]());
+            editorInstance.addCommand(keyCode, () => keyBindings[key]());
         }
     }
 
     function reformat(): void {
-        editorRef?.getAction('editor.action.formatDocument')?.run();
+        editorRef.current?.getAction('editor.action.formatDocument')?.run();
     }
 
     function submit(): void {
-        if (!editorRef) return;
-        submitCode(editorRef.getValue())
+        submitCode(code)
             .unwrap()
             .then(() => dispatch(alertSlice.actions.showSuccess('Code submitted')))
             .catch(err => dispatch(alertSlice.actions.showError(err)));
-    }
-
-    function initializeCode() {
-        if (editorRef && code != null && !isCodeInitialized) {
-            isCodeInitialized = true;
-            // editorRef!.setValue(code);
-        }
     }
 }

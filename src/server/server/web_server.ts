@@ -51,7 +51,7 @@ export default class WebServer {
     private async getCode(req: Req, res: Res, next: Next) {
         try {
             let code = await this.server.playerCode.readCode(req.cookies.playerId);
-            res.json({ code });
+            res.json(code);
         } catch (err) {
             next(err);
         }
