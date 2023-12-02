@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { useGetStateQuery } from '../state/server_api.js';
 import { keyBindings } from '../client/key_bindings';
@@ -16,8 +17,8 @@ export default function MapPane() {
     const numLevels = gameState?.levels.length || 0;
     const levelName = gameState?.levels[display.level].name || 'The Plains';
 
-    bindKeys();
-    showHighlightedPlayer();
+    useEffect(bindKeys);
+    useEffect(showHighlightedPlayer);
 
     return <>
         <div className="col">
@@ -45,12 +46,10 @@ export default function MapPane() {
     </>;
 
     function bindKeys(): void {
-        useEffect(() => {
-            keyBindings['C-S-ArrowLeft'] = showPrevLevel;
-            keyBindings['C-S-ArrowRight'] = showNextLevel;
-            keyBindings['C-S-ArrowUp'] = () => dispatch(displaySlice.actions.switchStyle());
-            keyBindings['C-S-ArrowDown'] = () => dispatch(displaySlice.actions.switchStyle());
-        });
+        keyBindings['C-S-ArrowLeft'] = showPrevLevel;
+        keyBindings['C-S-ArrowRight'] = showNextLevel;
+        keyBindings['C-S-ArrowUp'] = () => dispatch(displaySlice.actions.switchStyle());
+        keyBindings['C-S-ArrowDown'] = () => dispatch(displaySlice.actions.switchStyle());
     }
 
     function showHighlightedPlayer(): void {

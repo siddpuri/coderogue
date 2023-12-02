@@ -1,7 +1,9 @@
-import { useAppSelector } from '../client/redux_hooks';
+import { useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
 
-import { useLoadCodeQuery } from '../state/server_api';
+import { useLoadCodeQuery, useSubmitCodeMutation } from '../state/server_api';
+import { alertSlice } from '../state/alert_state';
 
 import Button from 'react-bootstrap/Button';
 
@@ -46,13 +48,17 @@ const keyCodes: { [key: string]: KeyCode } = {
     'ArrowRight': KeyCode.RightArrow,
 };
 
-export let editorRef: editor.IStandaloneCodeEditor | null = null;
+let editorRef: editor.IStandaloneCodeEditor | null = null;
 let isCodeInitialized = false;
 
 export default function CodeTab() {
     const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const code = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data ?? null;
-    initializeCode();
+    const [submitCode] = useSubmitCodeMutation();
+    const dispatch = useAppDispatch();
+
+    useEffect(bindKeys);
+    useEffect(initializeCode);
 
     return <>
         <div className="row">
@@ -67,11 +73,15 @@ export default function CodeTab() {
                 <div className="d-grid gap-2">
                     <button type="button" className="btn btn-secondary">Respawn</button>
                     <Button variant="secondary" onClick={reformat}>Reformat</Button>
-                    <button type="button" className="btn btn-primary">Submit</button>
+                    <Button variant="primary" onClick={submit}>Submit</Button>
                 </div>
             </div>
         </div>
     </>;
+
+    function bindKeys() {
+        keyBindings['C-s'] = submit;
+    }
 
     function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco): void {
         editorRef = editorInstance;
@@ -93,10 +103,18 @@ export default function CodeTab() {
         editorRef?.getAction('editor.action.formatDocument')?.run();
     }
 
+    function submit(): void {
+        if (!editorRef) return;
+        submitCode(editorRef.getValue())
+            .unwrap()
+            .then(() => dispatch(alertSlice.actions.showSuccess('Code submitted')))
+            .catch(err => dispatch(alertSlice.actions.showError(err)));
+    }
+
     function initializeCode() {
         if (editorRef && code != null && !isCodeInitialized) {
             isCodeInitialized = true;
-            editorRef.setValue(code);
+            // editorRef!.setValue(code);
         }
     }
 }
