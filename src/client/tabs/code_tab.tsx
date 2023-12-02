@@ -1,3 +1,7 @@
+import { useAppSelector } from '../client/redux_hooks';
+
+import { useLoadCodeQuery } from '../state/server_api';
+
 import Button from 'react-bootstrap/Button';
 
 import Editor, { Monaco } from '@monaco-editor/react';
@@ -40,14 +44,19 @@ const keyCodes: { [key: string]: KeyCode } = {
 };
 
 export let editorRef: editor.IStandaloneCodeEditor | null = null;
+let isCodeInitialized = false;
 
 export default function CodeTab() {
+    const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
+    const code = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data ?? null;
+    initializeCode();
+
     return <>
         <div className="col-10">
             <Editor
                 height="80vh"
                 language="javascript"
-                onMount={(editorInstance, monaco) => onMount(editorInstance, monaco)}
+                onMount={onMount}
             />
         </div>
         <div className="col">
@@ -59,8 +68,9 @@ export default function CodeTab() {
         </div>
     </>;
 
-    function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
+    function onMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco): void {
         editorRef = editorInstance;
+        initializeCode();
 
         let defaults = monaco.languages.typescript.javascriptDefaults;
         defaults.setDiagnosticsOptions(diagnosticsOptions);
@@ -71,6 +81,13 @@ export default function CodeTab() {
 
     function reformat(): void {
         editorRef?.getAction('editor.action.formatDocument')?.run();
+    }
+
+    function initializeCode() {
+        if (editorRef && code != null && !isCodeInitialized) {
+            isCodeInitialized = true;
+            editorRef.setValue(code);
+        }
     }
 }
 
