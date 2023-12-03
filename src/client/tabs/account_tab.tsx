@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
+
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
-import { useLoginMutation } from '../state/server_api.js';
-
+import { useLoginMutation } from '../state/server_api';
 import { loginSlice } from '../state/login_state';
 
 export default function AccountTab() {

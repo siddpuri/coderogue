@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
-import { useGetStateQuery } from '../state/server_api.js';
 import { keyBindings } from '../client/key_bindings';
 
+import { useGetStateQuery } from '../state/server_api';
 import { displaySlice } from '../state/display_state';
 
 import LeftRightButtons from '../components/left_right_buttons';

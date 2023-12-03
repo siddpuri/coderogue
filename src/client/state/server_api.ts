@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { LoginRequest, LoginResponse, StateResponse } from '../../shared/protocol.js';
+
+import type { LoginRequest, LoginResponse, StateResponse } from '../../shared/protocol';
 
 export const serverApi = createApi({
     reducerPath: 'serverApi',

@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { LoginResponse } from '../../shared/protocol.js';
+import { serverApi } from './server_api';
 
-import { serverApi } from './server_api.js';
+import { LoginResponse } from '../../shared/protocol';
 
 const expire_never = ';expires=Fri, 31 Dec 9999 23:59:59 GMT';
 const expire_now = ';expires=Thu, 01 Jan 1970 00:00:00 GMT';

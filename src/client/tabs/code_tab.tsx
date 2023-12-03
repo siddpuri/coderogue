@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
+import Button from 'react-bootstrap/Button';
+import Editor, { Monaco } from '@monaco-editor/react';
+import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
+
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
 
 import { useLoadCodeQuery, useSubmitCodeMutation, useRespawnMutation } from '../state/server_api';
 import { alertSlice } from '../state/alert_state';
-
-import Button from 'react-bootstrap/Button';
-
-import Editor, { Monaco } from '@monaco-editor/react';
-import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 
 import types from '../assets/coderogue.d.ts?raw';
 

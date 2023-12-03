@@ -1,11 +1,12 @@
 import { useRef, useEffect } from 'react';
+
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
-import { useGetStateQuery } from '../state/server_api.js';
 
-import { PlayerData } from '../../shared/protocol.js';
-import LevelMap from '../../shared/level_map.js';
-
+import { useGetStateQuery } from '../state/server_api';
 import { displaySlice } from '../state/display_state';
+
+import { PlayerData } from '../../shared/protocol';
+import LevelMap from '../../shared/level_map';
 
 type Pos = [number, number];
 

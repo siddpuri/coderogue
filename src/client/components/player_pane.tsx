@@ -1,13 +1,14 @@
 import { useState } from 'react';
+
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
-import { useGetStateQuery } from '../state/server_api.js';
 
-import { PlayerData } from '../../shared/protocol.js';
-import Handles from '../../shared/handles.js';
-import Grownups from '../../shared/grownups.js';
-
+import { useGetStateQuery } from '../state/server_api';
 import { displaySlice } from '../state/display_state';
 import { alertSlice } from '../state/alert_state';
+
+import { PlayerData } from '../../shared/protocol';
+import Handles from '../../shared/handles';
+import Grownups from '../../shared/grownups';
 
 import LeftRightButtons from '../components/left_right_buttons';
 
