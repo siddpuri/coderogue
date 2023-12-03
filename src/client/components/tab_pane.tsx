@@ -11,7 +11,6 @@ import KeybindingsTab from '../tabs/keybindings_tab';
 import levelsMarkdown from '../assets/levels_tab.md?raw';
 import newsMarkdown from '../assets/news_tab.md?raw';
 import CodeTab from '../tabs/code_tab';
-import LogTab from '../tabs/log_tab';
 import PlayerTab from '../tabs/player_tab';
 import AccountTab from '../tabs/account_tab';
 
@@ -22,7 +21,6 @@ const tabs = [
     { name: 'Levels', component: <Markdown>{levelsMarkdown}</Markdown> },
     { name: 'News', component: <Markdown>{newsMarkdown}</Markdown> },
     { name: 'Code', component: <CodeTab />, disable: true },
-    { name: 'Log', component: <LogTab />, disable: true },
     { name: 'Player', component: <PlayerTab /> },
     { name: 'Account', component: <AccountTab /> },
 ];

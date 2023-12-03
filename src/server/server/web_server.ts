@@ -59,7 +59,7 @@ export default class WebServer {
 
     private getLog(req: Req, res: Res) {
         let log = this.server.game.players[req.cookies.playerId].log.toString();
-        res.json({ log });
+        res.json(log);
     }
 
     private async login(req: Req, res: Res, next: Next) {
