@@ -61,20 +61,18 @@ export default function AccountTab() {
 
     function logoutForm() {
         return <>
-            <form id="logout-form">
-                <div className="row mb-3">
-                    <label>
-                        You are logged in as {credentials!.textHandle}.
-                    </label>
+            <div className="row mb-3">
+                <label>
+                    You are logged in as {credentials!.textHandle}.
+                </label>
+            </div>
+            <div className="row mb-3">
+                <div className="d-grid col-2">
+                    <button type="button" className="btn btn-primary" onClick={logout}>
+                        Log out
+                    </button>
                 </div>
-                <div className="row mb-3">
-                    <div className="d-grid col-2">
-                        <button type="button" className="btn btn-primary" onClick={logout}>
-                            Log out
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </>;
     }
 
