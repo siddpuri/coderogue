@@ -21,7 +21,7 @@ export default class BlockLevel extends Level {
         }
     }
 
-    get name() { return 'Shifting Sand Land'; }
+    get name() { return 'Rolling Hills'; }
     get spawnTargetPos() { return super.exitPos; }
     get exitPos() { return super.spawnTargetPos; }
     get exitScore() { return 200; }
