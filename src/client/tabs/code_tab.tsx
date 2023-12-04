@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Form from 'react-bootstrap/Form';
-import Editor, { Monaco } from '@monaco-editor/react';
+import { Button, ButtonToolbar, Form } from 'react-bootstrap';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
+import Editor, { Monaco } from '@monaco-editor/react';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
@@ -16,6 +14,8 @@ import {
 } from '../state/server_api';
 
 import { alertSlice } from '../state/alert_state';
+
+import Slider from '../components/slider';
 
 import types from '../assets/coderogue.d.ts?raw';
 
@@ -34,8 +34,7 @@ const compilerOptions: languages.typescript.CompilerOptions = {
 const editorOptions: editor.IEditorOptions = {
     acceptSuggestionOnCommitCharacter: false,
     acceptSuggestionOnEnter: 'off',
-    // automaticLayout: true,
-    // fixedOverflowWidgets: true,
+    fixedOverflowWidgets: true,
     fontSize: 12,
     formatOnType: true,
     formatOnPaste: true,
@@ -69,42 +68,43 @@ export default function CodeTab() {
     useEffect(bindKeys);
     if (serverCode && !code) setCode(serverCode);
 
-    return <>
-        <div className="row">
-            <div className="col">
-                <ButtonToolbar className="gap-2 mb-3">
-                    <Button variant="secondary" onClick={() => respawn()}>Respawn</Button>
-                    <Button variant="secondary" onClick={reformat}>Reformat</Button>
-                    <Button variant="primary" onClick={submit}>Submit</Button>
-                </ButtonToolbar>
-                <Editor
-                    language="javascript"
-                    height="100vh"
-                    value={code}
-                    onMount={onMount}
-                    onChange={code => setCode(code ?? '')}
-                />
-            </div>
-            <div className="col-4">
-                <ButtonToolbar className="gap-2 mb-3">
-                    <Button variant="secondary" onClick={() => 0}>Clear</Button>
-                    <Button variant="primary" onClick={() => 0}>Freeze</Button>
-                </ButtonToolbar>
-                <Form.Control
-                    as="textarea"
-                    plaintext
-                    readOnly
-                    style={{
-                        fontFamily: 'monospace',
-                        fontSize: '10px',
-                        height: '100vh',
-                        whiteSpace: 'pre',
-                    }}
-                    value={log}
-                />
-            </div>
-        </div>
+    let leftPane = <>
+        <Form.Label><b>Your code</b></Form.Label>
+        <ButtonToolbar className="gap-2 mb-3">
+            <Button variant="secondary" onClick={() => respawn()}>Respawn</Button>
+            <Button variant="secondary" onClick={reformat}>Reformat</Button>
+            <Button variant="secondary" onClick={submit}>Submit</Button>
+        </ButtonToolbar>
+        <Editor
+            language="javascript"
+            height="50vh"
+            value={code}
+            onMount={onMount}
+            onChange={code => setCode(code ?? '')}
+        />
     </>;
+
+    let rightPane = <>
+        <Form.Label><b>Server log</b></Form.Label>
+        <ButtonToolbar className="gap-2 mb-3">
+            <Button variant="secondary" onClick={() => 0}>Clear</Button>
+            <Button variant="secondary" onClick={() => 0}>Freeze</Button>
+        </ButtonToolbar>
+        <Form.Control
+            as="textarea"
+            plaintext
+            readOnly
+            style={{
+                fontFamily: 'monospace',
+                fontSize: '10px',
+                height: '50vh',
+                whiteSpace: 'pre',
+            }}
+            value={log}
+        />
+    </>;
+
+    return <Slider left={leftPane} right={rightPane} initialPos={250} />;
 
     function bindKeys() {
         keyBindings['C-s'] = submit;
