@@ -104,6 +104,7 @@ export default class Game {
     }
 
     private async doPlayerAction(player: Player): Promise<void> {
+        player.log.startEntry();
         if (player.isInJail) this.updateJailTime(player);
         if (player.isInJail) return;
         await this.ensureAction(player);
@@ -111,6 +112,7 @@ export default class Game {
         this.takeAction(player);
         if (player.isInJail) return;
         this.updateIdleTime(player);
+        player.log.finishEntry();
     }
 
     private updateJailTime(player: Player): void {

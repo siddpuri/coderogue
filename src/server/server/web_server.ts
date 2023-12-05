@@ -58,7 +58,7 @@ export default class WebServer {
     }
 
     private getLog(req: Req, res: Res) {
-        let log = this.server.game.players[req.cookies.playerId].log.toString();
+        let log = this.server.game.players[req.cookies.playerId].log.getEntries();
         res.json(log);
     }
 

@@ -4,6 +4,7 @@ import type {
     LoginRequest,
     LoginResponse,
     StateResponse,
+    LogResponse,
     ErrorResponse,
 } from '../../shared/protocol';
 
@@ -20,7 +21,7 @@ export const serverApi = createApi({
         loadCode: build.query<string, void>({
             query: () => 'code',
         }),
-        loadLog: build.query<string, void>({
+        loadLog: build.query<LogResponse | ErrorResponse, void>({
             query: () => 'log',
         }),
         submitCode: build.mutation<void, string>({

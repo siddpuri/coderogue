@@ -3,7 +3,7 @@ import Handles from '../../shared/handles.js';
 
 import { PlayerEntry } from '../server/db.js';
 
-import CircularLog from './circular_log.js';
+import Log from './log.js';
 
 type Pos = [number, number];
 
@@ -27,7 +27,7 @@ export default class Player {
     deaths: number[] = [];
     score: number[] = [];
 
-    readonly log = new CircularLog(1000);
+    readonly log = new Log();
     action: (() => void) | null = null;
 
     dontScore = false;

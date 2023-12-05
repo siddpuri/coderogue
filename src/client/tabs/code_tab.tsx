@@ -17,6 +17,8 @@ import { alertSlice } from '../state/alert_state';
 
 import Slider from '../components/slider';
 
+import { LogResponse } from '../../shared/protocol';
+
 import types from '../assets/coderogue.d.ts?raw';
 
 const diagnosticsOptions: languages.typescript.DiagnosticsOptions = {
@@ -54,19 +56,30 @@ const keyCodes: { [key: string]: KeyCode } = {
     'ArrowRight': KeyCode.RightArrow,
 };
 
+const maxEntries = 100;
+
 export default function CodeTab() {
     const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const serverCode = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data;
-    const log = useLoadLogQuery(undefined, { skip: !isLoggedIn, pollingInterval: 1000 })?.data;
+    const serverLog = useLoadLogQuery(undefined, { skip: !isLoggedIn, pollingInterval: 1000 })?.data;
     const [respawn] = useRespawnMutation();
     const [submitCode] = useSubmitCodeMutation();
     const dispatch = useAppDispatch();
 
     const editorRef = useRef<editor.IStandaloneCodeEditor>();
     const [code, setCode] = useState<string>(serverCode ?? '');
+    const [log, setLog] = useState<LogResponse>([]);
 
     useEffect(bindKeys);
     if (serverCode && !code) setCode(serverCode);
+    if (Array.isArray(serverLog)) {
+        let serverLogArray = serverLog as LogResponse;
+        if (serverLogArray.length > 0) {
+            if (serverLogArray[serverLogArray.length - 1] != log[log.length - 1]) {
+                setLog(log.concat(serverLogArray).slice(-maxEntries));
+            }
+        }
+    }
 
     let leftPane = <>
         <Form.Label><b>Your code</b></Form.Label>
@@ -87,7 +100,7 @@ export default function CodeTab() {
     let rightPane = <>
         <Form.Label><b>Server log</b></Form.Label>
         <ButtonToolbar className="gap-2 mb-3">
-            <Button variant="secondary" onClick={() => 0}>Clear</Button>
+            <Button variant="secondary" onClick={() => setLog([])}>Clear</Button>
             <Button variant="secondary" onClick={() => 0}>Freeze</Button>
         </ButtonToolbar>
         <Form.Control
@@ -100,7 +113,7 @@ export default function CodeTab() {
                 height: '50vh',
                 whiteSpace: 'pre',
             }}
-            value={log}
+            value={renderLog()}
         />
     </>;
 
@@ -123,6 +136,12 @@ export default function CodeTab() {
             let keyCode = key.split('-').reduce((a, k) => a | keyCodes[k], 0);
             editorInstance.addCommand(keyCode, () => keyBindings[key]());
         }
+    }
+
+    function renderLog(): string {
+        return log.map(
+            entry => entry.lines.map(line => entry.timestamp + ' ' + line + '\n').join('')
+        ).join('');
     }
 
     function reformat(): void {
