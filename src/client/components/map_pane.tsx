@@ -28,7 +28,7 @@ export default function MapPane() {
                 </div>
                 <div className="col h4 d-flex text-nowrap">
                     <div className="level">
-                        level {display.level}:{' '}{levelName}
+                        level {display.level - 1}:{' '}{levelName}
                     </div>
                     <LeftRightButtons
                         onLeftLeft={showFirstLevel}
