@@ -7,12 +7,12 @@ export type LoginResponse = {
     playerId: number;
     authToken: string;
     textHandle: string;
-}
+};
 
 export type StateResponse = {
     players: (PlayerData | undefined)[];
     levels: LevelData[];
-}
+};
 
 export type PlayerData = {
     id: number;
@@ -29,19 +29,19 @@ export type PlayerData = {
     kills: number[];
     deaths: number[];
     score: number[];
-}
+};
 
 export type LevelData = {
     name: string;
     map: number[];
     mobs: MobData[];
-}
+};
 
 export type MobData = {
     dir: number;
     textHandle: string;
-}
+};
 
 export type ErrorResponse = {
     error: string;
-}
+};

@@ -17,7 +17,7 @@ export default function AlertPane() {
 
     useEffect(() => {
         if (alert.isShowing) {
-            let timeout = setTimeout(() => dispatch(alertSlice.actions.dismiss()), 500);
+            let timeout = setTimeout(() => dispatch(alertSlice.actions.dismiss()), 1000);
             return () => clearTimeout(timeout);
         }
     });

@@ -1,6 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-import { serverApi } from './server_api';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { LoginResponse } from '../../shared/protocol';
 
@@ -19,23 +17,18 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
+        login: (state, { payload }: PayloadAction<LoginResponse>) => {
+            state.credentials = payload;
+            writeCookie('playerId', payload.playerId);
+            writeCookie('authToken', payload.authToken);
+            writeCookie('textHandle', payload.textHandle);
+        },
         logout: (state) => {
             state.credentials = null;
             deleteCookie('playerId');
             deleteCookie('authToken');
             deleteCookie('textHandle');
         },
-    },
-    extraReducers: (builder) => {
-        builder.addMatcher(
-            serverApi.endpoints.login.matchFulfilled,
-            (state, { payload }) => {
-                state.credentials = payload;
-                writeCookie('playerId', payload.playerId);
-                writeCookie('authToken', payload.authToken);
-                writeCookie('textHandle', payload.textHandle);
-            }
-        );
     }
 });
 

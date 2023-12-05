@@ -4,6 +4,9 @@ import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
 import { useLoginMutation } from '../state/server_api';
 import { loginSlice } from '../state/login_state';
+import { alertSlice } from '../state/alert_state';
+
+import { LoginResponse, ErrorResponse } from '../../shared/protocol';
 
 export default function AccountTab() {
     const [sendLogin, _credentials] = useLoginMutation();
@@ -32,6 +35,7 @@ export default function AccountTab() {
                             type="text"
                             className="form-control"
                             placeholder="s-jsmith"
+                            value={emailValue}
                             onChange={e => setEmailValue(e.target.value)}
                             onKeyDown={e => { if (e.key == "Enter") passwordRef.current!.focus() }}
                         />
@@ -44,6 +48,7 @@ export default function AccountTab() {
                         type="password"
                         className="form-control"
                         placeholder="Password"
+                        value={passwordValue}
                         onChange={e => setPasswordValue(e.target.value)}
                         onKeyDown={e => { if (e.key == "Enter") login(); }}
                     />
@@ -77,10 +82,22 @@ export default function AccountTab() {
     }
 
     function login() {
-        sendLogin({ email: emailValue, password: passwordValue });
+        sendLogin({ email: emailValue, password: passwordValue })
+            .unwrap()
+            .then(response => {
+                if (response.hasOwnProperty('error')) {
+                    dispatch(alertSlice.actions.showError((response as ErrorResponse).error));
+                } else {
+                    dispatch(loginSlice.actions.login(response as LoginResponse));
+                    dispatch(alertSlice.actions.showSuccess('Logged in'));
+                }
+            })
     }
 
     function logout() {
+        setEmailValue('');
+        setPasswordValue('');
         dispatch(loginSlice.actions.logout());
+        dispatch(alertSlice.actions.showSuccess('Logged out'));
     }
 }

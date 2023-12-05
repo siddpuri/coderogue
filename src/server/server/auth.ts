@@ -12,6 +12,9 @@ export default class Auth {
     ) {}
 
     async login(credentials: LoginRequest): Promise<LoginResponse | ErrorResponse> {
+        if (!credentials.email) return { error: 'Email can\'t be blank' };
+        if (!credentials.password) return { error: 'Password can\'t be blank' };
+        if (credentials.email.includes('@')) return { error: 'Email can\'t contain @' };
         let [dbEntry] = await this.server.db.getPlayerByEmail(credentials.email);
         if (!dbEntry) {
             await this.createAccount(credentials);
