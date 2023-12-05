@@ -63,7 +63,7 @@ export default class Game {
         }
         let handle = 0;
         for (let done = false; !done;) {
-            let handle = Math.floor(Math.random() * maxHandle);
+            handle = Math.floor(Math.random() * maxHandle);
             done = !this.playerHandles.has(handle);
         }
         return handle;
