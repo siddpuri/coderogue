@@ -1,15 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+const timeout = 1000;
+
 interface AlertState {
     message: string,
     kind: 'success' | 'info' | 'error',
     isShowing: boolean,
+    timeToDismiss: number,
 }
 
 const initialState: AlertState = {
     message: '',
     kind: 'info',
     isShowing: false,
+    timeToDismiss: 0,
 };
 
 export const alertSlice = createSlice({
@@ -28,5 +32,6 @@ function show(kind: 'success' | 'info' | 'error') {
         state.message = payload;
         state.kind = kind;
         state.isShowing = true;
+        state.timeToDismiss = Date.now() + timeout;
     };
 }
