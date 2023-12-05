@@ -24,10 +24,9 @@ export default class WebServer {
         this.app.use(cookieParser());
         this.app.use(compression());
 
-        this.app.use(express.static('static'));
-        this.app.use(express.static('dist'));
-        this.app.use(express.static('src/shared'));
-        this.app.use(express.static('src/client'));
+        this.app.use(express.static('dist/client'));
+        this.app.use(express.static('dist/shared'));
+        this.app.use(express.static('public'));
 
         this.app.get('/api/state', this.getState.bind(this));
         this.app.get('/api/code', checkId, this.getCode.bind(this));
