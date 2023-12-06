@@ -91,7 +91,7 @@ export default function CanvasMap() {
         function renderPlayer(pos: Pos, playerId: number): void {
             let color = foregroundColor;
             if (playerId == display.highlightedPlayer) {
-                color = highlightColor;
+                renderHighlight(pos);
             }
             if (playerId == currentPlayer) {
                 color = currentPlayerColor;
@@ -103,6 +103,11 @@ export default function CanvasMap() {
         function renderMob(pos: Pos, mobId: number): void {
             let dir = gameState!.levels[display.level].mobs[mobId].dir;
             renderArrow(pos, dir, mobColor);
+        }
+
+        function renderHighlight(pos: Pos): void {
+            ctx.fillStyle = highlightColor;
+            ctx.fillRect(pos[0] * dx, pos[1] * dy, dx, dy);
         }
 
         function renderArrow(pos: Pos, dir: number, color: string): void {
@@ -160,10 +165,6 @@ export default function CanvasMap() {
 
         function setText(pos: Pos, char: string, color: string = foregroundColor): void {
             ctx.fillStyle = color;
-            if (color == highlightColor) {
-                ctx.fillRect(pos[0] * dx, pos[1] * dy, dx, dy);
-                ctx.fillStyle = foregroundColor;
-            }
             ctx.fillText(char, pos[0] * dx, (pos[1] + 1) * dy);
             ctx.fillStyle = foregroundColor;
         }
