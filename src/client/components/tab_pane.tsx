@@ -6,13 +6,13 @@ import Markdown from 'react-markdown'
 import { useAppSelector } from '../client/redux_hooks';
 
 import generalMarkdown from '../assets/general_tab.md?raw';
-import ApiTab from '../tabs/api_tab';
-import KeybindingsTab from '../tabs/keybindings_tab';
+import ApiTab from './api_tab';
+import KeybindingsTab from './keybindings_tab';
 import levelsMarkdown from '../assets/levels_tab.md?raw';
 import newsMarkdown from '../assets/news_tab.md?raw';
-import CodeTab from '../tabs/code_tab';
-import PlayerTab from '../tabs/player_tab';
-import AccountTab from '../tabs/account_tab';
+import CodeTab from './code_tab';
+import PlayerTab from './player_tab';
+import AccountTab from './account_tab';
 
 const tabs = [
     { name: 'General', component: <Markdown>{generalMarkdown}</Markdown> },
