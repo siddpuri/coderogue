@@ -125,7 +125,7 @@ export default function PlayerPane() {
         return player ? {
             id: player.id,
             textHandle: Handles.getTextHandle(player.handle),
-            levelNumber: player.levelNumber,
+            levelNumber: player.levelNumber - 1,
             kills: player.kills.reduce((a, b) => a + b, 0),
             deaths: player.deaths.reduce((a, b) => a + b, 0),
             score: player.score.reduce((a, b) => a + b, 0),
@@ -142,7 +142,7 @@ export default function PlayerPane() {
             >
                 <td>{stats.rank}</td>
                 <td>{stats.score}</td>
-                <td>{stats.levelNumber ? stats.levelNumber : 'J'}</td>
+                <td>{stats.levelNumber >= 0 ? stats.levelNumber : 'J'}</td>
                 <td>{stats.textHandle}</td>
                 <td>{stats.kills}</td>
                 <td>{stats.deaths}</td>
