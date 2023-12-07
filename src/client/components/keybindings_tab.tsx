@@ -2,10 +2,10 @@ const bindings = [
     { key: 'Ctrl-S', desc: 'Submit code' },
     { key: 'Ctrl-[', desc: 'Previous tab' },
     { key: 'Ctrl-]', desc: 'Next tab' },
-    { key: 'Ctrl-Up', desc: 'Next level' },
-    { key: 'Ctrl-Down', desc: 'Previous level' },
-    { key: 'Ctrl-Shift-Up', desc: 'Show high-contrast map' },
-    { key: 'Ctrl-Shift-Down', desc: 'Show traditional ASCII map' },
+    { key: 'Ctrl-Shift-Left', desc: 'Show previous level' },
+    { key: 'Ctrl-Shift-Right', desc: 'Show next level' },
+    { key: 'Ctrl-Shift-Up', desc: 'Switch map type' },
+    { key: 'Ctrl-Shift-Down', desc: 'Switch map type' },
 ];
 
 export default function KeybindingsTab() {
