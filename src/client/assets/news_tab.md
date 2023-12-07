@@ -8,8 +8,13 @@
 
   Some things that I know are currently not working:
   * The Player tab
-    Eventually it will show detailed stats per player.
+
+    There's supposed to be a graph showing the player's score over time.
+
   * The Freeze button
-    On the Code tab, the freeze button (in the log area) should freeze the display so you can get a closer look at the current snapshot.
+
+    On the Code tab, the freeze button is supposed to freeze the display so you can examine the game state and your log without it constantly changing.
+
   * Account validation
-    For now, please just use your actual @lwsd e-mail handle. Eventually it will send you an e-mail to confirm your identity, but for now we're using the honor system.
+
+    The system is supposed to validate your @lwsd e-mail address, but that isn't hooked up yet. For now, please just use your actual e-mail, I'll check it later.
