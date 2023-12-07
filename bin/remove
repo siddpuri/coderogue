@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+for i in $@; do
+    echo "Removing player $i"
+    rm -r ~/players/$i
+    mariadb --user=game --password=game --database=game \
+        --silent --skip-column-names --execute \
+        "delete from players where id = $i;"
+done
