@@ -102,7 +102,7 @@ export default function PlayerPane() {
         if (highlightedPlayer) stats[highlightedPlayer]!.highlight = true;
 
         let statsToRender: (PlayerStats | undefined)[] = [];
-        if (currentPlayer) statsToRender.push(stats[currentPlayer]!);
+        if (currentPlayer && stats[currentPlayer]) statsToRender.push(stats[currentPlayer]!);
         if (highlightedPlayer && highlightedPlayer != currentPlayer) {
             statsToRender.push(stats[highlightedPlayer]!);
         }
