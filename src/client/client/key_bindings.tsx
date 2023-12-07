@@ -16,5 +16,6 @@ export default function KeyBindingProvider({ children }: React.PropsWithChildren
         if (!keyBindings[key]) return;
         keyBindings[key]();
         event.preventDefault();
+        event.stopPropagation();
     }
 }
