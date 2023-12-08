@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, ButtonToolbar, Form } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar, Form } from 'react-bootstrap';
 import { editor, languages, KeyMod, KeyCode } from 'monaco-editor';
 import Editor, { Monaco } from '@monaco-editor/react';
 
@@ -71,6 +71,7 @@ export default function CodeTab() {
     const editorRef = useRef<editor.IStandaloneCodeEditor>();
     const [code, setCode] = useState<string>(serverCode ?? '');
     const [log, setLog] = useState<LogResponse>([]);
+    const [justLatest, setJustLatest] = useState<boolean>(false);
 
     useEffect(bindKeys);
     if (serverCode && !code) setCode(serverCode);
@@ -102,7 +103,6 @@ export default function CodeTab() {
     let rightPane = <>
         <Form.Label><b>Server log</b></Form.Label>
         <ButtonToolbar className="gap-2 mb-3">
-            <Button variant="secondary" onClick={() => setLog([])}>Clear</Button>
             <Button
                 variant={isFrozen? 'warning': 'secondary'}
                 onClick={() => {
@@ -110,8 +110,25 @@ export default function CodeTab() {
                     else dispatch(displaySlice.actions.freeze());
                 }}
             >
-                {isFrozen? 'Unfreeze': 'Freeze'}
+                {isFrozen? 'Thaw': 'Freeze'}
             </Button>
+            <ButtonGroup>
+                <Button
+                    variant="secondary"
+                    onClick={() => setJustLatest(false)}
+                    active={!justLatest}
+                >
+                    All
+                </Button>
+                <Button
+                    variant="secondary"
+                    onClick={() => setJustLatest(true)}
+                    active={justLatest}
+                >
+                    Latest
+                </Button>
+            </ButtonGroup>
+            <Button variant="secondary" onClick={() => setLog([])}>Clear</Button>
         </ButtonToolbar>
         <Form.Control
             as="textarea"
@@ -123,7 +140,7 @@ export default function CodeTab() {
                 height: '50vh',
                 whiteSpace: 'pre',
             }}
-            value={renderLog()}
+            value={renderLog(justLatest? log.slice(-1): log)}
         />
     </>;
 
@@ -148,8 +165,8 @@ export default function CodeTab() {
         }
     }
 
-    function renderLog(): string {
-        return log.map(
+    function renderLog(entries: LogResponse): string {
+        return entries.map(
             entry => entry.lines.map(line => entry.timestamp + ' ' + line + '\n').join('')
         ).join('');
     }
