@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/coderogue.css';
 
+import { useAppSelector } from '../client/redux_hooks';
 import KeyBindingProvider from './key_bindings';
 
 import { useGetStateQuery } from '../state/server_api';
@@ -11,7 +12,8 @@ import TabPane from '../components/tab_pane';
 import AlertPane from '../components/alert_pane';
 
 export default function Page() {
-    useGetStateQuery(undefined, { pollingInterval: 1000 });
+    const isFrozen = useAppSelector(state => state.display.isFrozen);
+    useGetStateQuery(undefined, { skip: isFrozen, pollingInterval: 1000 });
 
     return <>
         <KeyBindingProvider>

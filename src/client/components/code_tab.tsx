@@ -14,6 +14,7 @@ import {
 } from '../state/server_api';
 
 import { alertSlice } from '../state/alert_state';
+import { displaySlice } from '../state/display_state';
 
 import Slider from './slider';
 
@@ -60,8 +61,9 @@ const maxEntries = 100;
 
 export default function CodeTab() {
     const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
+    const isFrozen = useAppSelector(state => state.display.isFrozen);
     const serverCode = useLoadCodeQuery(undefined, { skip: !isLoggedIn })?.data;
-    const serverLog = useLoadLogQuery(undefined, { skip: !isLoggedIn, pollingInterval: 1000 })?.data;
+    const serverLog = useLoadLogQuery(undefined, { skip: !isLoggedIn || isFrozen, pollingInterval: 1000 })?.data;
     const [respawn] = useRespawnMutation();
     const [submitCode] = useSubmitCodeMutation();
     const dispatch = useAppDispatch();
@@ -101,7 +103,15 @@ export default function CodeTab() {
         <Form.Label><b>Server log</b></Form.Label>
         <ButtonToolbar className="gap-2 mb-3">
             <Button variant="secondary" onClick={() => setLog([])}>Clear</Button>
-            <Button variant="secondary" onClick={() => 0}>Freeze</Button>
+            <Button
+                variant={isFrozen? 'warning': 'secondary'}
+                onClick={() => {
+                    if (isFrozen) dispatch(displaySlice.actions.unfreeze());
+                    else dispatch(displaySlice.actions.freeze());
+                }}
+            >
+                {isFrozen? 'Unfreeze': 'Freeze'}
+            </Button>
         </ButtonToolbar>
         <Form.Control
             as="textarea"

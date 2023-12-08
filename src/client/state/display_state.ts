@@ -8,6 +8,7 @@ interface DisplayState {
     coords: [number, number] | null,
     firstPlayer: number,
     highlightedPlayer: number | null,
+    isFrozen: boolean,
 }
 
 const initialState: DisplayState = {
@@ -16,6 +17,7 @@ const initialState: DisplayState = {
     coords: null,
     firstPlayer: 0,
     highlightedPlayer: null,
+    isFrozen: false,
 };
 
 export const displaySlice = createSlice({
@@ -60,5 +62,7 @@ export const displaySlice = createSlice({
             if (state.highlightedPlayer == playerToHighlight) playerToHighlight = null;
             state.highlightedPlayer = playerToHighlight;
         },
+        freeze: (state) => { state.isFrozen = true; },
+        unfreeze: (state) => { state.isFrozen = false; },
     },
 });
