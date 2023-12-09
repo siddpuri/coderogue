@@ -21,3 +21,4 @@ EOF
 cd $(dirname "$0")/..
 bin/reset
 npm install
+sudo timedatectl set-timezone America/Los_Angeles
