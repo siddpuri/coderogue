@@ -4,6 +4,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Markdown from 'react-markdown'
 
 import { useAppSelector } from '../client/redux_hooks';
+import { keyBindings } from '../client/key_bindings';
 
 import generalMarkdown from '../assets/general_tab.md?raw';
 import ApiTab from './api_tab';
@@ -29,14 +30,15 @@ const message = <div className="text-center">Log in to see this tab.</div>;
 
 export default function TabPane() {
     const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
-    const [key, setKey] = useState<string | null>('General');
+    const [tab, setTab] = useState<string | null>('General');
 
-    useEffect(() => { if (isLoggedIn) setKey('Code'); }, []);
+    useEffect(bindKeys);
+    useEffect(() => { if (isLoggedIn) setTab('Code'); }, []);
 
     return <>
         <Tabs
-            activeKey={key ?? undefined}
-            onSelect={k => setKey(k)}
+            activeKey={tab ?? undefined}
+            onSelect={k => setTab(k)}
             className="mt-3 mb-3"
             justify
         >
@@ -52,4 +54,17 @@ export default function TabPane() {
             ))}
         </Tabs>
     </>;
+
+    function bindKeys(): void {
+        keyBindings['C-['] = () => moveTab(-1);
+        keyBindings['C-]'] = () => moveTab(1);
+    }
+
+    function moveTab(delta: number): void {
+        let index = tabs.findIndex(t => t.name == tab);
+        if (index >= 0) {
+            index = (index + delta + tabs.length) % tabs.length;
+            setTab(tabs[index].name);
+        }
+    }
 }
