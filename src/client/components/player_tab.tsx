@@ -81,8 +81,8 @@ export default function PlayerTab() {
         </div>
     </>;
 
-    function renderRow(row: RowInfo): JSX.Element | null {
-        return <>
+    function renderRow(row: RowInfo): JSX.Element {
+        return (
             <tr key={row.label}>
                 <td style={{whiteSpace: "nowrap"}}>{row.label}</td>
                 {(row.values ?? []).map((x, i) => {
@@ -90,15 +90,15 @@ export default function PlayerTab() {
                     return <td key={i} className="table-col">{x.toFixed(row.precision)}</td>
                 })}
             </tr>
-        </>;
+        );
     }
 
     function renderInfo(info: PlayerInfo): JSX.Element {
-        return <>
+        return (
             <tr key={info.label}>
                 <td>{info.label}</td>
                 <td className="table-col">{Util.stringify(info.value)}</td>
             </tr>
-        </>;
+        );
     }
 }
