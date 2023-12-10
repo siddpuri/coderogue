@@ -69,11 +69,15 @@ export default function CodeTab() {
     const dispatch = useAppDispatch();
 
     const editorRef = useRef<editor.IStandaloneCodeEditor>();
+    const logRef = useRef<HTMLTextAreaElement>();
+    const [textAreaHeight, setTextAreaHeight] = useState<number>(0);
     const [code, setCode] = useState<string>(serverCode ?? '');
     const [log, setLog] = useState<LogResponse>([]);
     const [justLatest, setJustLatest] = useState<boolean>(false);
 
     useEffect(bindKeys);
+    useEffect(adjustHeight);
+
     if (serverCode && !code) setCode(serverCode);
     if (Array.isArray(serverLog)) {
         let serverLogArray = serverLog as LogResponse;
@@ -95,7 +99,7 @@ export default function CodeTab() {
         </ButtonToolbar>
         <Editor
             language="javascript"
-            height="50vh"
+            height={textAreaHeight + 'px'}
             value={code}
             onMount={onMount}
             onChange={code => setCode(code ?? '')}
@@ -142,6 +146,8 @@ export default function CodeTab() {
                 height: '50vh',
                 whiteSpace: 'pre',
             }}
+            ref={(ref: HTMLTextAreaElement) => logRef.current = ref}
+            onMouseMove={adjustHeight}
             value={justLatest? renderLogEntry(log[0]): log.map(renderLogEntry).join('')}
         />
     </>;
@@ -169,6 +175,10 @@ export default function CodeTab() {
 
     function renderLogEntry(entry: { timestamp: string, lines: string[] }): string {
         return entry.lines.map(line => entry.timestamp + ' ' + line + '\n').join('');
+    }
+
+    function adjustHeight(): void {
+        if (logRef.current) setTextAreaHeight(logRef.current.clientHeight);
     }
 
     function reformat(): void {
