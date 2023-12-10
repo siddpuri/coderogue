@@ -78,8 +78,10 @@ export default function CodeTab() {
     if (Array.isArray(serverLog)) {
         let serverLogArray = serverLog as LogResponse;
         if (serverLogArray.length > 0) {
-            if (serverLogArray[serverLogArray.length - 1] != log[log.length - 1]) {
-                setLog(log.concat(serverLogArray).slice(-maxEntries));
+            if (serverLogArray[serverLogArray.length - 1] != log[0]) {
+                let newItems = serverLogArray.slice();
+                newItems.reverse();
+                setLog(newItems.concat(log).slice(0, maxEntries));
             }
         }
     }
@@ -140,7 +142,7 @@ export default function CodeTab() {
                 height: '50vh',
                 whiteSpace: 'pre',
             }}
-            value={renderLog(justLatest? log.slice(-1): log)}
+            value={justLatest? renderLogEntry(log[0]): log.map(renderLogEntry).join('')}
         />
     </>;
 
@@ -165,10 +167,8 @@ export default function CodeTab() {
         }
     }
 
-    function renderLog(entries: LogResponse): string {
-        return entries.map(
-            entry => entry.lines.map(line => entry.timestamp + ' ' + line + '\n').join('')
-        ).join('');
+    function renderLogEntry(entry: { timestamp: string, lines: string[] }): string {
+        return entry.lines.map(line => entry.timestamp + ' ' + line + '\n').join('');
     }
 
     function reformat(): void {
