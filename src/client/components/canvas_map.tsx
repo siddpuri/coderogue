@@ -186,8 +186,8 @@ export default function CanvasMap() {
         let [x0, y0] = getPosAt(mouseX, mouseY);
         let closestPlayerId: number | null = null;
         let closestDistance = Infinity;
-        for (let y = y0 - 1; y <= y0 + 1; y++) {
-            for (let x = x0 - 1; x <= x0 + 1; x++) {
+        for (let y = y0 - 2; y <= y0 + 2; y++) {
+            for (let x = x0 - 2; x <= x0 + 2; x++) {
                 let playerId = getPlayerAtPos([x, y]);
                 if (playerId == null) continue;
                 let player = gameState?.players[playerId] as PlayerData;
