@@ -5,7 +5,7 @@ while true; do
     git pull
     npm run serve
     (
-        cd ~/.player
+        cd ~/players
         mysqldump -u game -pgame game > dump.sql
         git add .
         git commit -m 'Daily update'
