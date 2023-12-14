@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+mysql -u game -pgame game -NBe "$*"
