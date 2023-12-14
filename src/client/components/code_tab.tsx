@@ -91,7 +91,7 @@ export default function CodeTab() {
     }
 
     let leftPane = <>
-        <Form.Label><b>Your code</b></Form.Label>
+        <div className="fw-bold pb-2">Your code</div>
         <ButtonToolbar className="gap-2 mb-3">
             <Button variant="secondary" onClick={() => respawn()}>Respawn</Button>
             <Button variant="secondary" onClick={reformat}>Reformat</Button>
@@ -107,7 +107,7 @@ export default function CodeTab() {
     </>;
 
     let rightPane = <>
-        <Form.Label><b>Server log</b></Form.Label>
+        <div className="fw-bold pb-2">Server log</div>
         <ButtonToolbar className="gap-2 mb-3">
             <Button
                 variant={isFrozen? 'warning': 'secondary'}

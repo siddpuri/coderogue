@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Stack, Table, Form } from 'react-bootstrap';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
@@ -11,6 +12,7 @@ import Handles from '../../shared/handles';
 import Grownups from '../../shared/grownups';
 
 import LeftRightButtons from '../components/left_right_buttons';
+import SimpleButton from '../components/simple_button';
 
 type PlayerStats = {
     id: number,
@@ -39,12 +41,10 @@ export default function PlayerPane() {
     const numPlayers = gameState?.players.filter(p => p).length || 0;
 
     return <>
-        <div className="col">
-            <div className="row align-items-baseline">
-                <div className="col h2">
-                    Players
-                </div>
-                <div className="col d-flex justify-content-end">
+        <Stack>
+            <Stack direction="horizontal" className="align-items-baseline">
+                <div className="h2">Players</div>
+                <div className="ms-auto">
                     <LeftRightButtons
                         onLeftLeft={() => dispatch(displaySlice.actions.showFirstPlayer())}
                         onLeft={() => dispatch(displaySlice.actions.showPrevPlayer())}
@@ -52,46 +52,24 @@ export default function PlayerPane() {
                         onRightRight={() => dispatch(displaySlice.actions.showLastPlayer(numPlayers))}
                     />
                 </div>
-            </div>
+            </Stack>
 
-            <div className="row">
-                <div className="col">
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                {playerColumns.map((s, i) => <th key={i}>{s}</th>)}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderPlayers()}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <Table hover>
+                <thead>
+                    <tr>{playerColumns.map((s, i) => <th key={i}>{s}</th>)}</tr>
+                </thead>
+                <tbody>{renderPlayers()}</tbody>
+            </Table>
 
-            <div className="row">
-                <div className="col-8 pe-0">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Handle"
-                        onChange={e => setFindValue(e.target.value)}
-                        onKeyDown={e => { if (e.key == 'Enter') findPlayer(); }}
-                    />
-                </div>
-                <div className="col pb-0">
-                    <div className="d-grid">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={findPlayer}
-                        >
-                            Find
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <Stack direction="horizontal" gap={3}>
+                <Form.Control
+                    placeholder="Handle"
+                    onChange={e => setFindValue(e.target.value)}
+                    onKeyDown={e => e.key == 'Enter' && findPlayer()}
+                />
+                <SimpleButton text="Find" onClick={findPlayer} />
+            </Stack>
+        </Stack>
     </>;
 
     function renderPlayers(): JSX.Element[] {
