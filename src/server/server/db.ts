@@ -72,4 +72,11 @@ export default class DB {
             [password, id]
         );
     }
+
+    async addScore(id: number, score: number): Promise<void> {
+        await this.query(
+            'UPDATE players SET score = score + ? WHERE id = ?',
+            [score, id]
+        );
+    }
 }

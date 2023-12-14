@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+cd $(dirname "$0")/..
+while true; do
+    git pull
+    npm run serve
+    (
+        cd ~/.player
+        mysqldump -u game -pgame game > dump.sql
+        git add .
+        git commit -m 'Daily update'
+        git push
+    )
+done
+

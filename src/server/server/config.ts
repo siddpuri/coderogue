@@ -8,6 +8,13 @@ async function hostStartsWith(prefix: string): Promise<boolean> {
     return result.stdout.startsWith(prefix);
 }
 
+function getFutureTime(hours: number): Date {
+    let time = new Date();
+    time.setHours(hours, 0, 0, 0);
+    if (time.getTime() < Date.now()) time.setDate(time.getDate() + 1);
+    return time;
+}
+
 export default class Config {
     static async getWebServerPort(): Promise<number> {
         let port = 8080;
@@ -35,7 +42,8 @@ export default class Config {
         }
     }
 
-    static getPlayerRoot(): string {
-        return '~/players';
-    }
+    static getPlayerRoot(): string { return '~/players'; }
+
+    static getSaveTime(): Date { return getFutureTime(7); }
+    static getStopTime(): Date { return getFutureTime(1); }
 }

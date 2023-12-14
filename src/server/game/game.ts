@@ -4,6 +4,7 @@ import { VM, VMScript } from 'vm2';
 import Handles from '../../shared/handles.js';
 import { StateResponse, PlayerData } from '../../shared/protocol.js';
 import Timer from '../../shared/timer.js';
+import Grownups from '../../shared/grownups.js';
 
 import Server from '../server/server.js';
 import { PlayerEntry } from '../server/db.js';
@@ -22,6 +23,7 @@ type Pos = [number, number];
 
 const jailtimes = [10, 60, 600, 3600];
 const chartUpdateInterval = 5 * 60 * 1000; // 5 minutes
+const tournamentScores = [3, 2, 2, 1, 1];
 
 export default class Game {
     readonly levels: Level[];
@@ -224,5 +226,20 @@ export default class Game {
             players: this.players.map(player => player? player.getState() as PlayerData : undefined),
             levels: this.levels.map(level => level.getState()),
         };
+    }
+
+    async saveScores(): Promise<void> {
+        let playersInOrder = this.players.slice().sort((a, b) => b.score[0] - a.score[0]);
+        await this.savePlayerScores(playersInOrder);
+        playersInOrder = playersInOrder.filter(p => !Grownups.includes(p.id));
+        await this.savePlayerScores(playersInOrder);
+    }
+
+    private async savePlayerScores(playersInOrder: Player[]): Promise<void> {
+        for (let i = 0; i < tournamentScores.length; i++) {
+            let player = playersInOrder[i];
+            if (!player) break;
+            await this.server.db.addScore(player.id, tournamentScores[i]);
+        }
     }
 }
