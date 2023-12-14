@@ -1,25 +1,25 @@
-import Markdown from 'react-markdown'
+import LookupTable from './lookup_table';
 
 const entries = [
     {
-        code: 'console.log(val)',
+        line: 'console.log(val)',
         desc: `Prints \`val\` to the log, which is accessible in the Log pane
               of this page`
     },
     {
-        code: 'moveForward()',
+        line: 'moveForward()',
         desc: `Moves the player forward one square`
     },
     {
-        code: 'turnRight()',
+        line: 'turnRight()',
         desc: `Turns the player right 90 degrees`
     },
     {
-        code: 'turnLeft()',
+        line: 'turnLeft()',
         desc: `Turns the player left 90 degrees`
     },
     {
-        code: 'canMove(dir)',
+        line: 'canMove(dir)',
         desc: `Returns \`true\` if the player can move in direction \`dir\`
               without touching a wall or another player.
 
@@ -34,11 +34,11 @@ const entries = [
               to their corresponding integers.`
     },
     {
-        code: 'respawn()',
+        line: 'respawn()',
         desc: `Immediately respawn on level 0`
     },
     {
-        code: 'respawnAt(level, pos, dir)',
+        line: 'respawnAt(level, pos, dir)',
         desc: `Immediately respawn on level \`level\`, at position \`pos\`,
               facing direction \`dir\`.
 
@@ -50,39 +50,39 @@ const entries = [
               level 1, just above the exit and facing downward.`
     },
     {
-        code: 'getLevel()',
+        line: 'getLevel()',
         desc: `Returns the current level`
     },
     {
-        code: 'getDirection()',
+        line: 'getDirection()',
         desc: `Returns an integer represting the direciton the player is facing,
               where 0 is up, 1 is right, 2 is down, and 3 is left`
     },
     {
-        code: 'getPosition()',
+        line: 'getPosition()',
         desc: `Returns a list of length 2 in the form of \`[col, row]\`,
               representing the current position of the player`
     },
     {
-        code: 'getStartPosition()',
+        line: 'getStartPosition()',
         desc: `Returns a list of length 2 in the form of \`[col, row]\`,
               representing the position of the spawn point on the current level`
     },
     {
-        code: 'getExitPosition()',
+        line: 'getExitPosition()',
         desc: `Returns a list of length 2 in the form of \`[col, row]\`,
               representing the position of the exit that the player is trying to
               reach`
     },
     {
-        code: 'whatsAt(pos)',
+        line: 'whatsAt(pos)',
         desc: `Returns a string of length 1 correponding to what the map is
               showing at \`pos\`.
 
               For example: \`whatsAt([0, 0])\` always returns \`'#'\`.`
     },
     {
-        code: 'isProtected(pos)',
+        line: 'isProtected(pos)',
         desc: `Returns whether a player at that position is protected from PVP
               attacks.
 
@@ -90,7 +90,7 @@ const entries = [
               the position is near spawn or exit.`
     },
     {
-        code: 'isWorthPoints(pos)',
+        line: 'isWorthPoints(pos)',
         desc: `Returns how many points you would get for bumping off the player
               at that position.
 
@@ -103,41 +103,27 @@ const entries = [
               for positions with players.`
     },
     {
-        code: 'randomNumber(min, max)',
+        line: 'randomNumber(min, max)',
         desc: `Returns a random integer *n*, where \`min\` < *n* < \`max\``
     },
     {
-        code: 'appendItem(list, value)',
+        line: 'appendItem(list, value)',
         desc: `Modifies \`list\` by appending \`value\` at the end`
     },
     {
-        code: 'insertItem(list, i, value)',
+        line: 'insertItem(list, i, value)',
         desc: `Modifies \`list\` by inserting \`value\` at index \`i\``
     },
     {
-        code: 'removeItem(list, i)',
+        line: 'removeItem(list, i)',
         desc: `Modifies \`list\` by removing the element at index \`i\``
     },
 ];
 
 export default function ApiTab() {
-    return <>
-        <h5>API documentation</h5>
-        <table className="table">
-            <thead>
-                <tr>
-                    <th className="col-3">Function</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {entries.map(({ code, desc }) =>
-                    <tr key={code}>
-                        <td><code>{code}</code></td>
-                        <td><Markdown>{desc.replace(/^ */gm, '')}</Markdown></td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
-    </>;
+    return LookupTable({
+        name: 'API documentation',
+        header: 'Function',
+        body: entries,
+    });
 }
