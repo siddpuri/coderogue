@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Stack } from 'react-bootstrap';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
@@ -21,15 +22,13 @@ export default function MapPane() {
     useEffect(showHighlightedPlayer);
 
     return <>
-        <div className="col">
-            <div className="row align-items-baseline">
-                <div className="col h2">
-                    Coderogue
+        <Stack>
+            <Stack direction="horizontal" gap={3} className="align-items-baseline">
+                <div className="h2">Coderogue</div>
+                <div className="h4" style={{ width: "20rem" }}>
+                    level {display.level - 1}:{' '}{levelName}
                 </div>
-                <div className="col h4 d-flex text-nowrap">
-                    <div className="level">
-                        level {display.level - 1}:{' '}{levelName}
-                    </div>
+                <div>
                     <LeftRightButtons
                         onLeftLeft={showFirstLevel}
                         onLeft={showPrevLevel}
@@ -37,12 +36,10 @@ export default function MapPane() {
                         onRightRight={showLastLevel}
                     />
                 </div>
-                <div className="col d-flex justify-content-end">
-                    <div className="coords">{renderCoords()}</div>
-                </div>
-            </div>
+                <div className="ms-auto fs-6 text-black-50">{renderCoords()}</div>
+            </Stack>
             <CanvasMap />
-        </div>
+        </Stack>
     </>;
 
     function bindKeys(): void {

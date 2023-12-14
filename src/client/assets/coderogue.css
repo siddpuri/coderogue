@@ -10,18 +10,6 @@ span {
     display: inline-block;
 }
 
-.level {
-    width: 20rem;
-}
-.coords {
-    color: #808080;
-    font-size: 0.8rem;
-    text-align: end;
-}
-.coord {
-    width: 0.8rem;
-}
-
 .table-col {
     width: 4rem;
     text-align: end;
