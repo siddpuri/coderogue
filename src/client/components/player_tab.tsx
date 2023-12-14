@@ -1,3 +1,5 @@
+import { Stack, Table } from 'react-bootstrap';
+
 import { useAppSelector } from '../client/redux_hooks';
 
 import { useGetStateQuery } from '../state/server_api';
@@ -54,31 +56,27 @@ export default function PlayerTab() {
     ]
     
     return <>
-        <div className="row d-flex justify-content-between">
+        <Stack direction="horizontal" className="align-items-start justify-content-between">
             <div className="col-4">
-                <table className="table" id="player-stats">
+                <Table>
                     <thead>
                         <tr>
                             <th>Level</th>
                             {columns.map((s, i) => <th className="text-end" key={i}>{s}</th>)}
                         </tr>
                     </thead>
-                    <tbody>
-                        {rows.map(renderRow)}
-                    </tbody>
-                </table>
+                    <tbody>{rows.map(renderRow)}</tbody>
+                </Table>
             </div>
             <div className="col-4">
                 <canvas id="player-chart" />
             </div>
             <div className="col-2">
-                <table className="table" id="player-info">
-                    <tbody>
-                        {info.map(renderInfo)}
-                    </tbody>
-                </table>
+                <Table>
+                    <tbody>{info.map(renderInfo)}</tbody>
+                </Table>
             </div>
-        </div>
+        </Stack>
     </>;
 
     function renderRow(row: RowInfo): JSX.Element {
