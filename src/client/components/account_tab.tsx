@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Form, Stack, InputGroup, Button } from 'react-bootstrap';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
@@ -23,61 +24,34 @@ export default function AccountTab() {
 
     function loginForm() {
         return <>
-            <div className="row mb-3">
-                <label>
-                    Log in or create a new account.
-                </label>
-            </div>
-            <div className="row mb-3">
-                <div className="col-3">
-                    <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="s-jsmith"
-                            value={emailValue}
-                            onChange={e => setEmailValue(e.target.value)}
-                            onKeyDown={e => { if (e.key == "Enter") passwordRef.current!.focus() }}
-                        />
-                        <span className="input-group-text">@lwsd.org</span>
-                    </div>
-                </div>
-                <div className="col-3">
-                    <input
-                        ref={passwordRef}
-                        type="password"
-                        className="form-control"
-                        placeholder="Password"
-                        value={passwordValue}
-                        onChange={e => setPasswordValue(e.target.value)}
-                        onKeyDown={e => { if (e.key == "Enter") login(); }}
+            <Stack gap={3} className="col-3">
+                <div>Log in or create a new account.</div>
+                <InputGroup>
+                    <Form.Control
+                        placeholder="s-yourname"
+                        onChange={e => setEmailValue(e.target.value)}
+                        onKeyDown={e => e.key == "Enter" && passwordRef.current!.focus() }
                     />
-                </div>
-            </div>
-            <div className="row mb-3">
-                <div className="d-grid col-2">
-                    <button type="button" className="btn btn-primary" onClick={login}>
-                        Log in / Register
-                    </button>
-                </div>
-            </div>
+                    <InputGroup.Text>@lwsd.org</InputGroup.Text>
+                </InputGroup>
+                <Form.Control
+                    ref={passwordRef}
+                    type="password"
+                    placeholder="Password"
+                    onChange={e => setPasswordValue(e.target.value)}
+                    onKeyDown={e => e.key == "Enter" && login()}
+                />
+                <Button onClick={login}>Log in / Register</Button>
+            </Stack>
         </>;
     }
 
     function logoutForm() {
         return <>
-            <div className="row mb-3">
-                <label>
-                    You are logged in as {credentials!.textHandle}.
-                </label>
-            </div>
-            <div className="row mb-3">
-                <div className="d-grid col-2">
-                    <button type="button" className="btn btn-primary" onClick={logout}>
-                        Log out
-                    </button>
-                </div>
-            </div>
+            <Stack gap={3} className="col-3">
+                <div>You are logged in as {credentials!.textHandle}.</div>
+                <Button onClick={logout}>Log out</Button>
+            </Stack>
         </>;
     }
 
