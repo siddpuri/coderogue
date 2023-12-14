@@ -60,7 +60,7 @@ export default function PlayerTab() {
                     <thead>
                         <tr>
                             <th>Level</th>
-                            {columns.map((s, i) => <th className="table-col" key={i}>{s}</th>)}
+                            {columns.map((s, i) => <th className="text-end" key={i}>{s}</th>)}
                         </tr>
                     </thead>
                     <tbody>
@@ -87,7 +87,7 @@ export default function PlayerTab() {
                 <td style={{whiteSpace: "nowrap"}}>{row.label}</td>
                 {(row.values ?? []).map((x, i) => {
                     if (!x) return <td key={i} />;
-                    return <td key={i} className="table-col">{x.toFixed(row.precision)}</td>
+                    return <td key={i} className="text-end">{x.toFixed(row.precision)}</td>
                 })}
             </tr>
         );
@@ -97,7 +97,7 @@ export default function PlayerTab() {
         return (
             <tr key={info.label}>
                 <td>{info.label}</td>
-                <td className="table-col">{Util.stringify(info.value)}</td>
+                <td className="text-end">{Util.stringify(info.value)}</td>
             </tr>
         );
     }

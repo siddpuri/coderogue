@@ -6,25 +6,11 @@ p {
     margin-bottom: 0.5rem;
 }
 
-span {
-    display: inline-block;
-}
-
-.table-col {
-    width: 4rem;
-    text-align: end;
-}
-
 .table td,
 .table th {
     padding: 0.2rem;
 }
-.table tbody tr {
-    height: 1.2rem;
-}
-nav a {
-    cursor: pointer;
-}
+
 .highlighted td {
     background-color: #d0d0d0;
 }
@@ -39,18 +25,4 @@ nav a {
 .nav-tabs .nav-link:hover {
     font-weight: bold;
     color: #000000;
-}
-
-.clickthrough {
-    pointer-events: none;
-}
-
-.alert {
-    border-radius: 0;
-}
-
-#monaco-editor-container {
-    min-height: 400px;
-    resize: vertical;
-    overflow: auto;
 }

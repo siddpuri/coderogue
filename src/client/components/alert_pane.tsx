@@ -24,11 +24,14 @@ export default function AlertPane() {
     });
 
     return <>
-        <div className="position-fixed start-0 end-0 bottom-0 clickthrough">
+        <div
+            className="position-fixed start-0 end-0 bottom-0"
+            style={{ pointerEvents: "none" }}
+        >
             <Alert
                 variant={variants[alert.kind]}
                 show={alert.isShowing}
-                className="px-4 pt-1 pb-1 mb-0"
+                className="px-4 pt-1 pb-1 mb-0 rounded-0"
             >
                 {alert.message}
             </Alert>
