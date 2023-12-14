@@ -3,13 +3,13 @@
 cd $(dirname "$0")/..
 while true; do
     git pull
+    npm install
     npm run serve
     (
         cd ~/players
         mysqldump -u game -pgame game > dump.sql
         git add .
-        git commit -m 'Daily update'
+        git commit -m 'Automated update'
         git push
     )
 done
-
