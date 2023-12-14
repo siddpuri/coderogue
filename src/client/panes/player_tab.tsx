@@ -1,4 +1,8 @@
 import { Stack, Table } from 'react-bootstrap';
+import { Chart } from 'chart.js';
+import { CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
+import { Title, Filler } from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
 import { useAppSelector } from '../client/redux_hooks';
 
@@ -17,6 +21,8 @@ type PlayerInfo = {
     label: string,
     value: number | [number, number],
 };
+
+const chartLength = 100;
 
 export default function PlayerTab() {
     const gameState = useGetStateQuery()?.data;
@@ -55,6 +61,9 @@ export default function PlayerTab() {
         { label: 'Handle #', value: stats.handle },
     ]
     
+    Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
+    Chart.register(Title, Filler);
+
     return <>
         <Stack direction="horizontal" className="align-items-start justify-content-between">
             <div className="col-4">
@@ -69,7 +78,29 @@ export default function PlayerTab() {
                 </Table>
             </div>
             <div className="col-4">
-                <canvas id="player-chart" />
+                <Stack>
+                    <div className="text-center">Past score in five-minute increments</div>
+                    <Line
+                        options={{
+                            scales: {
+                                x: { ticks: { callback: tickFunction }},
+                                y: { beginAtZero: true, suggestedMax: 2000 }
+                            },
+                            animation: false,
+                        }}
+                        data={{
+                            labels: new Array(chartLength).fill(0),
+                            datasets: [{
+                                borderColor: '#808080',
+                                backgroundColor: '#e0e0e0',
+                                borderWidth: 1,
+                                pointStyle: false,
+                                fill: true,
+                                data: stats.chartData ?? new Array(chartLength).fill(0),
+                            }],
+                        }}
+                    />
+                </Stack>
             </div>
             <div className="col-2">
                 <Table>
@@ -78,6 +109,11 @@ export default function PlayerTab() {
             </div>
         </Stack>
     </>;
+
+    function tickFunction(value: string | number, index: number): string | undefined {
+        if (index == 0) return 'cur';
+        if (index % 12 == 0) return `${index / 12}h`;
+    }
 
     function renderRow(row: RowInfo): JSX.Element {
         return (
