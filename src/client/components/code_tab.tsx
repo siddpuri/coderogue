@@ -152,7 +152,7 @@ export default function CodeTab() {
         />
     </>;
 
-    return <Slider left={leftPane} right={rightPane} initialPos={250} />;
+    return <Slider left={leftPane} right={rightPane} />;
 
     function bindKeys() {
         keyBindings['C-s'] = submit;

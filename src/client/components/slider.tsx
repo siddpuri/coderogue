@@ -4,10 +4,9 @@ import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 type propType = {
     left: JSX.Element;
     right: JSX.Element;
-    initialPos: number;
 };
 
-export default function Slider({ left, right, initialPos }: propType) {
+export default function Slider({ left, right }: propType) {
     return <>
         <PanelGroup direction="horizontal">
             <Panel defaultSizePercentage={75}>
