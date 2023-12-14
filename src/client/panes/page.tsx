@@ -8,7 +8,8 @@ import { useGetStateQuery } from '../state/server_api';
 import MapPane from './map_pane';
 import PlayerPane from './player_pane';
 import TabPane from './tab_pane';
-import AlertPane from './alert_pane';
+
+import Alert from '../components/alert';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/coderogue.css';
@@ -26,7 +27,7 @@ export default function Page() {
                 </Stack>
                 <TabPane />
             </Stack>
-            <AlertPane />
+            <Alert />
         </KeyBindingProvider>
     </>;
 }

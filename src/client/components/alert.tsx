@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
+import { Alert as ReactAlert } from 'react-bootstrap';
 
 import { useAppSelector, useAppDispatch } from '../client/redux_hooks';
 
@@ -11,7 +11,7 @@ const variants = {
     'error': 'danger',
 };
 
-export default function AlertPane() {
+export default function Alert() {
     const alert = useAppSelector(state => state.alert);
     const dispatch = useAppDispatch();
 
@@ -28,13 +28,13 @@ export default function AlertPane() {
             className="position-fixed start-0 end-0 bottom-0"
             style={{ pointerEvents: "none" }}
         >
-            <Alert
+            <ReactAlert
                 variant={variants[alert.kind]}
                 show={alert.isShowing}
                 className="px-4 pt-1 pb-1 mb-0 rounded-0"
             >
                 {alert.message}
-            </Alert>
+            </ReactAlert>
         </div>
     </>;
 }

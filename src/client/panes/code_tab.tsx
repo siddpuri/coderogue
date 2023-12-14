@@ -16,7 +16,7 @@ import {
 import { alertSlice } from '../state/alert_state';
 import { displaySlice } from '../state/display_state';
 
-import Slider from './slider';
+import Slider from '../components/slider';
 
 import { LogResponse } from '../../shared/protocol';
 
