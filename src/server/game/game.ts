@@ -229,17 +229,19 @@ export default class Game {
     }
 
     async saveScores(): Promise<void> {
-        let playersInOrder = this.players.slice().sort((a, b) => b.score[0] - a.score[0]);
-        await this.savePlayerScores(playersInOrder);
-        playersInOrder = playersInOrder.filter(p => !Grownups.includes(p.id));
-        await this.savePlayerScores(playersInOrder);
+        let playerScores: [number, number][] = this.players
+            .filter(p => p)
+            .map(p => [p.id, p.score.reduce((a, b) => a + b, 0)]);
+        playerScores.sort((a, b) => b[1] - a[1]);
+        await this.savePlayerScores(playerScores);
+        playerScores = playerScores
+            .filter(p => !Grownups.includes(p[0]));
+        await this.savePlayerScores(playerScores);
     }
 
-    private async savePlayerScores(playersInOrder: Player[]): Promise<void> {
-        for (let i = 0; i < tournamentScores.length; i++) {
-            let player = playersInOrder[i];
-            if (!player) break;
-            await this.server.db.addScore(player.id, tournamentScores[i]);
+    private async savePlayerScores(playerScores: [number, number][]): Promise<void> {
+        for (let i = 0; i < tournamentScores.length && i < playerScores.length; i++) {
+            await this.server.db.addScore(playerScores[i][0], tournamentScores[i]);
         }
     }
 }
