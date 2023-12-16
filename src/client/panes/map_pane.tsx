@@ -22,7 +22,7 @@ export default function MapPane() {
     useEffect(showHighlightedPlayer);
 
     return <>
-        <Stack>
+        <div>
             <Stack direction="horizontal" gap={3} className="align-items-baseline">
                 <div className="h2">Coderogue</div>
                 <div className="h4" style={{ width: "20rem" }}>
@@ -39,7 +39,7 @@ export default function MapPane() {
                 <div className="ms-auto fs-6 text-black-50">{renderCoords()}</div>
             </Stack>
             <CanvasMap />
-        </Stack>
+        </div>
     </>;
 
     function bindKeys(): void {
