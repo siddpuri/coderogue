@@ -1,18 +1,19 @@
-var startTime = +new Date();
+var startTime = Date.now();
 var shouldDump = false;
 var shouldTime = false;
 
-if (state == 'initial') {
-    state = {
-        idle: 0,
-    };
-}
+if (state == 'initial') state = { idle: 0 };
 
-// Actions
+// Constants: actions
 var none    = 0;
 var forward = 1;
 var left    = 2;
 var right   = 3;
+
+// Constants: pvp
+var pvpRadius = 2;
+var pvpSize   = 2 * pvpRadius + 1;
+var pvpDepth  = 3;
 
 // Lookup table
 var table;
@@ -94,7 +95,7 @@ function isBlocked(y, x) {
     let pos = [x, y];
     let char = whatsAt(pos);
     if (char == '#') return true;
-    if (!'^>v<'.includes(char)) return false;
+    if (!isMob(pos)) return false;
     if (x == x0 && y == y0) return false;
     if (Math.abs(x - x0) + Math.abs(y - y0) > 5) return false;
     return isProtected(pos);
@@ -114,9 +115,8 @@ function moveForwardMaybe() {
     if (!isProtected(newPos)) {
         for (let dir of [3, 0, 1]) {
             let enemyPos = movePos(newPos, (dir0 + dir) % 4);
-            let enemyDir = '^>v<'.indexOf(whatsAt(enemyPos));
-            if (enemyDir >= 0) {
-                let [ex, ey] = movePos(enemyPos, enemyDir);
+            if (isMob(enemyPos)) {
+                let [ex, ey] = movePos(enemyPos, dirAt(enemyPos));
                 if (ex == newPos[0] && ey == newPos[1]) return;
             }
         }
@@ -125,9 +125,163 @@ function moveForwardMaybe() {
     state.idle = 0;
 }
 
+// PVP game
+let pvpDepth = 4;
+
+function getPvpStyle() {
+    let canDie = false;
+    let canKill = false;
+    for (let dx = -pvpRadius; dx <= pvpRadius; dx++) {
+        for (let dy = -pvpRadius; dy <= pvpRadius; dy++) {
+            let pos = [x0 + dx, y0 + dy];
+            if (isMob(pos)) {
+                if (dx == 0 && dy == 0) continue;
+                canDie ||= !isProtected([x0, y0]);
+                canKill ||= !isProtected(pos);
+            }
+        }
+    }
+    return canKill? 'hunt': canDie? 'run': none;
+}
+
+function getPvpAction(style) {
+    let state = getPvpState(style);
+    let bestScore = -Infinity;
+    let bestActions = [];
+    for (let action of [none, forward, left, right]) {
+        let score = evaluateAction(state, action, pvpDepth, 1);
+        if (score != none && score > bestScore) {
+            bestScore = score;
+            bestActions = [action];
+        } else if (score == bestScore) {
+            bestActions.push(action);
+        }
+    }
+    return bestActions[randomNumber(0, bestActions.length - 1)];
+}
+
+function getPvpState(style) {
+    let grid = [];
+    let mobs = [[2, 2, 'self']];
+    for (let dx = -pvpRadius; dx <= pvpRadius; dx++) {
+        let row = [];
+        for (let dy = -pvpRadius; dy <= pvpRadius; dy++) {
+            let pos = [x0 + dx, y0 + dy];
+            row.push(whatsAt(pos));
+            if (dirAt(pos) >= 0) {
+                if (dx == 0 && dy == 0) continue;
+                mobs.push([dx + pvpRadius, dy + pvpRadius]);
+            }
+        }
+        grid.push(row);
+    }
+    let score = 0;
+    return { style, grid, mobs, score };
+}
+
+function evaluateAction(state, action, depth, flip) {
+    let newState = applyAction(state, action);
+    if (newState.style == 'error') return none;
+    if (depth == 0 || newState.style == 'done') return newState.score;
+    let bestScore = -Infinity * flip;
+    for (let action of [none, forward, left, right]) {
+        let score = evaluateAction(newState, action, depth - 1, -flip);
+        if (score != none && score * flip > bestScore * flip) {
+            bestScore = score;
+        }
+    }
+    return bestScore;
+}
+
+function applyAction(state, action) {
+    switch (action) {
+        case none: return state;
+        case forward: return applyForwardAction(state);
+        case left: return applyTurnAction(state, 3);
+        case right: return applyTurnAction(state, 1);
+    }
+}
+
+function applyForwardAction(state) {
+    let mob = state.mobs[0];
+    let mobDir = '^>v<'.indexOf(state.grid[mob[0]][mob[1]]);
+    let newPos = movePos(mob, mobDir);
+    let char = state.grid[newPos[0]][newPos[1]];
+    if (!char) return applyWalkOff(state);
+    if (char == '#') return { ...state, style: 'error' };
+    if ('^>v<'.includes(char)) return applyBump(state, newPos);
+    return applyMove(state, newPos);
+}
+
+function applyWalkOff(state) {
+    let state = copyState(state);
+    let mob = state.mobs.shift();
+    state.grid[mob[0]][mob[1]] = ' ';
+    if (mob[2] || state.mobs.length < 2) state.style = 'done';
+    return state;
+}
+
+function applyBump(state, newPos) {
+    if (state.mobs[0][2] && state.style == 'run') {
+        return { ...state, style: 'error' };
+    }
+    let target = state.mobs.findIndex(
+        mob => mob[0] == newPos[0] && mob[1] == newPos[1]
+    );
+    if (state.mobs[target][2]) {
+        return { ...state, style: 'done', score: -Infinity };
+    }
+    let state = copyState(state);
+    state.mobs = state.mobs.splice(target, 1);
+    let mob = state.mobs.shift();
+    state.grid[newPos[0]][newPos[1]] = ' ';
+    state.mobs.push(mob);
+    if (mob[2]) state.score++;
+    if (state.mobs.length == 1) state.style = 'done';
+    return state;
+}
+
+function applyMove(state, newPos) {
+    let state = copyState(state);
+    let mob = state.mobs.shift();
+    state.grid[newPos[0]][newPos[1]] = grid[mob[0]][mob[1]];
+    state.grid[mob[0]][mob[1]] = ' ';
+    state.mobs.push(newPos);
+    return state;
+}
+
+function applyTurnAction(state, dir) {
+    let state = copyState(state);
+    let mob = state.mobs.shift();
+    let mobDir = '^>v<'.indexOf(state.grid[mob[0]][mob[1]]);
+    state.grid[mob[0]][mob[1]] = '^>v<'[(mobDir + dir) % 4];
+    state.mobs.push(mob);
+    return state;
+}
+
+function copyState(state) {
+    return {
+        ...state,
+        grid: state.grid.map(x => [...x]),
+        mobs: state.mobs.map(x => [...x]),
+    };
+}
+
+// General helper functions
 function movePos(pos, dir) {
     let d = [[0, -1], [1, 0], [0, 1], [-1, 0]][dir];
-    return [pos[0] + d[0], pos[1] + d[1]];
+    let newPos = pos.slice();
+    newPos[0] += d[0];
+    newPos[1] += d[1];
+    return newPos;
+}
+
+function dirAt(pos) {
+    return '^>v<'.indexOf(whatsAt(pos));
+}
+
+function isMob(pos) {
+    return dirAt(pos) >= 0;
 }
 
 function dumpTable(dir) {
@@ -143,7 +297,5 @@ function dumpTable(dir) {
 
 if (shouldDump) dumpTable(dir0);
 if (shouldTime) {
-    let endTime = +new Date();
-    let timeTaken = endTime - startTime;
-    console.log(`Executed in ${timeTaken / 1000} seconds.`);
+    console.log(`Executed in ${Date.now() - startTime}ms.`);
 }
