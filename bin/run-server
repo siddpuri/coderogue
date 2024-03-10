@@ -6,7 +6,7 @@ while true; do
     npm install
     npm run serve
     (
-        cd ~/players
+        cd private
         mysqldump -u game -pgame game > dump.sql
         git add .
         git commit -m 'Automated update'
