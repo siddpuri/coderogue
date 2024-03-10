@@ -1,4 +1,6 @@
 import util from 'util';
+import https from 'https';
+import fs from 'fs/promises';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 import url from 'url';
@@ -6,10 +8,21 @@ import path from 'path';
 import mysql from 'mysql2/promise';
 
 export default class Config {
-    static async getWebServerPort(): Promise<number> {
-        let port = 8080;
-        if (await this.hostStartsWith('ip-')) port = 80;
-        return port;
+    static async getHttpPort(): Promise<number> {
+        return (await this.hostStartsWith('ip-'))? 80 : 8080;
+    }
+
+    static async getHttpsPort(): Promise<number | undefined> {
+        return (await this.hostStartsWith('ip-'))? 443 : 8443;
+    }
+
+    static async getHttpsOptions(): Promise<https.ServerOptions> {
+        let keyFile = path.join(this.getPrivateDir(), 'ssl.key');
+        let certFile = path.join(this.getPrivateDir(), 'ssl.cert');
+        return {
+            key:  await fs.readFile(keyFile),
+            cert: await fs.readFile(certFile),
+        };
     }
 
     static async getDbConnectionOptions(): Promise<mysql.ConnectionOptions> {

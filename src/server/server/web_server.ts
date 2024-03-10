@@ -1,3 +1,6 @@
+import http from 'http';
+import https from 'https';
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
@@ -10,37 +13,51 @@ type Res = express.Response;
 type Next = express.NextFunction;
 
 export default class WebServer {
-    readonly app = express();
-
     constructor(
         private readonly server: Server
     ) {}
 
     async start(): Promise<void> {
+        let app = this.getApp();
+
+        let httpPort = await Config.getHttpPort();
+        http.createServer(app)
+            .listen(httpPort, () => {
+                console.log(`Http server listening on port ${httpPort}`);
+            });
+
+        let httpsPort = await Config.getHttpsPort();
+        if (httpsPort) {
+            https.createServer(await Config.getHttpsOptions(), app)
+                .listen(httpsPort, () => {
+                    console.log(`Https server listening on port ${httpsPort}`);
+                });
+        }
+    }
+
+    private getApp(): express.Express {
+        let app = express();
         let checkId = this.checkPlayerId.bind(this);
-        let port = await Config.getWebServerPort();
 
-        this.app.use(express.json());
-        this.app.use(cookieParser());
-        this.app.use(compression());
+        app.use(express.json());
+        app.use(cookieParser());
+        app.use(compression());
 
-        this.app.use(express.static('dist/client'));
-        this.app.use(express.static('dist/shared'));
-        this.app.use(express.static('public'));
+        app.use(express.static('dist/client'));
+        app.use(express.static('dist/shared'));
+        app.use(express.static('public'));
 
-        this.app.get('/api/state', this.getState.bind(this));
-        this.app.get('/api/code', checkId, this.getCode.bind(this));
-        this.app.get('/api/log', checkId, this.getLog.bind(this));
+        app.get('/api/state', this.getState.bind(this));
+        app.get('/api/code', checkId, this.getCode.bind(this));
+        app.get('/api/log', checkId, this.getLog.bind(this));
 
-        this.app.post('/api/login', this.login.bind(this));
-        this.app.post('/api/respawn', checkId, this.respawn.bind(this));
-        this.app.post('/api/code', checkId, this.setCode.bind(this));
+        app.post('/api/login', this.login.bind(this));
+        app.post('/api/respawn', checkId, this.respawn.bind(this));
+        app.post('/api/code', checkId, this.setCode.bind(this));
 
-        this.app.use(this.errorHandler.bind(this));
+        app.use(this.errorHandler.bind(this));
 
-        this.app.listen(port, () => {
-            console.log(`Web server listening on port ${port}`);
-        });
+        return app;
     }
 
     private getState(req: Req, res: Res) {
