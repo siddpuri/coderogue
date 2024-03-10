@@ -1,6 +1,8 @@
 import util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
+import url from 'url';
+import path from 'path';
 import mysql from 'mysql2/promise';
 
 export default class Config {
@@ -30,7 +32,17 @@ export default class Config {
         }
     }
 
-    static getPlayerRoot(): string { return '~/players'; }
+    static getRootDir(): string {
+        let filePath = url.fileURLToPath(import.meta.url);
+        while (filePath && !filePath.endsWith('coderogue')) {
+            filePath = path.dirname(filePath);
+        }
+        return filePath;
+    }
+
+    static getPrivateDir(): string {
+        return path.join(this.getRootDir(), 'private');
+    }
 
     static getSaveTime(): Date { return this.getFutureTime(7); }
     static getStopTime(): Date { return this.getFutureTime(1); }

@@ -1,4 +1,5 @@
+private
 node_modules/
-data/
 dist/
+data/
 *.tsbuildinfo
