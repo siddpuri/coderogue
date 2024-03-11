@@ -1,20 +1,34 @@
 #### News
 
-* **December 4**
+* March 10, 2024: HTTPS is working
 
-  Coderogue is back up!
+  * You can now access coderogue.net from school computers! That took
+    more effort than you might think. :-)
 
-  This is a preview version, starting off in the state it was in at the end of the last school year. Some of the rules of the game may change in the coming days, so consider any code you write right now to be experimental.
+  * You can now access coderogue.net by either http or https. That
+    meant I had to buy a certificate and install it on the server so
+    that your web browser can tell if the server is for real. If you
+    remember what you learned in Unit 8, you'll be relieved to know
+    that you can now type in your password without being afraid that
+    some evil hacker will intercept it.
 
-  Some things that I know are currently not working:
-  * The Player tab
+* December 4, 2023: Coderogue is running again
 
-    There's supposed to be a graph showing the player's score over time.
-
-  * The Freeze button
-
-    On the Code tab, the freeze button is supposed to freeze the display so you can examine the game state and your log without it constantly changing.
-
-  * Account validation
-
-    The system is supposed to validate your @lwsd e-mail address, but that isn't hooked up yet. For now, please just use your actual e-mail, I'll check it later.
+  * Over the summer, I rewrote the client to use React. That took me
+    way more time than it was supposed to, but in the end everything
+    still seems to work. So you shouldn't see any differences, except
+    for a few cosmetic improvements.
+  
+  * The Code tab now shows both your code and the server log side by
+    side to make debuggine easier.
+  
+  * The new freeze/thaw buttons on the Code tab freeze both the log
+    and the game display. The actual game keeps going on the server,
+    of course, but you can freeze your updates an inspect what was
+    going on at the time you saw a particular log message.
+  
+  * Account validation isn't implemented yet. The system is supposed
+    to validate your @lwsd e-mail address by sending you an e-mail.
+    For now, please just use your actual e-mail so I can keep track
+    of who is who. At some point I'll remove all the accounts that
+    don't have valid lwsd addresses.
