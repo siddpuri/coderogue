@@ -2,8 +2,7 @@
 
 sudo yum update -y
 sudo yum install git nodejs mariadb105-server htop -y
-sudo service mariadb start
-sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node-18
+sudo systemctl enable --now mariadb
 git clone https://github.com/siddpuri/coderogue.git
 
 sudo mysql <<EOF
