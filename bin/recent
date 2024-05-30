@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-(date; ls -lt ~/players/*/*) | head -40
+(date; ls -lt ~/coderogue/private/player_code/*) | head -40

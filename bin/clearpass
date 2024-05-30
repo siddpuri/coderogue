@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+for i in $@; do
+    mariadb --user=game --password=game --database=game \
+        --silent --skip-column-names --execute \
+        "UPDATE players SET password = '' WHERE id = $i;"
+done
