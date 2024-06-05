@@ -32,6 +32,7 @@ export default function PlayerPane() {
     const gameState = useGetStateQuery()?.data;
     const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const firstPlayer = useAppSelector(state => state.display.firstPlayer);
+    const showAll = useAppSelector(state => state.display.showAll);
     const highlightedPlayer = useAppSelector(state => state.display.highlightedPlayer);
     const dispatch = useAppDispatch();
 
@@ -39,6 +40,7 @@ export default function PlayerPane() {
 
     const players = gameState?.players ?? [];
     const numPlayers = gameState?.players.filter(p => p).length || 0;
+    const amChild = currentPlayer && !Grownups.includes(currentPlayer);
 
     return <>
         <Stack>
@@ -69,12 +71,22 @@ export default function PlayerPane() {
                 />
                 <SimpleButton text="Find" onClick={findPlayer} />
             </Stack>
+
+            {amChild?
+                <Stack direction="horizontal" gap={3} className="mt-3">
+                    Show grownups
+                    <Form.Check
+                        checked={showAll}
+                        onChange={() => dispatch(displaySlice.actions.setShowAll(!showAll))}
+                    />
+                </Stack>
+            : null}
         </Stack>
     </>;
 
     function renderPlayers(): JSX.Element[] {
         let stats: (PlayerStats | undefined)[] = players.map(getStats);
-        if (currentPlayer && !Grownups.includes(currentPlayer)) {
+        if (amChild && !showAll) {
             stats.forEach(s => { if (s && Grownups.includes(s.id)) s.score = 0; });
         }
         if (highlightedPlayer) stats[highlightedPlayer]!.highlight = true;

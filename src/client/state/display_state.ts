@@ -7,6 +7,7 @@ interface DisplayState {
     level: number,
     coords: [number, number] | null,
     firstPlayer: number,
+    showAll: boolean,
     highlightedPlayer: number | null,
     isFrozen: boolean,
 }
@@ -16,6 +17,7 @@ const initialState: DisplayState = {
     level: 1,
     coords: null,
     firstPlayer: 0,
+    showAll: false,
     highlightedPlayer: null,
     isFrozen: false,
 };
@@ -56,6 +58,10 @@ export const displaySlice = createSlice({
         showLastPlayer: (state, { payload }: PayloadAction<number>) => {
             let numPlayers: number = payload;
             state.firstPlayer = numPlayers - playerStep;
+        },
+        setShowAll: (state, { payload }: PayloadAction<boolean>) => {
+            let showAll: boolean = payload;
+            state.showAll = showAll;
         },
         highlightPlayer: (state, { payload }: PayloadAction<number | null>) => {
             let playerToHighlight: number | null = payload;
