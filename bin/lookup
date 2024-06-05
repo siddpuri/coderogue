@@ -1,7 +1,6 @@
 #!/usr/bin/bash
+sql="$(dirname $0)/sql"
 
 for i in $@; do
-    mariadb --user=game --password=game --database=game \
-        --silent --skip-column-names --execute \
-        "SELECT email FROM players WHERE id = $i;"
+    $sql "SELECT email FROM players WHERE id = $i"
 done

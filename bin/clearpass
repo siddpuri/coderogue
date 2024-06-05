@@ -1,7 +1,6 @@
 #!/usr/bin/bash
+sql="$(dirname $0)/sql"
 
 for i in $@; do
-    mariadb --user=game --password=game --database=game \
-        --silent --skip-column-names --execute \
-        "UPDATE players SET password = '' WHERE id = $i;"
+    $sql "UPDATE players SET password = '' WHERE id = $i"
 done

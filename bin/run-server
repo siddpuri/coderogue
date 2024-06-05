@@ -8,7 +8,7 @@ while true; do
     npm run serve
     (
         cd private
-        mysqldump -u game -pgame game > dump.sql
+        mariadb-dump -u game -pgame game > dump.sql
         git add .
         git commit -m 'Automated update'
         git push

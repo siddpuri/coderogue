@@ -1,9 +1,8 @@
 #!/usr/bin/bash
+sql="$(dirname $0)/sql"
 
 for i in $@; do
     echo "Removing player $i"
     rm -r ~/players/$i
-    mariadb --user=game --password=game --database=game \
-        --silent --skip-column-names --execute \
-        "delete from players where id = $i;"
+    $sql "DELETE FROM players WHERE id = $i"
 done

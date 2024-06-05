@@ -1,3 +1,5 @@
 #!/usr/bin/bash
 
-mysql -u game -pgame game -NBe "$*"
+mariadb --user=game --password=game --database=game \
+    --silent --skip-column-names --execute \
+    "$*"
