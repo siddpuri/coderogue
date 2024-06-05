@@ -9,6 +9,7 @@ import { useAppSelector } from '../client/redux_hooks';
 import { useGetStateQuery } from '../state/server_api';
 
 import { PlayerData } from '../../shared/protocol';
+import Grownups from '../../shared/grownups';
 import Util from '../../shared/util';
 
 type RowInfo = {
@@ -19,7 +20,7 @@ type RowInfo = {
 
 type PlayerInfo = {
     label: string,
-    value: number | [number, number],
+    value: number | [number, number] | string,
 };
 
 const chartLength = 100;
@@ -58,7 +59,7 @@ export default function PlayerTab() {
         { label: 'Offenses', value: stats.offenses },
         { label: 'Jail time', value: stats.jailtime },
         { label: 'Player id', value: stats.id },
-        { label: 'Handle #', value: stats.handle },
+        { label: 'Grownup', value: Grownups.includes(stats.id)? '✔' : '✘' },
     ]
     
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
