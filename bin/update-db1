@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+sql="$(dirname $0)/sql"
+
+$sql "ALTER TABLE players DROP COLUMN verified, DROP COLUMN period"
+$sql "ALTER TABLE players ADD COLUMN best_ttc INT NULL"
+$sql "ALTER TABLE players ADD COLUMN grownup BOOLEAN NOT NULL DEFAULT FALSE"
+$sql "ALTER TABLE players ADD COLUMN teacher BOOLEAN NOT NULL DEFAULT FALSE"
+$sql "UPDATE players SET grownup = TRUE WHERE id < 199 OR (id >= 239 AND id <= 249)"
+$sql "UPDATE players SET teacher = TRUE WHERE id = 1 OR id = 249"

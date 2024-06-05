@@ -12,10 +12,11 @@ CREATE TABLE players (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     auth_token VARCHAR(255) NOT NULL,
-    verified BOOLEAN NOT NULL DEFAULT 0,
-    period INT NOT NULL DEFAULT 0,
     handle INT NOT NULL DEFAULT 0,
     score INT NOT NULL DEFAULT 0,
+    best_ttc INT NULL,
+    grownup BOOLEAN NOT NULL DEFAULT FALSE,
+    teacher BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE (email)
 );
 
