@@ -1,5 +1,26 @@
 #### News
 
+* June 6, 2024: The Player tab shows your grade
+
+  * The player tap now correctly shows cumulative time to completion
+    (t/c) for levels 0-1. This is just the time you spent on levels
+    0 and 1 divided by the number of times you have completed level 1.
+    The goal is to bring this under four minutes, or 240 seconds.
+
+  * If you have scored a good cumulative t/c on a previous day, a row
+    labeled "Best previous t/c" will show this value.
+
+  * If your t/c is good enough for a grade, a row labeled "Grade
+    (percentage)" will show the score you would receive if it were
+    graded today.
+
+  * In addition, the right-hand side of the Player tab now shows
+    whether the player is a "grownup" (i.e. not a current CSP
+    student) and whether the player is a "teacher".
+
+  * If you are on a teacher account, you can now see the player's
+    e-mail address in the Player tab as well.
+
 * March 10, 2024: HTTPS is working
 
   * You can now access coderogue.net from school computers! That took
