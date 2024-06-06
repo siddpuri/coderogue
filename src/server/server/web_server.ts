@@ -61,7 +61,15 @@ export default class WebServer {
     }
 
     private getState(req: Req, res: Res) {
-        res.json(this.server.game.getState());
+        let playerId = req.cookies.playerId;
+        let state = this.server.game.getState();
+        let isTeacher = this.isIdValid(req, res) && state.players[playerId]?.isTeacher;
+        if (!isTeacher) {
+            for (let player of state.players) {
+                if (player) player.email = null;
+            }
+        }
+        res.json(state);
     }
 
     private async getCode(req: Req, res: Res, next: Next) {
@@ -104,17 +112,21 @@ export default class WebServer {
     }
 
     private checkPlayerId(req: Req, res: Res, next: Next) {
-        let playerId = req.cookies.playerId;
-        let authToken = req.cookies.authToken;
-        if (
-            !playerId ||
-            !authToken ||
-            !this.server.game.players[playerId] ||
-            this.server.game.players[playerId].authToken != authToken
-        ) {
+        if (!this.isIdValid(req, res)) {
             res.status(401).json({ error: 'Not logged in.' });
         }
         else next();
+    }
+
+    private isIdValid(req: Req, res: Res) {
+        let playerId = req.cookies.playerId;
+        let authToken = req.cookies.authToken;
+        return (
+            playerId &&
+            authToken &&
+            this.server.game.players[playerId] &&
+            this.server.game.players[playerId].authToken == authToken
+        );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

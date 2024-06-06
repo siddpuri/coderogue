@@ -11,6 +11,7 @@ const chartLength = 100;
 
 export default class Player {
     readonly id: number;
+    readonly email: string;
     readonly authToken: string;
     readonly handle: number;
     readonly bestTtc: number | null;
@@ -39,6 +40,7 @@ export default class Player {
 
     constructor(dbEntry: PlayerEntry) {
         this.id = dbEntry.id;
+        this.email = dbEntry.email;
         this.authToken = dbEntry.auth_token;
         this.handle = dbEntry.handle;
         this.bestTtc = dbEntry.best_ttc;
@@ -92,6 +94,7 @@ export default class Player {
     getState(): PlayerData {
         return {
             id: this.id,
+            email: this.email,
             handle: this.handle,
             bestTtc: this.bestTtc,
             isGrownup: this.isGrownup,

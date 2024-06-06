@@ -16,6 +16,7 @@ export type StateResponse = {
 
 export type PlayerData = {
     id: number,
+    email: string | null,
     handle: number,
     bestTtc: number | null,
     isGrownup: boolean,

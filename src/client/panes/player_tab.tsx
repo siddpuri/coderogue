@@ -63,7 +63,8 @@ export default function PlayerTab() {
         { label: 'Player id', value: stats.id },
         { label: 'Grownup', value: isGrownup? '✔' : '✘' },
         { label: 'Teacher', value: isTeacher? '✔' : '✘' },
-    ]
+    ];
+    if (stats.email) info.push({ label: 'Email', value: stats.email });
     
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
     Chart.register(Title, Filler);
