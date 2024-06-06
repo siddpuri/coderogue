@@ -39,6 +39,7 @@ export default function PlayerPane() {
 
     const players = gameState?.players ?? [];
     const numPlayers = gameState?.players.filter(p => p).length || 0;
+    const showCheckbox = !isGrownup(currentPlayer) || isTeacher(currentPlayer);
 
     return <>
         <Stack>
@@ -70,7 +71,7 @@ export default function PlayerPane() {
                 <SimpleButton text="Find" onClick={findPlayer} />
             </Stack>
 
-            {isGrownup(currentPlayer)? null:
+            {!showCheckbox? null:
                 <Stack direction="horizontal" gap={3} className="mt-3">
                     Show grownups
                     <Form.Check
@@ -84,7 +85,7 @@ export default function PlayerPane() {
 
     function renderPlayers(): JSX.Element[] {
         let stats: (PlayerStats | undefined)[] = players.map(getStats);
-        if (!isGrownup(currentPlayer) && !showAll) {
+        if (showCheckbox && !showAll) {
             stats.forEach(s => { if (s && isGrownup(s.id)) s.score = 0; });
         }
         if (highlightedPlayer) stats[highlightedPlayer]!.highlight = true;
@@ -158,5 +159,9 @@ export default function PlayerPane() {
 
     function isGrownup(id: number | null): boolean {
         return !!(id && gameState?.players[id]?.isGrownup);
+    }
+
+    function isTeacher(id: number | null): boolean {
+        return !!(id && gameState?.players[id]?.isTeacher);
     }
 }
