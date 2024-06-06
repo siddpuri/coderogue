@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+sql="$(dirname $0)/sql"
+
+for i in $@; do
+    $sql "UPDATE players SET grownup = TRUE WHERE id = $i"
+done
