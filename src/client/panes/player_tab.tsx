@@ -50,6 +50,19 @@ export default function PlayerTab() {
         { label: 'Cumulative t/c', values: cumulativeTimePerCompletion },
     ];
 
+    let bestTtc = cumulativeTimePerCompletion[2];
+    if (stats.bestTtc) {
+        rows.push({ label: 'Best previous t/c', values: [0, 0, stats.bestTtc] });
+        if (!bestTtc || stats.bestTtc < bestTtc) bestTtc = stats.bestTtc;
+    }
+    if (bestTtc) {
+        let grade = 340 - bestTtc;
+        if (grade > 0) {
+            if (grade > 100) grade = 100;
+            rows.push({ label: 'Grade (percentage)', values: [0, 0, grade] });
+        }
+    }
+
     let isGrownup = gameState?.players[stats.id]?.isGrownup;
     let isTeacher = gameState?.players[stats.id]?.isTeacher;
 
