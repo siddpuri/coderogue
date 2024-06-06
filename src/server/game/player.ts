@@ -13,6 +13,9 @@ export default class Player {
     readonly id: number;
     readonly authToken: string;
     readonly handle: number;
+    readonly bestTtc: number | null;
+    readonly isGrownup: boolean;
+    readonly isTeacher: boolean;
 
     levelNumber = 0;
     pos: Pos = [0, 0];
@@ -38,6 +41,9 @@ export default class Player {
         this.id = dbEntry.id;
         this.authToken = dbEntry.auth_token;
         this.handle = dbEntry.handle;
+        this.bestTtc = dbEntry.best_ttc;
+        this.isGrownup = dbEntry.grownup;
+        this.isTeacher = dbEntry.teacher;
     }
 
     get isInJail() { return this.levelNumber == 0; }
@@ -87,6 +93,9 @@ export default class Player {
         return {
             id: this.id,
             handle: this.handle,
+            bestTtc: this.bestTtc,
+            isGrownup: this.isGrownup,
+            isTeacher: this.isTeacher,
             levelNumber: this.levelNumber,
             pos: this.pos,
             dir: this.dir,

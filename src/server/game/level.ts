@@ -1,5 +1,4 @@
 import Util from '../../shared/util.js';
-import Grownups from '../../shared/grownups.js';
 import LevelMap from '../../shared/level_map.js';
 import { LevelData } from '../../shared/protocol.js';
 
@@ -49,10 +48,10 @@ export default abstract class Level {
     }
 
     hasGrownupProtection(currentPlayer: Player, pos: Pos): boolean {
-        if (!Grownups.includes(currentPlayer.id)) return false;
+        if (!currentPlayer.isGrownup) return false;
         let playerId = this.map.getPlayerId(pos);
         if (playerId == null) return false;
-        if (Grownups.includes(playerId)) return false;
+        if (this.server.game.players[playerId].isGrownup) return false;
         return true;
     }
 

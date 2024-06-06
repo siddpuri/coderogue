@@ -9,7 +9,6 @@ import { alertSlice } from '../state/alert_state';
 
 import { PlayerData } from '../../shared/protocol';
 import Handles from '../../shared/handles';
-import Grownups from '../../shared/grownups';
 
 import LeftRightButtons from '../components/left_right_buttons';
 import SimpleButton from '../components/simple_button';
@@ -40,7 +39,6 @@ export default function PlayerPane() {
 
     const players = gameState?.players ?? [];
     const numPlayers = gameState?.players.filter(p => p).length || 0;
-    const amChild = currentPlayer && !Grownups.includes(currentPlayer);
 
     return <>
         <Stack>
@@ -72,7 +70,7 @@ export default function PlayerPane() {
                 <SimpleButton text="Find" onClick={findPlayer} />
             </Stack>
 
-            {amChild?
+            {isGrownup(currentPlayer)? null:
                 <Stack direction="horizontal" gap={3} className="mt-3">
                     Show grownups
                     <Form.Check
@@ -80,14 +78,14 @@ export default function PlayerPane() {
                         onChange={() => dispatch(displaySlice.actions.setShowAll(!showAll))}
                     />
                 </Stack>
-            : null}
+            }
         </Stack>
     </>;
 
     function renderPlayers(): JSX.Element[] {
         let stats: (PlayerStats | undefined)[] = players.map(getStats);
-        if (amChild && !showAll) {
-            stats.forEach(s => { if (s && Grownups.includes(s.id)) s.score = 0; });
+        if (!isGrownup(currentPlayer) && !showAll) {
+            stats.forEach(s => { if (s && isGrownup(s.id)) s.score = 0; });
         }
         if (highlightedPlayer) stats[highlightedPlayer]!.highlight = true;
 
@@ -107,7 +105,7 @@ export default function PlayerPane() {
                 statsToRender.push(stat);
             }
         }
-        statsToRender.sort((a, b) => b!.score - a!.score);
+        statsToRender.sort((a, b) => a!.rank! - b!.rank!);
         return statsToRender.map(renderStats);
     }
 
@@ -156,5 +154,9 @@ export default function PlayerPane() {
         if (player == highlightedPlayer) return;
         dispatch(displaySlice.actions.highlightPlayer(player));
         dispatch(alertSlice.actions.showSuccess(`Highlighted player ${findValue}`))
+    }
+
+    function isGrownup(id: number | null): boolean {
+        return !!(id && gameState?.players[id]?.isGrownup);
     }
 }

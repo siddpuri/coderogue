@@ -9,7 +9,6 @@ import { useAppSelector } from '../client/redux_hooks';
 import { useGetStateQuery } from '../state/server_api';
 
 import { PlayerData } from '../../shared/protocol';
-import Grownups from '../../shared/grownups';
 import Util from '../../shared/util';
 
 type RowInfo = {
@@ -51,6 +50,9 @@ export default function PlayerTab() {
         { label: 'Cumulative t/c', values: cumulativeTimePerCompletion },
     ];
 
+    let isGrownup = gameState?.players[stats.id]?.isGrownup;
+    let isTeacher = gameState?.players[stats.id]?.isTeacher;
+
     let info: PlayerInfo[] = [
         { label: 'Level', value: stats.levelNumber },
         { label: 'Position', value: stats.pos },
@@ -59,7 +61,8 @@ export default function PlayerTab() {
         { label: 'Offenses', value: stats.offenses },
         { label: 'Jail time', value: stats.jailtime },
         { label: 'Player id', value: stats.id },
-        { label: 'Grownup', value: Grownups.includes(stats.id)? '✔' : '✘' },
+        { label: 'Grownup', value: isGrownup? '✔' : '✘' },
+        { label: 'Teacher', value: isTeacher? '✔' : '✘' },
     ]
     
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement);

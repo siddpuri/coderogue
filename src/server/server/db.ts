@@ -5,9 +5,14 @@ import Server from './server.js';
 
 export type PlayerEntry = {
     id: number;
+    email: string;
     password: string;
     auth_token: string;
     handle: number;
+    score: number;
+    best_ttc: number | null;
+    grownup: boolean;
+    teacher: boolean;
 }
 
 export default class DB {
@@ -38,7 +43,7 @@ export default class DB {
     }
 
     async loadPlayers(): Promise<PlayerEntry[]> {
-        let result = await this.query('SELECT id, password, auth_token, handle FROM players');
+        let result = await this.query('SELECT * FROM players');
         return result as PlayerEntry[];
     }
 
@@ -60,7 +65,7 @@ export default class DB {
 
     async getPlayerByEmail(email: string): Promise<PlayerEntry[]> {
         let result = await this.query(
-            'SELECT id, password, auth_token, handle FROM players WHERE email = ?',
+            'SELECT * FROM players WHERE email = ?',
             [email]
         );
         return result as PlayerEntry[];

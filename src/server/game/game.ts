@@ -4,7 +4,6 @@ import { VM, VMScript } from 'vm2';
 import Handles from '../../shared/handles.js';
 import { StateResponse, PlayerData } from '../../shared/protocol.js';
 import Timer from '../../shared/timer.js';
-import Grownups from '../../shared/grownups.js';
 
 import Server from '../server/server.js';
 import { PlayerEntry } from '../server/db.js';
@@ -235,7 +234,7 @@ export default class Game {
         playerScores.sort((a, b) => b[1] - a[1]);
         await this.savePlayerScores(playerScores);
         playerScores = playerScores
-            .filter(p => !Grownups.includes(p[0]));
+            .filter(p => !this.players[p[0]].isGrownup);
         await this.savePlayerScores(playerScores);
     }
 
