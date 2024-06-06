@@ -2,7 +2,7 @@
 
 * June 6, 2024: The Player tab shows your grade
 
-  * The player tap now correctly shows cumulative time to completion
+  * The player tab now correctly shows cumulative time to completion
     (t/c) for levels 0-1. This is just the time you spent on levels
     0 and 1 divided by the number of times you have completed level 1.
     The goal is to bring this under four minutes, or 240 seconds.
