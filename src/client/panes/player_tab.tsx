@@ -36,10 +36,6 @@ export default function PlayerTab() {
 
     let scorePerSecond = stats.score.map((x, i) => x / stats.timeSpent[i]);
     let timePerCompletion = stats.timesCompleted.map((x, i) => x? stats.timeSpent[i] / x : 0);
-    let cumulativeTimePerCompletion = timePerCompletion.slice();
-    for (let i = 1; i < cumulativeTimePerCompletion.length; i++) {
-        cumulativeTimePerCompletion[i] += cumulativeTimePerCompletion[i - 1];
-    }
 
     let columns = ['J', '0', '1', '2', '3'];
     let rows: RowInfo[] = [
@@ -47,16 +43,19 @@ export default function PlayerTab() {
         { label: 'Times completed', values: stats.timesCompleted },
         { label: 'Score/second', values: scorePerSecond, precision: 2 },
         { label: 'Time/completion', values: timePerCompletion },
-        { label: 'Cumulative t/c', values: cumulativeTimePerCompletion },
     ];
 
-    let bestTtc = cumulativeTimePerCompletion[2];
+    let ttc = null;
+    if (stats.ttc) {
+        rows.push({ label: 'Cumulative t/c', values: [0, 0, stats.ttc] });
+        ttc = stats.ttc;
+    }
     if (stats.bestTtc) {
         rows.push({ label: 'Best previous t/c', values: [0, 0, stats.bestTtc] });
-        if (!bestTtc || stats.bestTtc < bestTtc) bestTtc = stats.bestTtc;
+        if (!ttc || stats.bestTtc < ttc) ttc = stats.bestTtc;
     }
-    if (bestTtc) {
-        let grade = 340 - bestTtc;
+    if (ttc) {
+        let grade = 340 - ttc;
         if (grade > 0) {
             if (grade > 100) grade = 100;
             rows.push({ label: 'Grade (percentage)', values: [0, 0, grade] });

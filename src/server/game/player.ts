@@ -30,6 +30,7 @@ export default class Player {
     kills: number[] = [];
     deaths: number[] = [];
     score: number[] = [];
+    ttc: number | null = null;
 
     readonly log = new Log();
     action: (() => void) | null = null;
@@ -66,6 +67,9 @@ export default class Player {
     addAtLevel(array: number[], x: number): void {
         while (array.length <= this.levelNumber) array.push(0);
         array[this.levelNumber] += x;
+        if (this.timesCompleted[2]) {
+            this.ttc = (this.timeSpent[1] + this.timeSpent[2]) / this.timesCompleted[2];
+        }
     }
 
     addChartInterval(): void {
@@ -111,6 +115,7 @@ export default class Player {
             kills: this.kills,
             deaths: this.deaths,
             score: this.score,
+            ttc: this.ttc,
         };
     }
 }

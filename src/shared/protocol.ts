@@ -33,6 +33,7 @@ export type PlayerData = {
     kills: number[],
     deaths: number[],
     score: number[],
+    ttc: number | null,
 };
 
 export type LevelData = {

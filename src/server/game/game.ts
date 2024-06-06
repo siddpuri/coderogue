@@ -228,6 +228,11 @@ export default class Game {
     }
 
     async saveScores(): Promise<void> {
+        await this.registerPlayerScores();
+        await this.registerPlayerTimes();
+    }
+
+    private async registerPlayerScores(): Promise<void> {
         let playerScores: [number, number][] = this.players
             .filter(p => p)
             .map(p => [p.id, p.score.reduce((a, b) => a + b, 0)]);
@@ -241,6 +246,14 @@ export default class Game {
     private async savePlayerScores(playerScores: [number, number][]): Promise<void> {
         for (let i = 0; i < tournamentScores.length && i < playerScores.length; i++) {
             await this.server.db.addScore(playerScores[i][0], tournamentScores[i]);
+        }
+    }
+
+    private async registerPlayerTimes(): Promise<void> {
+        for (let player of this.players) {
+            if (!player || !player.ttc) continue;
+            if (player.bestTtc && player.bestTtc < player.ttc) continue;
+            await this.server.db.updateBestTtc(player.id, player.ttc);
         }
     }
 }

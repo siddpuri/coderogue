@@ -84,4 +84,11 @@ export default class DB {
             [score, id]
         );
     }
+
+    async updateBestTtc(id: number, ttc: number): Promise<void> {
+        await this.query(
+            'UPDATE players SET best_ttc = ? WHERE id = ?',
+            [ttc, id]
+        );
+    }
 }
