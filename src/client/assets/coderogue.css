@@ -28,3 +28,8 @@ p {
     font-weight: bold;
     color: #000000;
 }
+
+.form-check-input:checked {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}

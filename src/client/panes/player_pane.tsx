@@ -73,11 +73,12 @@ export default function PlayerPane() {
 
             {!showCheckbox? null:
                 <Stack direction="horizontal" gap={3} className="mt-3">
-                    Show grownups
                     <Form.Check
+                        className=""
                         checked={showAll}
                         onChange={() => dispatch(displaySlice.actions.setShowAll(!showAll))}
                     />
+                    <Form.Check.Label>Show grownups</Form.Check.Label>
                 </Stack>
             }
         </Stack>
