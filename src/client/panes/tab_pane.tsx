@@ -6,6 +6,8 @@ import Markdown from 'react-markdown'
 import { useAppSelector } from '../client/redux_hooks';
 import { keyBindings } from '../client/key_bindings';
 
+import { useGetStateQuery } from '../state/server_api';
+
 import generalMarkdown from '../assets/general_tab.md?raw';
 import ApiTab from './api_tab';
 import KeybindingsTab from './keybindings_tab';
@@ -13,27 +15,32 @@ import levelsMarkdown from '../assets/levels_tab.md?raw';
 import newsMarkdown from '../assets/news_tab.md?raw';
 import CodeTab from './code_tab';
 import PlayerTab from './player_tab';
+import GradingTab from './grading_tab';
 import AccountTab from './account_tab';
-
-const tabs = [
-    { name: 'General', component: <Markdown>{generalMarkdown}</Markdown> },
-    { name: 'Api', component: <ApiTab /> },
-    { name: 'Shortcuts', component: <KeybindingsTab /> },
-    { name: 'Levels', component: <Markdown>{levelsMarkdown}</Markdown> },
-    { name: 'News', component: <Markdown>{newsMarkdown}</Markdown> },
-    { name: 'Code', component: <CodeTab />, disable: true },
-    { name: 'Player', component: <PlayerTab /> },
-    { name: 'Account', component: <AccountTab /> },
-];
 
 const message = <div className="text-center">Log in to see this tab.</div>;
 
 export default function TabPane() {
-    const isLoggedIn = useAppSelector(state => state.login?.credentials?.playerId ?? null);
+    const gameState = useGetStateQuery()?.data;
+    const currentPlayer = useAppSelector(state => state.login?.credentials?.playerId ?? null);
     const [tab, setTab] = useState<string | null>('General');
 
     useEffect(bindKeys);
-    useEffect(() => { if (isLoggedIn) setTab('Code'); }, []);
+    useEffect(() => { if (currentPlayer) setTab('Code'); }, []);
+
+    let isTeacher = currentPlayer && gameState?.players[currentPlayer]?.isTeacher;
+
+    const tabs = [
+        { name: 'General', component: <Markdown>{generalMarkdown}</Markdown> },
+        { name: 'Api', component: <ApiTab /> },
+        { name: 'Shortcuts', component: <KeybindingsTab /> },
+        { name: 'Levels', component: <Markdown>{levelsMarkdown}</Markdown> },
+        { name: 'News', component: <Markdown>{newsMarkdown}</Markdown> },
+        { name: 'Code', component: currentPlayer? <CodeTab /> : message },
+        { name: 'Player', component: <PlayerTab /> },
+        { name: 'Grading', component: isTeacher? <GradingTab /> : null },
+        { name: 'Account', component: <AccountTab /> },
+    ];
 
     return <>
         <Tabs
@@ -42,14 +49,14 @@ export default function TabPane() {
             className="mt-3 mb-3"
             justify
         >
-            {tabs.map(({ name, component, disable }) => (
+            {tabs.map(({ name, component }) => !component? null : (
                 <Tab
                     key={name}
                     eventKey={name}
                     title={name}
                     style={{ minHeight: '1000px' }}
                 >
-                    {disable && !isLoggedIn ? message : component}
+                    {component}
                 </Tab>
             ))}
         </Tabs>

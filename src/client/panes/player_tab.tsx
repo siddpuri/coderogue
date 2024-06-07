@@ -8,7 +8,6 @@ import { useAppSelector } from '../client/redux_hooks';
 
 import { useGetStateQuery } from '../state/server_api';
 
-import { PlayerData } from '../../shared/protocol';
 import Util from '../../shared/util';
 
 type RowInfo = {
@@ -31,7 +30,7 @@ export default function PlayerTab() {
 
     let player = display.highlightedPlayer ?? currentPlayer;
     if (player == null || !gameState?.players[player]) return null;
-    let stats = gameState?.players[player] as PlayerData;
+    let stats = gameState?.players[player];
     if (!stats) return null;
 
     let scorePerSecond = stats.score.map((x, i) => x / stats.timeSpent[i]);
@@ -54,12 +53,9 @@ export default function PlayerTab() {
         rows.push({ label: 'Best previous t/c', values: [0, 0, stats.bestTtc] });
         if (!ttc || stats.bestTtc < ttc) ttc = stats.bestTtc;
     }
-    if (ttc) {
-        let grade = 340 - ttc;
-        if (grade > 0) {
-            if (grade > 100) grade = 100;
-            rows.push({ label: 'Grade (percentage)', values: [0, 0, grade] });
-        }
+    if (ttc && ttc < 340) {
+        let score = Math.min(340 - ttc, 100);
+        rows.push({ label: 'Grade (percentage)', values: [0, 0, score] });
     }
 
     let isGrownup = gameState?.players[stats.id]?.isGrownup;
