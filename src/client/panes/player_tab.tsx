@@ -50,12 +50,12 @@ export default function PlayerTab() {
         ttc = stats.ttc;
     }
     if (stats.bestTtc) {
-        rows.push({ label: 'Best previous t/c', values: [0, 0, stats.bestTtc] });
+        rows.push({ label: 'Best recorded t/c', values: [0, 0, stats.bestTtc] });
         if (!ttc || stats.bestTtc < ttc) ttc = stats.bestTtc;
     }
     if (ttc && ttc < 340) {
-        let score = Math.min(340 - ttc, 100);
-        rows.push({ label: 'Grade (percentage)', values: [0, 0, score] });
+        let score = Math.min(Math.round(340 - ttc), 100);
+        rows.push({ label: 'Grade (provisional)', values: [0, 0, score] });
     }
 
     let isGrownup = gameState?.players[stats.id]?.isGrownup;

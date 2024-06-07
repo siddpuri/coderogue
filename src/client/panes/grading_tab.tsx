@@ -40,7 +40,7 @@ export default function GradingTab() {
     function calculateScore(stats: PlayerData): number {
         let ttc = stats.ttc;
         if (stats.bestTtc && (!ttc || stats.bestTtc < ttc)) ttc = stats.bestTtc;
-        return (ttc && ttc < 340)? Math.min(340 - ttc, 100) : 0;
+        return (ttc && ttc < 340)? Math.min(Math.round(340 - ttc), 100) : 0;
     }
 
     function renderColumn(column: ScoreEntry[], i: number): JSX.Element {
