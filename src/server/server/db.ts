@@ -56,10 +56,10 @@ export default class DB {
         return response['LAST_INSERT_ID()'];
     }
 
-    async updatePlayer(playerId: number, period: number, handle: number): Promise<void> {
+    async updatePlayer(playerId: number, handle: number): Promise<void> {
         await this.query(
-            'UPDATE players SET period = ?, handle = ? WHERE id = ?',
-            [period, handle, playerId]
+            'UPDATE players SET handle = ? WHERE id = ?',
+            [handle, playerId]
         );
     }
 

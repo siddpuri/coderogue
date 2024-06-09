@@ -40,7 +40,7 @@ export default class Auth {
         const authToken = crypto.randomBytes(16).toString('hex');
         let playerId = await this.server.db.addPlayer(email, password, authToken);
         let handle = this.server.game.createNewHandle();
-        await this.server.db.updatePlayer(playerId, 0, handle);
+        await this.server.db.updatePlayer(playerId, handle);
     }
 
     async setPassword(id: number, credentials: LoginRequest): Promise<void> {
